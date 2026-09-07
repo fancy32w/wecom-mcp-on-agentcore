@@ -1,0 +1,136 @@
+{
+  "method": "disk.files.get",
+  "description": "读取一个微盘文件的基础信息，包含名称、大小、类型、创建者、所属知识空间、所在文件夹、时间与路径等",
+  "request": {
+    "$ref": "DiskFileGetInfoReq"
+  },
+  "response": {
+    "$ref": "DiskFileGetInfoRsp"
+  },
+  "schemas": {
+    "DiskFileGetInfoRsp": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "object",
+          "$ref": "ClawToolError"
+        },
+        "file": {
+          "type": "object",
+          "$ref": "DiskItemInfo",
+          "description": "文件详情"
+        }
+      }
+    },
+    "DiskFileGetInfoReq": {
+      "type": "object",
+      "properties": {
+        "file_id": {
+          "type": "string",
+          "description": "文件 ID，与 url 二选一；不传则必须传 url",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "url": {
+          "type": "string",
+          "description": "文件 URL，与 file_id 二选一；不传则必须传 file_id",
+          "minLength": 1,
+          "maxLength": 500
+        }
+      }
+    },
+    "DiskItemInfo": {
+      "type": "object",
+      "description": "微盘文件条目基础信息，用于读取微盘文件信息返回",
+      "properties": {
+        "create_time": {
+          "type": "string",
+          "description": "创建时间，格式 YYYY-MM-DD HH:mm:ss"
+        },
+        "creator_userid": {
+          "type": "string",
+          "description": "创建者 id，可能是成员、外部联系人、机器人或应用"
+        },
+        "doc_url": {
+          "type": "string",
+          "description": "文档打开链接，仅在线文档类型时填充"
+        },
+        "docid": {
+          "type": "string",
+          "description": "文档id，仅 type=smartsheet / smartpage / sheet / word / ppt / collect / journal 时有意义"
+        },
+        "file_name": {
+          "type": "string",
+          "description": "文件名称"
+        },
+        "file_size": {
+          "type": "integer",
+          "description": "文件大小，单位字节；仅 file_type=file 时有意义",
+          "format": "uint64"
+        },
+        "folder_id": {
+          "type": "string",
+          "description": "所在文件夹 ID，可能为文件夹 file_id 或空间 space_id"
+        },
+        "folder_name": {
+          "type": "string",
+          "description": "所在父文件夹名；对父文件夹有权限时才返回，与 folder_id 同时出现"
+        },
+        "id": {
+          "type": "string",
+          "description": "微盘文件 ID / 文件夹 ID / 空间 ID"
+        },
+        "path": {
+          "type": "string",
+          "description": "文件完整路径"
+        },
+        "space_id": {
+          "type": "string",
+          "description": "所属知识空间 ID"
+        },
+        "space_name": {
+          "type": "string",
+          "description": "所在空间名；对空间有权限时才返回，与 space_id 同时出现"
+        },
+        "type": {
+          "type": "string",
+          "description": "文件类型",
+          "enum": [
+            "file",
+            "folder",
+            "space",
+            "smartsheet",
+            "smartpage",
+            "sheet",
+            "word",
+            "ppt",
+            "collect",
+            "journal",
+            "flow",
+            "mind"
+          ]
+        },
+        "update_time": {
+          "type": "string",
+          "description": "最后更新时间，格式 YYYY-MM-DD HH:mm:ss"
+        }
+      }
+    },
+    "ClawToolError": {
+      "type": "object",
+      "description": "业务 payload 内层错误（外层框架错误见 OpenClawHttpCallRsp.Error）。",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "data": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

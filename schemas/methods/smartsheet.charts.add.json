@@ -1,0 +1,311 @@
+{
+  "method": "smartsheet.charts.add",
+  "description": "修改仪表盘的图表，支持增加图表配置",
+  "request": {
+    "$ref": "OaSmartSheetModifyChartReq"
+  },
+  "response": {
+    "$ref": "OaSmartSheetModifyChartTypedRsp"
+  },
+  "schemas": {
+    "OaStringValue": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "array",
+          "description": "字符串值列表",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "OaChartLayout": {
+      "type": "object",
+      "description": "图表在仪表盘中的位置与尺寸",
+      "properties": {
+        "width_height": {
+          "type": "array",
+          "description": "宽高 [width, height]",
+          "items": {
+            "type": "integer",
+            "format": "uint32"
+          }
+        },
+        "xy": {
+          "type": "array",
+          "description": "起点坐标 [x, y]",
+          "items": {
+            "type": "integer",
+            "format": "uint32"
+          }
+        }
+      }
+    },
+    "OaFilterDateTimeValue": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "日期类型"
+        },
+        "value": {
+          "type": "array",
+          "description": "日期值",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "OaCondition": {
+      "type": "object",
+      "properties": {
+        "bool_value": {
+          "type": "object",
+          "$ref": "OaBoolValue",
+          "description": "布尔值"
+        },
+        "date_time_value": {
+          "type": "object",
+          "$ref": "OaFilterDateTimeValue",
+          "description": "日期值"
+        },
+        "field_id": {
+          "type": "string",
+          "description": "字段 ID"
+        },
+        "field_title": {
+          "type": "string",
+          "description": "字段标题"
+        },
+        "field_type": {
+          "type": "string",
+          "description": "字段类型"
+        },
+        "number_value": {
+          "type": "object",
+          "$ref": "OaNumberValue",
+          "description": "数字值"
+        },
+        "operator": {
+          "type": "string",
+          "description": "判断类型"
+        },
+        "string_value": {
+          "type": "object",
+          "$ref": "OaStringValue",
+          "description": "文本值"
+        },
+        "user_value": {
+          "type": "object",
+          "$ref": "OaUserValue",
+          "description": "成员值"
+        }
+      }
+    },
+    "OaChartCategory": {
+      "type": "object",
+      "description": "图表的类别字段配置",
+      "properties": {
+        "field_id": {
+          "type": "string",
+          "description": "类别字段 ID"
+        },
+        "field_title": {
+          "type": "string",
+          "description": "类别字段名称"
+        },
+        "sub_field_id": {
+          "type": "string",
+          "description": "二级类别字段 ID"
+        },
+        "sub_field_title": {
+          "type": "string",
+          "description": "二级类别字段名称"
+        }
+      }
+    },
+    "OaUserValue": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "array",
+          "description": "成员 ID 列表",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "OaFilterSpec": {
+      "type": "object",
+      "properties": {
+        "conditions": {
+          "type": "array",
+          "description": "判断条件",
+          "items": {
+            "type": "object",
+            "$ref": "OaCondition"
+          }
+        },
+        "conjunction": {
+          "type": "string",
+          "description": "组合方式"
+        }
+      }
+    },
+    "OaChartSeries": {
+      "type": "object",
+      "description": "图表的值字段配置",
+      "properties": {
+        "aggregation": {
+          "type": "string",
+          "description": "聚合方式"
+        },
+        "field_id": {
+          "type": "string",
+          "description": "值字段 ID"
+        },
+        "field_title": {
+          "type": "string",
+          "description": "值字段名称，优先使用 field_title"
+        }
+      }
+    },
+    "OaSmartSheetModifyChartTypedRsp": {
+      "type": "object",
+      "properties": {
+        "charts": {
+          "type": "array",
+          "description": "图表属性",
+          "items": {
+            "type": "object",
+            "$ref": "OaChart"
+          }
+        },
+        "charts_count": {
+          "type": "integer",
+          "description": "图表属性 数组元素数量（框架自动生成）"
+        },
+        "errcode": {
+          "type": "integer",
+          "description": "错误码",
+          "format": "int32"
+        },
+        "errmsg": {
+          "type": "string",
+          "description": "错误信息"
+        }
+      }
+    },
+    "OaSmartSheetModifyChartReq": {
+      "type": "object",
+      "description": "OaSmartSheetModifyChart (修改仪表盘的图表，add/update/delete 复用)",
+      "properties": {
+        "charts": {
+          "type": "array",
+          "description": "图表属性，每次 1~20 个",
+          "items": {
+            "type": "object",
+            "$ref": "OaChart"
+          },
+          "minItems": 1,
+          "maxItems": 20
+        },
+        "docid": {
+          "type": "string",
+          "description": "支持文档的 docid 和 url",
+          "minLength": 5
+        },
+        "sheet_id": {
+          "type": "string",
+          "description": "仪表盘子表 ID",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "sheet_title": {
+          "type": "string",
+          "description": "仪表盘子表名称"
+        },
+        "type": {
+          "type": "string",
+          "description": "操作类型",
+          "enum": [
+            "add",
+            "update",
+            "delete"
+          ]
+        }
+      },
+      "required": [
+        "docid",
+        "charts"
+      ]
+    },
+    "OaBoolValue": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "boolean",
+          "description": "布尔值"
+        }
+      }
+    },
+    "OaNumberValue": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "number",
+          "description": "数字值",
+          "format": "double"
+        }
+      }
+    },
+    "OaChart": {
+      "type": "object",
+      "description": "图表属性信息",
+      "properties": {
+        "category": {
+          "type": "object",
+          "$ref": "OaChartCategory",
+          "description": "类别字段配置"
+        },
+        "datasource": {
+          "type": "string",
+          "description": "数据源，支持 sheet_id / sheet_title 双形态"
+        },
+        "filter": {
+          "type": "object",
+          "$ref": "OaFilterSpec",
+          "description": "筛选条件"
+        },
+        "id": {
+          "type": "string",
+          "description": "图表 ID（新增时由服务端生成）"
+        },
+        "layout": {
+          "type": "object",
+          "$ref": "OaChartLayout",
+          "description": "位置与尺寸"
+        },
+        "series": {
+          "type": "array",
+          "description": "值字段配置",
+          "items": {
+            "type": "object",
+            "$ref": "OaChartSeries"
+          }
+        },
+        "title": {
+          "type": "string",
+          "description": "图表名称"
+        },
+        "type": {
+          "type": "string",
+          "description": "图表类型"
+        }
+      }
+    }
+  }
+}

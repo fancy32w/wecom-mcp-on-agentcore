@@ -1,0 +1,589 @@
+{
+  "services": {
+    "calendar": {
+      "description": "日历服务，提供日历本列表查询、日程创建、查询、取消、忙闲查询、搜索等能力",
+      "method_names": [
+        "calendar.schedules.cancel",
+        "calendar.schedules.create",
+        "calendar.schedules.get",
+        "calendar.schedules.list",
+        "calendar.schedules.search",
+        "calendar.schedules.update",
+        "calendar.schedules.free.list"
+      ],
+      "skills": [
+        "wecom-calendar"
+      ]
+    },
+    "chat": {
+      "description": "会话与消息服务",
+      "method_names": [
+        "chat.groups.list",
+        "chat.messages.list"
+      ],
+      "skills": []
+    },
+    "contact": {
+      "description": "通讯录管理服务",
+      "method_names": [
+        "contact.users.search"
+      ],
+      "skills": [
+        "wecom-contact"
+      ]
+    },
+    "disk": {
+      "description": "微盘服务",
+      "method_names": [
+        "disk.files.download",
+        "disk.files.get",
+        "disk.files.list",
+        "disk.files.rename",
+        "disk.files.search",
+        "disk.files.upload",
+        "disk.folders.create"
+      ],
+      "skills": []
+    },
+    "doc": {
+      "description": "文档服务，提供文档的创建、导入、列表、搜索、删除、重命名、权限管理以及 Word 文档内容读取、追加、覆盖、更新等能力",
+      "method_names": [
+        "doc.create",
+        "doc.import",
+        "doc.search",
+        "doc.contents.append",
+        "doc.contents.get",
+        "doc.contents.overwrite",
+        "doc.members.update",
+        "doc.names.update",
+        "doc.rules.update"
+      ],
+      "skills": [
+        "wecom-doc",
+        "wecom-doc-manage",
+        "wecom-sheet"
+      ]
+    },
+    "mail": {
+      "description": "邮件服务，提供邮件发送、详情读取、搜索、删除与未读标记设置能力",
+      "method_names": [
+        "mail.get",
+        "mail.search",
+        "mail.send"
+      ],
+      "skills": [
+        "wecom-email"
+      ]
+    },
+    "media": {
+      "description": "媒体文件服务，提供媒体文件上传、下载能力",
+      "method_names": [
+        "media.download",
+        "media.upload"
+      ],
+      "skills": []
+    },
+    "message": {
+      "description": "消息搜索服务",
+      "method_names": [
+        "message.send",
+        "message.aibot.send",
+        "message.aibot.sessions.list",
+        "message.files.get"
+      ],
+      "skills": []
+    },
+    "meeting": {
+      "description": "会议服务，提供会议的创建、查询、搜索、取消、更新等能力",
+      "method_names": [
+        "meeting.cancel",
+        "meeting.create",
+        "meeting.get",
+        "meeting.list",
+        "meeting.search",
+        "meeting.update",
+        "meeting.original.get",
+        "meeting.rooms.search",
+        "meeting.rooms.buildings.list"
+      ],
+      "skills": [
+        "wecom-meeting",
+        "wecom-calendar"
+      ]
+    },
+    "sheet": {
+      "description": "表格服务，提供表格文档的基本信息查询、指定范围数据读写、工作表增删以及行数据追加等能力",
+      "method_names": [
+        "sheet.create",
+        "sheet.get",
+        "sheet.import",
+        "sheet.contents.update",
+        "sheet.ranges.get",
+        "sheet.rows.append",
+        "sheet.subsheets.add",
+        "sheet.subsheets.delete"
+      ],
+      "skills": [
+        "wecom-sheet"
+      ]
+    },
+    "smartpage": {
+      "description": "智能主页服务，提供智能主页的页面读取、页面管理（创建/删除/重命名/移动/布局更新）、Block 编辑、内容追加与覆盖等能力",
+      "method_names": [
+        "smartpage.create",
+        "smartpage.import",
+        "smartpage.blocks.update",
+        "smartpage.databases.get",
+        "smartpage.files.upload",
+        "smartpage.images.upload",
+        "smartpage.pages.append",
+        "smartpage.pages.get",
+        "smartpage.pages.overwrite",
+        "smartpage.pages.update"
+      ],
+      "skills": [
+        "wecom-smartpage"
+      ]
+    },
+    "smartsheet": {
+      "description": "智能表格服务，提供智能表格的信息获取、结构修改、记录增删改查、视图管理和图表管理等能力",
+      "method_names": [
+        "smartsheet.create",
+        "smartsheet.get",
+        "smartsheet.import",
+        "smartsheet.charts.add",
+        "smartsheet.charts.delete",
+        "smartsheet.charts.list",
+        "smartsheet.charts.update",
+        "smartsheet.fields.add",
+        "smartsheet.fields.delete",
+        "smartsheet.fields.list",
+        "smartsheet.fields.update",
+        "smartsheet.files.upload",
+        "smartsheet.images.upload",
+        "smartsheet.records.add",
+        "smartsheet.records.delete",
+        "smartsheet.records.list",
+        "smartsheet.records.query",
+        "smartsheet.records.update",
+        "smartsheet.sheets.add",
+        "smartsheet.sheets.delete",
+        "smartsheet.sheets.list",
+        "smartsheet.sheets.update",
+        "smartsheet.views.add",
+        "smartsheet.views.delete",
+        "smartsheet.views.list",
+        "smartsheet.views.update"
+      ],
+      "skills": [
+        "wecom-smartsheet"
+      ]
+    },
+    "todo": {
+      "description": "待办服务，提供待办事项的创建、更新、删除、查询、完成等能力",
+      "method_names": [
+        "todo.create",
+        "todo.delete",
+        "todo.finish",
+        "todo.get",
+        "todo.list",
+        "todo.update"
+      ],
+      "skills": [
+        "wecom-todo"
+      ]
+    }
+  },
+  "methods": [
+    {
+      "name": "calendar.schedules.cancel",
+      "description": "取消（删除）日程，周期日程需指定编辑规则（仅本次、本次及以后、全部）"
+    },
+    {
+      "name": "calendar.schedules.create",
+      "description": "创建日程，支持设置标题、时间、地点、备注、参与人、提醒时间、时区、是否全天等信息"
+    },
+    {
+      "name": "calendar.schedules.get",
+      "description": "根据日程 ID 批量获取日程详情，返回日程的完整信息：标题、时间、地点、备注、参与人、提醒、时区、周期规则等"
+    },
+    {
+      "name": "calendar.schedules.list",
+      "description": "查询指定时间范围内的日程列表，返回日程的基本信息：标题、开始时间、结束时间、参与人、会议室、地点、备注"
+    },
+    {
+      "name": "calendar.schedules.search",
+      "description": "按关键词搜索指定时间范围内的日程，返回匹配的日程列表（标题、时间、参与人、会议室、地点、备注）"
+    },
+    {
+      "name": "calendar.schedules.update",
+      "description": "更新日程信息（Patch 语义），支持修改标题、时间、地点、备注、新增/移除参与人，周期日程需指定编辑规则"
+    },
+    {
+      "name": "calendar.schedules.free.list",
+      "description": "查询指定成员在指定时间范围内的共同空闲时段，返回推荐的空闲时间段列表"
+    },
+    {
+      "name": "chat.groups.list",
+      "description": "按时间范围分页获取有消息的会话列表（目前仅群聊）"
+    },
+    {
+      "name": "chat.messages.list",
+      "description": "按时间范围分页拉取指定会话的消息列表"
+    },
+    {
+      "name": "contact.users.search",
+      "description": "通过 keywords 搜索成员信息（open cli场景）"
+    },
+    {
+      "name": "disk.files.download",
+      "description": "异步根据微盘文件 ID 或 URL 下载文件，轮询完成后返回本地文件路径"
+    },
+    {
+      "name": "disk.files.get",
+      "description": "读取一个微盘文件的基础信息，包含名称、大小、类型、创建者、所属知识空间、所在文件夹、时间与路径等"
+    },
+    {
+      "name": "disk.files.list",
+      "description": "列出当前用户在微盘中最近浏览过的文件，按最后浏览时间倒序返回，支持分页"
+    },
+    {
+      "name": "disk.files.rename",
+      "description": "修改微盘文件的显示名称"
+    },
+    {
+      "name": "disk.files.search",
+      "description": "根据关键词搜索微盘中的文件或文件夹；支持按文件类型、创建者、知识空间过滤，支持排序和分页"
+    },
+    {
+      "name": "disk.files.upload",
+      "description": "使用 media_id 或本地文件路径将文件上传到微盘指定文件夹，传 file_path 且 file_name 不传时从路径自动提取文件名"
+    },
+    {
+      "name": "disk.folders.create",
+      "description": "在微盘指定父文件夹下新建文件夹，不传 folder_id 时默认创建到个人空间根目录"
+    },
+    {
+      "name": "doc.create",
+      "description": "新建文档，支持 doc/sheet/smartsheet 文档类型，可设置初始内容和字段"
+    },
+    {
+      "name": "doc.import",
+      "description": "创建文档导入任务（将外部文件导入为在线文档），也可通过传入 taskid 查询已有导入任务的状态"
+    },
+    {
+      "name": "doc.search",
+      "description": "按关键词搜索文档，支持按文档类型、创建者、浏览者、时间范围等多维度过滤，支持排序和分页"
+    },
+    {
+      "name": "doc.contents.append",
+      "description": "在 Word 文档末尾追加文本内容"
+    },
+    {
+      "name": "doc.contents.get",
+      "description": "读取 Word 文档内容，支持 text 和 ooxml 格式返回"
+    },
+    {
+      "name": "doc.contents.overwrite",
+      "description": "用新内容全量覆盖 Word 文档的全部内容，原内容将被替换"
+    },
+    {
+      "name": "doc.members.update",
+      "description": "添加文档协作成员，设置成员的读写权限"
+    },
+    {
+      "name": "doc.names.update",
+      "description": "重命名指定文档的标题"
+    },
+    {
+      "name": "doc.rules.update",
+      "description": "设置文档加入规则，包括是否开启成员加入确认、企业内外成员加入权限"
+    },
+    {
+      "name": "mail.get",
+      "description": "支持通过encode_mail_id获取邮件信息的接口"
+    },
+    {
+      "name": "mail.search",
+      "description": "支持搜索邮件和拉取邮件列表"
+    },
+    {
+      "name": "mail.send",
+      "description": "支持发送、回复和转发邮件的接口，其中发信还支持日程邮件和会议邮件"
+    },
+    {
+      "name": "media.download",
+      "description": "根据 media_id 下载媒体文件。"
+    },
+    {
+      "name": "media.upload",
+      "description": "上传媒体文件，返回 media_id"
+    },
+    {
+      "name": "message.send",
+      "description": "向指定单聊/群聊会话发送文本消息"
+    },
+    {
+      "name": "message.aibot.send",
+      "description": "以智能机器人身份向指定单聊/群聊会话发送消息，支持 markdown/图片/文件/语音/视频"
+    },
+    {
+      "name": "message.aibot.sessions.list",
+      "description": "获取智能机器人最近的会话列表，按最后一条消息时间倒序返回最多 20 个会话"
+    },
+    {
+      "name": "message.files.get",
+      "description": "根据消息媒体 ID 获取图片/文件/语音/视频的文件内容"
+    },
+    {
+      "name": "meeting.cancel",
+      "description": "取消预定会议：周期会议取消单次需指定子会议 ID"
+    },
+    {
+      "name": "meeting.create",
+      "description": "创建会议"
+    },
+    {
+      "name": "meeting.get",
+      "description": "获取会议详情：标题、开始时间、结束时间、是否全天、时区、会议室、周期规则、参与人列表、会议状态、智能纪要地址、录制文件地址、地点、备注"
+    },
+    {
+      "name": "meeting.list",
+      "description": "按时间范围拉取开始时间在对应范围内的会议列表：标题、开始时间、结束时间、参会人数量、时区、会议室、地点、是否是周期会议"
+    },
+    {
+      "name": "meeting.search",
+      "description": "按关键词搜索会议：支持按关键词匹配会议主题，可选按时间范围过滤，支持 cursor 分页和上翻下翻方向控制。"
+    },
+    {
+      "name": "meeting.update",
+      "description": "更新预定会议信息：标题、开始时间、结束时间、参与人、地点、备注"
+    },
+    {
+      "name": "meeting.original.get",
+      "description": "拉取会议转写原文。"
+    },
+    {
+      "name": "meeting.rooms.search",
+      "description": "查询会议室。"
+    },
+    {
+      "name": "meeting.rooms.buildings.list",
+      "description": "查询企业会议室楼栋信息。"
+    },
+    {
+      "name": "sheet.create",
+      "description": "新建文档，支持 doc/sheet/smartsheet 文档类型，可设置初始内容和字段"
+    },
+    {
+      "name": "sheet.get",
+      "description": "获取表格文档的基本信息，包含工作表列表（sheet_id、标题、行列数等）"
+    },
+    {
+      "name": "sheet.import",
+      "description": "创建文档导入任务（将外部文件导入为在线文档），也可通过传入 taskid 查询已有导入任务的状态"
+    },
+    {
+      "name": "sheet.contents.update",
+      "description": "更新表格指定范围的单元格数据"
+    },
+    {
+      "name": "sheet.ranges.get",
+      "description": "读取表格指定范围的单元格数据，范围格式遵循 A1 表示法"
+    },
+    {
+      "name": "sheet.rows.append",
+      "description": "在表格工作表末尾追加一行数据"
+    },
+    {
+      "name": "sheet.subsheets.add",
+      "description": "在表格文档中添加新的工作表，可指定标题和插入位置"
+    },
+    {
+      "name": "sheet.subsheets.delete",
+      "description": "删除表格文档中的指定工作表，删除后不可恢复"
+    },
+    {
+      "name": "smartpage.create",
+      "description": "新建智能页面文档"
+    },
+    {
+      "name": "smartpage.import",
+      "description": "导入 markdown 创建智能页面"
+    },
+    {
+      "name": "smartpage.blocks.update",
+      "description": "编辑智能页面block(插入/替换/删除)"
+    },
+    {
+      "name": "smartpage.databases.get",
+      "description": "读取数据库信息"
+    },
+    {
+      "name": "smartpage.files.upload",
+      "description": "上传文件到文档,得到url"
+    },
+    {
+      "name": "smartpage.images.upload",
+      "description": "上传文件到文档,得到url"
+    },
+    {
+      "name": "smartpage.pages.append",
+      "description": "追加内容到页面"
+    },
+    {
+      "name": "smartpage.pages.get",
+      "description": "读取智能主页内容"
+    },
+    {
+      "name": "smartpage.pages.overwrite",
+      "description": "覆盖页面内容"
+    },
+    {
+      "name": "smartpage.pages.update",
+      "description": "修改页面(创建/删除/重命名/移动/更新布局)"
+    },
+    {
+      "name": "smartsheet.create",
+      "description": "新建智能表格文档，支持初始表结构与内容"
+    },
+    {
+      "name": "smartsheet.get",
+      "description": "获取智能表格的基本信息，包含子表列表（子表 ID、名称、类型、行列数、前五列信息等）"
+    },
+    {
+      "name": "smartsheet.import",
+      "description": "导入 xlsx 创建智能表格"
+    },
+    {
+      "name": "smartsheet.charts.add",
+      "description": "修改仪表盘的图表，支持增加图表配置"
+    },
+    {
+      "name": "smartsheet.charts.delete",
+      "description": "修改仪表盘的图表，支持删除图表配置"
+    },
+    {
+      "name": "smartsheet.charts.list",
+      "description": "拉取智能表格的图表列表"
+    },
+    {
+      "name": "smartsheet.charts.update",
+      "description": "修改仪表盘的图表，支持更新图表配置"
+    },
+    {
+      "name": "smartsheet.fields.add",
+      "description": "智能表格新增字段"
+    },
+    {
+      "name": "smartsheet.fields.delete",
+      "description": "智能表格删除字段"
+    },
+    {
+      "name": "smartsheet.fields.list",
+      "description": "拉取智能表格的字段列表"
+    },
+    {
+      "name": "smartsheet.fields.update",
+      "description": "智能表格更新字段"
+    },
+    {
+      "name": "smartsheet.files.upload",
+      "description": "上传文件到文档,得到url"
+    },
+    {
+      "name": "smartsheet.images.upload",
+      "description": "上传文件到文档,得到url"
+    },
+    {
+      "name": "smartsheet.records.add",
+      "description": "批量新增智能表格行记录"
+    },
+    {
+      "name": "smartsheet.records.delete",
+      "description": "批量删除智能表格行记录"
+    },
+    {
+      "name": "smartsheet.records.list",
+      "description": "读取智能表格数据，支持读取字段定义(fields)、图表(charts)、视图(views)、记录(records)，支持排序、过滤和分页"
+    },
+    {
+      "name": "smartsheet.records.query",
+      "description": "通过 SQL 查询仪表盘数据，支持异步轮询；首次请求 task_id 为空，data_initing=true 时按 task_id 重试"
+    },
+    {
+      "name": "smartsheet.records.update",
+      "description": "批量增加/更新/删除智能表格记录（行数据）"
+    },
+    {
+      "name": "smartsheet.sheets.add",
+      "description": "智能表格新增子表"
+    },
+    {
+      "name": "smartsheet.sheets.delete",
+      "description": "智能表格删除子表"
+    },
+    {
+      "name": "smartsheet.sheets.list",
+      "description": "获取智能表格的基本信息，包含子表列表（子表 ID、名称、类型、行列数、前五列信息等）"
+    },
+    {
+      "name": "smartsheet.sheets.update",
+      "description": "修改智能表格结构，支持增加/更新/删除子表和列字段"
+    },
+    {
+      "name": "smartsheet.views.add",
+      "description": "修改智能表格视图，增加视图配置"
+    },
+    {
+      "name": "smartsheet.views.delete",
+      "description": "修改智能表格视图，支持删除视图配置"
+    },
+    {
+      "name": "smartsheet.views.list",
+      "description": "拉取智能表格的视图列表"
+    },
+    {
+      "name": "smartsheet.views.update",
+      "description": "修改智能表格视图，支持更新视图配置"
+    },
+    {
+      "name": "todo.create",
+      "description": "机器人视角批量创建待办"
+    },
+    {
+      "name": "todo.delete",
+      "description": "机器人视角批量删除待办"
+    },
+    {
+      "name": "todo.finish",
+      "description": "机器人视角批量完成待办"
+    },
+    {
+      "name": "todo.get",
+      "description": "批量读取待办详情，返回标题/描述/参与人/时间等"
+    },
+    {
+      "name": "todo.list",
+      "description": "读取机器人为创建人、对话人为参与人选的待办列表（按 update_time 降序），返回标题/描述/人名"
+    },
+    {
+      "name": "todo.update",
+      "description": "机器人视角批量更新待办（标题/描述/参与人/截止时间等）"
+    }
+  ],
+  "skills": [
+    "wecom-calendar",
+    "wecom-contact",
+    "wecom-doc",
+    "wecom-doc-manage",
+    "wecom-sheet",
+    "wecom-email",
+    "wecom-meeting",
+    "wecom-calendar",
+    "wecom-sheet",
+    "wecom-smartpage",
+    "wecom-smartsheet",
+    "wecom-todo"
+  ]
+}

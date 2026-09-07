@@ -1,0 +1,48 @@
+{
+  "method": "media.download",
+  "description": "根据 media_id 下载媒体文件。",
+  "request": {
+    "$ref": "DownloadFileReq"
+  },
+  "response": {
+    "$ref": "WeComCliDownloadRes"
+  },
+  "schemas": {
+    "DownloadFileReq": {
+      "type": "object",
+      "description": "大模型传入 media_id，框架层自动将 media_id 解码为 cosid，业务层用 cosid 从 COS 读取文件内容",
+      "properties": {
+        "media_id": {
+          "type": "string",
+          "description": "/ 文件的 media_id，由 CLI 上传文件后获得\n/ 框架层自动将 media_id 解码为 cosid，业务层只看到 cosid"
+        }
+      },
+      "required": [
+        "media_id"
+      ]
+    },
+    "WeComCliDownloadRes": {
+      "type": "object",
+      "description": "文件下载结果。",
+      "properties": {
+        "file_path": {
+          "type": "string",
+          "description": "文件保存的绝对路径"
+        },
+        "size": {
+          "type": "integer",
+          "description": "文件大小（字节）",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "content_type": {
+          "type": "string",
+          "description": "下载文件的 MIME 类型，例如 `image/png`"
+        }
+      },
+      "required": [
+        "file_path"
+      ]
+    }
+  }
+}

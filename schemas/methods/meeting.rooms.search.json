@@ -1,0 +1,181 @@
+{
+  "method": "meeting.rooms.search",
+  "description": "查询会议室。",
+  "request": {
+    "$ref": "WeAgentGetMeetingRoomListReq"
+  },
+  "response": {
+    "$ref": "WeAgentGetMeetingRoomListRsp"
+  },
+  "schemas": {
+    "WeAgentGetMeetingRoomListReq": {
+      "type": "object",
+      "properties": {
+        "begin_time": {
+          "type": "string",
+          "description": "查询开始时间（YYYY-MM-DD HH:MM:SS）",
+          "minLength": 1,
+          "pattern": "^\\\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\\\d|3[01]) ([01]\\\\d|2[0-3]):[0-5]\\\\d:[0-5]\\\\d$"
+        },
+        "building_name": {
+          "type": "string",
+          "description": "大楼名称",
+          "minLength": 1
+        },
+        "capacity_min": {
+          "type": "integer",
+          "description": "会议室最小容量",
+          "format": "uint32",
+          "minimum": 1
+        },
+        "city_name": {
+          "type": "string",
+          "description": "城市名称",
+          "minLength": 1
+        },
+        "cursor": {
+          "type": "string",
+          "description": "分页游标"
+        },
+        "end_time": {
+          "type": "string",
+          "description": "查询结束时间（YYYY-MM-DD HH:MM:SS）",
+          "minLength": 1,
+          "pattern": "^\\\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\\\d|3[01]) ([01]\\\\d|2[0-3]):[0-5]\\\\d:[0-5]\\\\d$"
+        },
+        "expand_to_other_buildings": {
+          "type": "boolean",
+          "description": "true 时允许跨楼推荐（同城，只有用户明确提出才传）"
+        },
+        "floor_name": {
+          "type": "string",
+          "description": "楼层名称",
+          "minLength": 1
+        },
+        "limit": {
+          "type": "integer",
+          "description": "每页数量，默认20，上限100",
+          "format": "uint32",
+          "maximum": 100
+        },
+        "room_name": {
+          "type": "string",
+          "description": "会议室名称",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "begin_time",
+        "end_time"
+      ]
+    },
+    "MeetingRoomTarget": {
+      "type": "object",
+      "properties": {
+        "room": {
+          "type": "object",
+          "$ref": "MeetingRoomItem",
+          "description": "会议室列表"
+        },
+        "status": {
+          "type": "string",
+          "description": "状态"
+        }
+      }
+    },
+    "WeAgentGetMeetingRoomListRsp": {
+      "type": "object",
+      "description": "Agent 拉取会议室列表响应",
+      "properties": {
+        "has_more": {
+          "type": "boolean",
+          "description": "是否还有更多数据"
+        },
+        "inferred_building": {
+          "type": "object",
+          "$ref": "InferredBuilding",
+          "description": "推荐的大厦信息"
+        },
+        "meeting_rooms": {
+          "type": "array",
+          "description": "会议室列表 废弃",
+          "items": {
+            "type": "object",
+            "$ref": "MeetingRoomItem"
+          }
+        },
+        "meeting_rooms_count": {
+          "type": "integer",
+          "description": "会议室列表 废弃 数组元素数量（框架自动生成）"
+        },
+        "next_cursor": {
+          "type": "string",
+          "description": "下一页游标"
+        },
+        "recommendations": {
+          "type": "array",
+          "description": "推荐的会议室列表",
+          "items": {
+            "type": "object",
+            "$ref": "MeetingRoomItem"
+          }
+        },
+        "recommendations_count": {
+          "type": "integer",
+          "description": "推荐的会议室列表 数组元素数量（框架自动生成）"
+        },
+        "target": {
+          "type": "array",
+          "description": "找到的会议室",
+          "items": {
+            "type": "object",
+            "$ref": "MeetingRoomTarget"
+          }
+        },
+        "target_count": {
+          "type": "integer",
+          "description": "找到的会议室 数组元素数量（框架自动生成）"
+        }
+      }
+    },
+    "InferredBuilding": {
+      "type": "object",
+      "properties": {
+        "city": {
+          "type": "string",
+          "description": "城市名称"
+        },
+        "name": {
+          "type": "string",
+          "description": "大厦名称"
+        },
+        "source": {
+          "type": "string",
+          "description": "来源"
+        }
+      }
+    },
+    "MeetingRoomItem": {
+      "type": "object",
+      "description": "会议室信息条目",
+      "properties": {
+        "capacity": {
+          "type": "integer",
+          "format": "uint32"
+        },
+        "floor": {
+          "type": "string",
+          "description": "楼层名称"
+        },
+        "meeting_room_id": {
+          "type": "string",
+          "description": "会议室 ID"
+        },
+        "name": {
+          "type": "string",
+          "description": "会议室名称"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "method": "smartpage.files.upload",
+  "description": "上传文件到文档,得到url",
+  "request": {
+    "$ref": "DocMediasUploadReq"
+  },
+  "response": {
+    "$ref": "DocMediasUploadRsp"
+  },
+  "schemas": {
+    "DocMediasUploadReq": {
+      "type": "object",
+      "description": "DocMediasUpload (上传媒体文件到文档，得到 url)",
+      "properties": {
+        "docid": {
+          "type": "string",
+          "description": "支持文档的 docid 和 url"
+        },
+        "file_path": {
+          "type": "string",
+          "description": "文件路径",
+          "x-wecom-octet-stream": true
+        },
+        "media_id": {
+          "type": "string",
+          "description": "已上传得到的 media_id（OpenMediaId，框架自动解码为 cosid）；与 file_path 二选一",
+          "maxLength": 1024
+        }
+      },
+      "required": [
+        "docid"
+      ]
+    },
+    "DocMediasUploadRsp": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "object",
+          "$ref": "ClawToolError"
+        },
+        "url": {
+          "type": "string",
+          "description": "上传到文档后得到的文件 url"
+        }
+      }
+    },
+    "ClawToolError": {
+      "type": "object",
+      "description": "业务 payload 内层错误（外层框架错误见 OpenClawHttpCallRsp.Error）。",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "data": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

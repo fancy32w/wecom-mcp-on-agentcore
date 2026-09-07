@@ -1,0 +1,10 @@
+{
+  "name": "wecom-mcp-scripts",
+  "version": "0.1.0",
+  "private": true,
+  "description": "运维脚本的依赖。刻意与 lambda/ 分开：Lambda 部署包每改一次代码就要重传整个 asset（约 23MB），不该再塞进它不用的东西。",
+  "dependencies": {
+    "@aws-sdk/client-secrets-manager": "^3.700.0",
+    "@aws-sdk/client-ssm": "^3.700.0"
+  }
+}

@@ -1,0 +1,160 @@
+{
+  "method": "calendar.schedules.free.list",
+  "description": "查询指定成员在指定时间范围内的共同空闲时段，返回推荐的空闲时间段列表",
+  "request": {
+    "$ref": "SchedulesFreeListReq"
+  },
+  "response": {
+    "$ref": "SchedulesFreeListTypedRsp"
+  },
+  "schemas": {
+    "SchedulesFreeListTypedRsp": {
+      "type": "object",
+      "properties": {
+        "extra_info": {
+          "type": "string",
+          "description": "降级提示文案"
+        },
+        "slots": {
+          "type": "array",
+          "description": "推荐时段列表",
+          "items": {
+            "type": "object",
+            "$ref": "ScheduleFreeSlot"
+          }
+        },
+        "slots_count": {
+          "type": "integer",
+          "description": "推荐时段列表 数组元素数量（框架自动生成）"
+        },
+        "strategy": {
+          "type": "string",
+          "description": "实际生效的策略"
+        },
+        "total_count": {
+          "type": "integer",
+          "description": "入参 userid 总数",
+          "format": "uint32"
+        }
+      }
+    },
+    "SchedulesFreeListReq": {
+      "type": "object",
+      "description": "SchedulesFreeList（推荐共同空闲时段）",
+      "properties": {
+        "begin_time": {
+          "type": "string",
+          "description": "查询窗口起（必填）"
+        },
+        "end_time": {
+          "type": "string",
+          "description": "查询窗口止（必填），必须晚于 begin_time 且晚于当前时间"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "选填，默认 10",
+          "format": "uint32",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "min_duration_minutes": {
+          "type": "integer",
+          "description": "选填，默认 30 分钟",
+          "format": "uint32",
+          "minimum": 1
+        },
+        "strategy": {
+          "type": "string",
+          "description": "选填，默认 \"max_attendees\"",
+          "enum": [
+            "max_attendees"
+          ]
+        },
+        "userids": {
+          "type": "array",
+          "description": "1+ 个成员（必填），单人合法（退化为该人空闲时段查询）",
+          "items": {
+            "type": "object",
+            "$ref": "ScheduleAttendee"
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "userids",
+        "begin_time",
+        "end_time"
+      ]
+    },
+    "ScheduleFreeSlot": {
+      "type": "object",
+      "properties": {
+        "available_count": {
+          "type": "integer",
+          "description": "空闲成员数量",
+          "format": "uint32"
+        },
+        "available_users": {
+          "type": "array",
+          "description": "该 slot 内空闲成员列表",
+          "items": {
+            "type": "object",
+            "$ref": "ScheduleSlotUser"
+          }
+        },
+        "begin_time": {
+          "type": "string",
+          "description": "slot 起"
+        },
+        "busy_users": {
+          "type": "array",
+          "description": "该 slot 内忙碌成员列表",
+          "items": {
+            "type": "object",
+            "$ref": "ScheduleSlotUserWithDisplayName"
+          }
+        },
+        "end_time": {
+          "type": "string",
+          "description": "slot 止"
+        }
+      }
+    },
+    "ScheduleSlotUser": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "成员 userid对应成员的名称"
+        },
+        "userid": {
+          "type": "string",
+          "description": "成员 userid"
+        }
+      }
+    },
+    "ScheduleSlotUserWithDisplayName": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "成员 userid对应成员的名称"
+        },
+        "userid": {
+          "type": "string",
+          "description": "成员 userid"
+        }
+      }
+    },
+    "ScheduleAttendee": {
+      "type": "object",
+      "description": "参与人",
+      "properties": {
+        "userid": {
+          "type": "string",
+          "description": "参与人 vid（对外输出为 \"userid\"）"
+        }
+      }
+    }
+  }
+}

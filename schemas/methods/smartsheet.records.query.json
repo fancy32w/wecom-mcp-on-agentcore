@@ -1,0 +1,52 @@
+{
+  "method": "smartsheet.records.query",
+  "description": "通过 SQL 查询仪表盘数据，支持异步轮询；首次请求 task_id 为空，data_initing=true 时按 task_id 重试",
+  "request": {
+    "$ref": "OaSmartSheetQueryDataBySQLReq"
+  },
+  "response": {
+    "$ref": "OaSmartSheetQueryDataBySQLTypedRsp"
+  },
+  "schemas": {
+    "OaSmartSheetQueryDataBySQLReq": {
+      "type": "object",
+      "description": "仿照 OaSmartSheetGetData 形态对外暴露，内部通过 wwagentoalogicsvr.SmartSheetQueryDataBySQL\n转发到 bizclaw 的 smart_sheet_query_data_by_sql action（最终落到 smartsheetreader.QueryDataBySQL RPC）。",
+      "properties": {
+        "docid": {
+          "type": "string",
+          "description": "支持文档的 docid 和 url",
+          "minLength": 5
+        },
+        "sql": {
+          "type": "array",
+          "description": "SQL 语句列表",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "maxItems": 20
+        }
+      },
+      "required": [
+        "docid",
+        "sql"
+      ]
+    },
+    "OaSmartSheetQueryDataBySQLTypedRsp": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "array",
+          "description": "计算结果（form = SQL_FROM_SMARTAGENT 时下游返回）。",
+          "items": {
+            "type": "string"
+          }
+        },
+        "values_count": {
+          "type": "integer",
+          "description": "计算结果（form = SQL_FROM_SMARTAGENT 时下游返回）。 数组元素数量（框架自动生成）"
+        }
+      }
+    }
+  }
+}

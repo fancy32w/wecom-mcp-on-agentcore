@@ -1,0 +1,66 @@
+{
+  "method": "disk.files.rename",
+  "description": "修改微盘文件的显示名称",
+  "request": {
+    "$ref": "DiskFileRenameReq"
+  },
+  "response": {
+    "$ref": "DiskFileRenameRsp"
+  },
+  "schemas": {
+    "DiskFileRenameRsp": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "object",
+          "$ref": "ClawToolError"
+        },
+        "status": {
+          "type": "string",
+          "description": "成功时固定返回 success",
+          "enum": [
+            "success"
+          ]
+        }
+      }
+    },
+    "DiskFileRenameReq": {
+      "type": "object",
+      "properties": {
+        "file_id": {
+          "type": "string",
+          "description": "文件 ID（必填）",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "new_name": {
+          "type": "string",
+          "description": "新的文件名称（必填）",
+          "minLength": 1,
+          "maxLength": 255,
+          "pattern": "^[^/\\\\\\\\:\\\\*\\\\?\\\"<>\\\\|]+$"
+        }
+      },
+      "required": [
+        "file_id",
+        "new_name"
+      ]
+    },
+    "ClawToolError": {
+      "type": "object",
+      "description": "业务 payload 内层错误（外层框架错误见 OpenClawHttpCallRsp.Error）。",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "data": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

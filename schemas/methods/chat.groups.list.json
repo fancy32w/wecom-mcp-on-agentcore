@@ -1,0 +1,86 @@
+{
+  "method": "chat.groups.list",
+  "description": "按时间范围分页获取有消息的会话列表（目前仅群聊）",
+  "request": {
+    "$ref": "GetMsgChatListReq"
+  },
+  "response": {
+    "$ref": "GetMsgChatListRsp"
+  },
+  "schemas": {
+    "GetMsgChatListReq": {
+      "type": "object",
+      "properties": {
+        "begin_time": {
+          "type": "string",
+          "description": "查询开始时间，格式 YYYY-MM-DD HH:MM:SS，仅支持查询最近 7 天",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "cursor": {
+          "type": "string",
+          "description": "翻页游标，传上一次返回的 next_cursor；不传则从最新一页开始查询",
+          "maxLength": 256
+        },
+        "end_time": {
+          "type": "string",
+          "description": "查询结束时间，格式 YYYY-MM-DD HH:MM:SS，需晚于 begin_time",
+          "minLength": 1,
+          "maxLength": 256
+        }
+      },
+      "required": [
+        "begin_time",
+        "end_time"
+      ]
+    },
+    "MsgChatItem": {
+      "type": "object",
+      "description": "会话项（目前仅返回群聊会话）",
+      "properties": {
+        "chat_id": {
+          "type": "string",
+          "description": "群会话 ID（框架自动加密输出），可作为 get_messages / send_message 的 chat_id 使用"
+        },
+        "chat_name": {
+          "type": "string",
+          "description": "会话名称，下游未提供时为空"
+        },
+        "last_msg_time": {
+          "type": "string",
+          "description": "该会话最后一条消息的时间，格式 YYYY-MM-DD HH:MM:SS"
+        },
+        "msg_count": {
+          "type": "integer",
+          "description": "该会话在查询时间范围内的消息条数",
+          "format": "uint32"
+        }
+      }
+    },
+    "GetMsgChatListRsp": {
+      "type": "object",
+      "properties": {
+        "chats": {
+          "type": "array",
+          "description": "会话列表",
+          "items": {
+            "type": "object",
+            "$ref": "MsgChatItem"
+          }
+        },
+        "chats_count": {
+          "type": "integer",
+          "description": "会话列表 数组元素数量（框架自动生成）"
+        },
+        "has_more": {
+          "type": "boolean",
+          "description": "是否还有更多数据"
+        },
+        "next_cursor": {
+          "type": "string",
+          "description": "下一页游标，为空表示已无更多数据"
+        }
+      }
+    }
+  }
+}

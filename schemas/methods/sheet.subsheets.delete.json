@@ -1,0 +1,47 @@
+{
+  "method": "sheet.subsheets.delete",
+  "description": "删除表格文档中的指定工作表，删除后不可恢复",
+  "request": {
+    "$ref": "OaSheetDeleteSubReq"
+  },
+  "response": {
+    "$ref": "OaSheetDeleteSubTypedRsp"
+  },
+  "schemas": {
+    "OaSheetDeleteSubTypedRsp": {
+      "type": "object",
+      "properties": {
+        "errcode": {
+          "type": "integer",
+          "description": "错误码",
+          "format": "int32"
+        },
+        "errmsg": {
+          "type": "string",
+          "description": "错误信息"
+        }
+      }
+    },
+    "OaSheetDeleteSubReq": {
+      "type": "object",
+      "description": "OaSheetDeleteSub (删除工作表)",
+      "properties": {
+        "docid": {
+          "type": "string",
+          "description": "支持文档的 docid 和 url",
+          "minLength": 5
+        },
+        "sheet_id": {
+          "type": "string",
+          "description": "工作表唯一标识",
+          "minLength": 1,
+          "maxLength": 200
+        }
+      },
+      "required": [
+        "docid",
+        "sheet_id"
+      ]
+    }
+  }
+}

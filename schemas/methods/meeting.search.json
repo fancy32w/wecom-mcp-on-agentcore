@@ -1,0 +1,144 @@
+{
+  "method": "meeting.search",
+  "description": "按关键词搜索会议：支持按关键词匹配会议主题，可选按时间范围过滤，支持 cursor 分页和上翻下翻方向控制。",
+  "request": {
+    "$ref": "SearchMeetingReq"
+  },
+  "response": {
+    "$ref": "SearchMeetingRsp"
+  },
+  "schemas": {
+    "ScheduleTimezone": {
+      "type": "object",
+      "properties": {
+        "timezone_id": {
+          "type": "string",
+          "description": "IANA 时区标识（如 Asia/Shanghai），优先使用"
+        },
+        "timezone_offset": {
+          "type": "integer",
+          "description": "UTC 偏移量（秒），当 timezone_id 为空时使用",
+          "format": "int32"
+        }
+      }
+    },
+    "SearchMeetingReq": {
+      "type": "object",
+      "description": "搜索会议请求",
+      "properties": {
+        "begin_time": {
+          "type": "string",
+          "description": "搜索的开始时间（字符串格式，如 \"2026-03-04 09:43:10\"），限定搜索范围的起始时间，不传则 使用0值"
+        },
+        "bot_source": {
+          "type": "integer",
+          "description": "@MeetingBotSource",
+          "format": "uint32"
+        },
+        "cursor": {
+          "type": "string",
+          "description": "分页游标，首次查询不填，后续翻页使用上次返回的 next_cursor（内部编码了已获取条数）"
+        },
+        "end_time": {
+          "type": "string",
+          "description": "搜索的结束时间（字符串格式，如 \"2026-03-04 09:43:10\"），限定搜索范围的截止时间，不传则 使用2999-01-01 00:00:00"
+        },
+        "keywords": {
+          "type": "array",
+          "description": "搜索关键词，用于匹配会议主题等信息",
+          "items": {
+            "type": "string",
+            "format": "byte"
+          },
+          "minItems": 1
+        },
+        "limit": {
+          "type": "integer",
+          "description": "限制返回的会议数量，最大为20，不传则 使用20",
+          "format": "uint32"
+        }
+      },
+      "required": [
+        "keywords"
+      ]
+    },
+    "SearchMeetingRsp": {
+      "type": "object",
+      "description": "搜索会议响应",
+      "properties": {
+        "has_more": {
+          "type": "boolean",
+          "description": "是否还有更多数据"
+        },
+        "meetings": {
+          "type": "array",
+          "description": "会议记录列表，包含当前页的所有会议",
+          "items": {
+            "type": "object",
+            "$ref": "MeetingRecord"
+          }
+        },
+        "meetings_count": {
+          "type": "integer",
+          "description": "会议记录列表，包含当前页的所有会议 数组元素数量（框架自动生成）"
+        },
+        "next_cursor": {
+          "type": "string",
+          "description": "下一页游标（内部为 SearchMeetingPageState 序列化后 base64 编码），调用方直接透传即可"
+        }
+      }
+    },
+    "MeetingRecord": {
+      "type": "object",
+      "description": "搜索结果中的单条会议记录",
+      "properties": {
+        "attendee_count": {
+          "type": "integer",
+          "description": "参会人数量",
+          "format": "uint32"
+        },
+        "begin_time": {
+          "type": "string",
+          "description": "会议开始时间（YYYY-MM-DD HH:MM:SS 格式）"
+        },
+        "creator_name": {
+          "type": "string",
+          "description": "创建人名称"
+        },
+        "end_time": {
+          "type": "string",
+          "description": "会议结束时间（YYYY-MM-DD HH:MM:SS 格式）"
+        },
+        "is_repeat_meeting": {
+          "type": "boolean",
+          "description": "是否为周期性会议"
+        },
+        "location": {
+          "type": "string",
+          "description": "会议地点"
+        },
+        "meeting_id": {
+          "type": "string",
+          "description": "会议ID，唯一标识一场会议"
+        },
+        "meeting_room": {
+          "type": "string",
+          "description": "会议室名称（文本描述）"
+        },
+        "sub_meeting_id": {
+          "type": "string",
+          "description": "子会议ID，用于标识重复会议中的某一次"
+        },
+        "subject": {
+          "type": "string",
+          "description": "会议主题/标题"
+        },
+        "timezone": {
+          "type": "object",
+          "$ref": "ScheduleTimezone",
+          "description": "时区"
+        }
+      }
+    }
+  }
+}

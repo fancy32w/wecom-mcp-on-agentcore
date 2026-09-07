@@ -1,0 +1,106 @@
+{
+  "method": "smartpage.blocks.update",
+  "description": "编辑智能页面block(插入/替换/删除)",
+  "request": {
+    "$ref": "ScPageEditReq"
+  },
+  "response": {
+    "$ref": "ScPageEditRsp"
+  },
+  "schemas": {
+    "ScPageEditReq": {
+      "type": "object",
+      "description": "action: 编辑智能页面block(插入/替换/删除)",
+      "properties": {
+        "block_id": {
+          "type": "string",
+          "description": "目标 block ID，method=insertBefore/insertAfter/replace 时必传"
+        },
+        "block_ids": {
+          "type": "array",
+          "description": "要删除的 block ID 数组，method=delete 时必传",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 100
+        },
+        "docid": {
+          "type": "string",
+          "description": "文档的 docid，与 url 二选一，不传则使用 url",
+          "maxLength": 5000
+        },
+        "mdx": {
+          "type": "string",
+          "description": "MDX 内容，method=insertBefore/insertAfter/prepend/append/replace 时必传"
+        },
+        "method": {
+          "type": "string",
+          "description": "操作类型：insertBefore, insertAfter, prepend, append, replace, delete",
+          "enum": [
+            "insertBefore",
+            "insertAfter",
+            "prepend",
+            "append",
+            "replace",
+            "delete"
+          ]
+        },
+        "page_id": {
+          "type": "string",
+          "description": "页面ID",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "url": {
+          "type": "string",
+          "description": "文档的 url，与 docid 二选一，不传则使用 docid，形如 https://doc.weixin.qq.com/smartpage/a1_xxx",
+          "maxLength": 500,
+          "pattern": "^https://doc\\\\.weixin\\\\.qq\\\\.com/smartpage/a1_[A-Za-z0-9_-]+([?/#].*)?$"
+        }
+      },
+      "required": [
+        "page_id",
+        "method"
+      ]
+    },
+    "ScPageEditRsp": {
+      "type": "object",
+      "properties": {
+        "block_id": {
+          "type": "string",
+          "description": "参考 block ID (与请求参数一致)"
+        },
+        "deleted_block_ids": {
+          "type": "array",
+          "description": "成功删除的 block ID 数组 (method=delete)",
+          "items": {
+            "type": "string"
+          }
+        },
+        "deleted_block_ids_count": {
+          "type": "integer",
+          "description": "成功删除的 block ID 数组 (method=delete) 数组元素数量（框架自动生成）"
+        },
+        "inserted_block_ids": {
+          "type": "array",
+          "description": "成功插入的 block ID 数组",
+          "items": {
+            "type": "string"
+          }
+        },
+        "inserted_block_ids_count": {
+          "type": "integer",
+          "description": "成功插入的 block ID 数组 数组元素数量（框架自动生成）"
+        },
+        "new_block_id": {
+          "type": "string",
+          "description": "替换后新生成的 block ID (method=replace)"
+        },
+        "status": {
+          "type": "string",
+          "description": "操作状态"
+        }
+      }
+    }
+  }
+}

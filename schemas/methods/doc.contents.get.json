@@ -1,0 +1,160 @@
+{
+  "method": "doc.contents.get",
+  "description": "读取 Word 文档内容，支持 text 和 ooxml 格式返回",
+  "request": {
+    "$ref": "OaWordGetContentReq"
+  },
+  "response": {
+    "$ref": "OaWordGetContentTypedRsp"
+  },
+  "schemas": {
+    "OaWordGetContentTypedRsp": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string",
+          "description": "文档内容路径（内容不长时直接返回原文）"
+        },
+        "document": {
+          "type": "object",
+          "$ref": "OaNode",
+          "description": "文档对象，content_type 为 ooxml 格式时返回"
+        },
+        "errcode": {
+          "type": "integer",
+          "description": "错误码",
+          "format": "int32"
+        },
+        "errmsg": {
+          "type": "string",
+          "description": "错误信息"
+        },
+        "file_path": {
+          "type": "string",
+          "description": "文档内容路径（内容超长时框架自动落盘为文件，值为文件路径）",
+          "x-wecom-file-save": {
+            "fileName": "doc_content"
+          }
+        },
+        "name": {
+          "type": "string",
+          "description": "文档标题"
+        },
+        "url": {
+          "type": "string",
+          "description": "文档链接"
+        },
+        "version": {
+          "type": "integer",
+          "description": "文档版本",
+          "format": "uint32"
+        }
+      }
+    },
+    "OaProperty": {
+      "type": "object",
+      "description": "节点属性",
+      "properties": {
+        "paragraph_property": {
+          "type": "object",
+          "$ref": "OaParagraphProperty",
+          "description": "段落属性"
+        },
+        "run_property": {
+          "type": "object",
+          "$ref": "OaRunProperty",
+          "description": "文字属性"
+        }
+      }
+    },
+    "OaRunProperty": {
+      "type": "object",
+      "description": "文字属性",
+      "properties": {
+        "bold": {
+          "type": "boolean",
+          "description": "是否加粗"
+        },
+        "font": {
+          "type": "string",
+          "description": "字体"
+        },
+        "size": {
+          "type": "integer",
+          "description": "字号",
+          "format": "uint32"
+        }
+      }
+    },
+    "OaNode": {
+      "type": "object",
+      "description": "文档节点（OOXML 树结构，WordGetContent Response 中返回）",
+      "properties": {
+        "begin": {
+          "type": "integer",
+          "description": "起始位置",
+          "format": "uint32"
+        },
+        "children": {
+          "type": "array",
+          "description": "子节点",
+          "items": {
+            "type": "object",
+            "$ref": "OaNode"
+          }
+        },
+        "end": {
+          "type": "integer",
+          "description": "结束位置",
+          "format": "uint32"
+        },
+        "property": {
+          "type": "object",
+          "$ref": "OaProperty",
+          "description": "该节点的属性"
+        },
+        "text": {
+          "type": "string",
+          "description": "文本内容，当节点类型为 Text 时有效"
+        },
+        "type": {
+          "type": "string",
+          "description": "节点类型"
+        }
+      }
+    },
+    "OaWordGetContentReq": {
+      "type": "object",
+      "description": "OaWordGetContent (读取 Word 内容)",
+      "properties": {
+        "content_type": {
+          "type": "string",
+          "description": "返回的文档内容格式，不传则默认为 markdown",
+          "enum": [
+            "text",
+            "markdown",
+            "ooxml"
+          ]
+        },
+        "docid": {
+          "type": "string",
+          "description": "支持文档的 docid 和 url",
+          "minLength": 5
+        }
+      },
+      "required": [
+        "docid"
+      ]
+    },
+    "OaParagraphProperty": {
+      "type": "object",
+      "description": "段落属性",
+      "properties": {
+        "alignment_type": {
+          "type": "string",
+          "description": "对齐方式"
+        }
+      }
+    }
+  }
+}

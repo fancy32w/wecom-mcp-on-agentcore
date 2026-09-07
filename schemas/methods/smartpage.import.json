@@ -1,0 +1,67 @@
+{
+  "method": "smartpage.import",
+  "description": "导入 markdown 创建智能页面",
+  "request": {
+    "$ref": "SmartPageImportReq"
+  },
+  "response": {
+    "$ref": "OaDocImportTaskCreateTypedRsp"
+  },
+  "schemas": {
+    "SmartPageImportReq": {
+      "type": "object",
+      "description": "SmartPageImport (Import Markdown as a smart page)",
+      "properties": {
+        "content_path": {
+          "type": "string",
+          "description": "同 file_path，兼容模型传 content_path 字段名",
+          "x-wecom-file-upload": {},
+          "hidden": true
+        },
+        "file_path": {
+          "type": "string",
+          "description": "Markdown content file path, mapped to doc/import content_path",
+          "x-wecom-file-upload": {},
+          "minLength": 1,
+          "maxLength": 1000000
+        },
+        "name": {
+          "type": "string",
+          "description": "Smart page title, mapped to doc/import file_name with .md suffix",
+          "minLength": 1,
+          "maxLength": 251
+        }
+      },
+      "required": [
+        "file_path",
+        "name"
+      ]
+    },
+    "OaDocImportTaskCreateTypedRsp": {
+      "type": "object",
+      "properties": {
+        "docid": {
+          "type": "string",
+          "description": "导入成功后的文档 ID"
+        },
+        "task_id": {
+          "type": "string",
+          "description": "导入任务 ID"
+        },
+        "task_status": {
+          "type": "string",
+          "description": "任务结果(succ/fail/processing)，查询任务时返回",
+          "enum": [
+            "succ",
+            "fail",
+            "processing"
+          ]
+        },
+        "url": {
+          "type": "string",
+          "description": "导入成功后的文档 URL"
+        }
+      }
+    }
+  }
+}

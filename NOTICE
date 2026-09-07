@@ -1,0 +1,14 @@
+wecom-mcp-on-agentcore
+Copyright (c) 2026 Hongxia Wu
+
+This project is derived from the design and portions of the code of
+aws-samples/sample-lark-mcp-on-agentcore, which is licensed under
+MIT No Attribution (MIT-0).
+
+  https://github.com/aws-samples/sample-lark-mcp-on-agentcore
+  Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+
+MIT-0 imposes no attribution requirement; this notice is provided for
+transparency about provenance. Copyright in the derived portions remains
+with their original authors; the copyright above covers this project's
+own contributions.

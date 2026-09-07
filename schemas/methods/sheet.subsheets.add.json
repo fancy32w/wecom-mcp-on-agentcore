@@ -1,0 +1,85 @@
+{
+  "method": "sheet.subsheets.add",
+  "description": "在表格文档中添加新的工作表，可指定标题和插入位置",
+  "request": {
+    "$ref": "OaSheetAddSubReq"
+  },
+  "response": {
+    "$ref": "OaSheetAddSubTypedRsp"
+  },
+  "schemas": {
+    "OaSheetInfo": {
+      "type": "object",
+      "properties": {
+        "column_count": {
+          "type": "integer",
+          "description": "总列数",
+          "format": "uint32"
+        },
+        "data_range": {
+          "type": "string",
+          "description": "存在内容的范围，A1 表示法；无数据时为空字符串"
+        },
+        "row_count": {
+          "type": "integer",
+          "description": "总行数",
+          "format": "uint32"
+        },
+        "sheet_id": {
+          "type": "string",
+          "description": "工作表 ID"
+        },
+        "title": {
+          "type": "string",
+          "description": "工作表名称"
+        }
+      }
+    },
+    "OaSheetAddSubTypedRsp": {
+      "type": "object",
+      "properties": {
+        "errcode": {
+          "type": "integer",
+          "description": "错误码",
+          "format": "int32"
+        },
+        "errmsg": {
+          "type": "string",
+          "description": "错误信息"
+        },
+        "sheet": {
+          "type": "object",
+          "$ref": "OaSheetInfo",
+          "description": "新增的子表信息"
+        }
+      }
+    },
+    "OaSheetAddSubReq": {
+      "type": "object",
+      "description": "OaSheetAddSub (添加工作表)",
+      "properties": {
+        "docid": {
+          "type": "string",
+          "description": "支持文档的 docid 和 url",
+          "minLength": 5
+        },
+        "index": {
+          "type": "integer",
+          "description": "插入位置，0 表示插入到最后，1 表示插入到第一个位置，不传则默认插入到最后",
+          "format": "int32",
+          "minimum": 0,
+          "maximum": 254
+        },
+        "sheet": {
+          "type": "object",
+          "$ref": "OaSheetInfo",
+          "description": "子表信息（新增时填写 title、row_count、column_count）"
+        }
+      },
+      "required": [
+        "docid",
+        "sheet"
+      ]
+    }
+  }
+}

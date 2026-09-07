@@ -1,0 +1,35 @@
+{
+  "method": "smartpage.databases.get",
+  "description": "读取数据库信息",
+  "request": {
+    "$ref": "ScGetDatabaseInfoReq"
+  },
+  "response": {
+    "$ref": "ScGetDatabaseInfoRsp"
+  },
+  "schemas": {
+    "ScGetDatabaseInfoRsp": {
+      "type": "object"
+    },
+    "ScGetDatabaseInfoReq": {
+      "type": "object",
+      "properties": {
+        "docid": {
+          "type": "string",
+          "description": "支持文档的 docid 和 url",
+          "maxLength": 5000
+        },
+        "table_name": {
+          "type": "string",
+          "description": "表名",
+          "maxLength": 5000
+        },
+        "url": {
+          "type": "string",
+          "description": "文档url",
+          "maxLength": 5000
+        }
+      }
+    }
+  }
+}

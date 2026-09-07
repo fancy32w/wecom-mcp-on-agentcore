@@ -1,0 +1,53 @@
+{
+  "method": "doc.rules.update",
+  "description": "设置文档加入规则，包括是否开启成员加入确认、企业内外成员加入权限",
+  "request": {
+    "$ref": "OaDocRuleSetReq"
+  },
+  "response": {
+    "$ref": "OaDocRuleSetTypedRsp"
+  },
+  "schemas": {
+    "OaDocRuleSetReq": {
+      "type": "object",
+      "description": "OaDocRuleSet (设置文档加入规则)",
+      "properties": {
+        "corp_external_join_auth": {
+          "type": "string",
+          "description": "企业外成员加入权限，enable_member_join_admin_check=false 时才生效，不传则保持现状",
+          "enum": [
+            "edit",
+            "read",
+            "apply",
+            "deny"
+          ]
+        },
+        "corp_internal_join_auth": {
+          "type": "string",
+          "description": "企业内成员加入权限，enable_member_join_admin_check=false 时才生效，不传则保持现状",
+          "enum": [
+            "edit",
+            "read",
+            "apply"
+          ]
+        },
+        "docid": {
+          "type": "string",
+          "description": "支持文档的 docid 和 url",
+          "minLength": 5
+        },
+        "enable_member_join_admin_check": {
+          "type": "boolean",
+          "description": "是否开启成员加入确认"
+        }
+      },
+      "required": [
+        "docid",
+        "enable_member_join_admin_check"
+      ]
+    },
+    "OaDocRuleSetTypedRsp": {
+      "type": "object"
+    }
+  }
+}

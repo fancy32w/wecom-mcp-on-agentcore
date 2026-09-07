@@ -1,0 +1,64 @@
+{
+  "method": "doc.members.update",
+  "description": "添加文档协作成员，设置成员的读写权限",
+  "request": {
+    "$ref": "OaDocMemberAddReq"
+  },
+  "response": {
+    "$ref": "OaDocMemberAddTypedRsp"
+  },
+  "schemas": {
+    "OaDocMemberAuthInfoList": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "OaDocMemberAuthInfo"
+          }
+        }
+      }
+    },
+    "OaDocMemberAuthInfo": {
+      "type": "object",
+      "description": "文档成员权限信息（用于 OaDocMemberAdd）",
+      "properties": {
+        "user_auth": {
+          "type": "string",
+          "description": "成员权限"
+        },
+        "user_type": {
+          "type": "string",
+          "description": "成员类别"
+        },
+        "userid": {
+          "type": "string",
+          "description": "成员 ID"
+        }
+      }
+    },
+    "OaDocMemberAddTypedRsp": {
+      "type": "object"
+    },
+    "OaDocMemberAddReq": {
+      "type": "object",
+      "properties": {
+        "add_member_list": {
+          "type": "object",
+          "$ref": "OaDocMemberAuthInfoList",
+          "description": "要添加的成员权限列表"
+        },
+        "docid": {
+          "type": "string",
+          "description": "支持文档的 docid 和 url",
+          "minLength": 5
+        }
+      },
+      "required": [
+        "docid",
+        "add_member_list"
+      ]
+    }
+  }
+}

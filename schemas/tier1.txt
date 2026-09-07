@@ -1,0 +1,72 @@
+# Tier1 常驻工具名单（点分方法名）
+#
+# 选取原则：高频办公动作 + 避开 >15KB 大块头。体积与去重分析见 docs/改造评估.md §11。
+# 2026-08-27 Quick Desktop 实测后的调整见文末。
+
+# 消息 / 会话
+message.send
+message.aibot.send
+message.aibot.sessions.list
+chat.messages.list
+chat.groups.list
+
+# 日历
+calendar.schedules.create
+calendar.schedules.list
+calendar.schedules.search
+calendar.schedules.free.list
+calendar.schedules.cancel
+
+# 会议
+meeting.create
+meeting.list
+meeting.search
+meeting.rooms.search
+
+# 文档（Word 在线文档）
+doc.search
+doc.contents.get
+doc.contents.append
+
+# 表格
+sheet.get
+sheet.ranges.get
+
+# 智能表格（只留轻量项，重型读写走 Tier2）
+smartsheet.records.add
+smartsheet.records.update
+smartsheet.records.query
+
+# 智能文档
+smartpage.create
+smartpage.pages.get
+smartpage.blocks.update
+
+# 微盘
+disk.files.search
+disk.files.upload
+disk.files.download
+
+# 待办
+todo.create
+todo.list
+todo.finish
+
+# 通讯录 / 邮件 / 媒体
+contact.users.search
+mail.search
+mail.send
+media.upload
+
+# ── 2026-08-27 Quick Desktop 实测后的调整 ──────────────────────────────
+#
+# 新增 smartpage.blocks.update（3.1 KB）：
+#   它是远程 MCP 下**唯一**能往智能文档写内容的方法（其余 smartpage 写入方法只接受
+#   容器内本地文件路径，Agent 拿不到）。原先在 Tier2，导致 Quick 为了写一份文档
+#   先误用 doc.contents.append（那是 Word 文档的接口）、再试 pages.overwrite 传路径，
+#   兜了三圈才通过 discover 找到它。这是 Tier1 名单最实质的一处缺口。
+#
+# 保留但已在描述里标注为远程不可用的：
+#   media.upload / disk.files.upload —— 只接受本地文件路径。保留在 Tier1 是因为
+#   「上传文件」是高频意图，让模型能直接看到并读到「此路不通 + 该走哪」的说明，
+#   比让它去 discover 里瞎找更省一轮。标注由 tools/to_mcp_schema.py 自动注入。

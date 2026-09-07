@@ -1,0 +1,72 @@
+{
+  "method": "message.files.get",
+  "description": "根据消息媒体 ID 获取图片/文件/语音/视频的文件内容",
+  "request": {
+    "$ref": "GetMsgMediaReq"
+  },
+  "response": {
+    "$ref": "GetMsgMediaRsp"
+  },
+  "schemas": {
+    "MsgMediaItem": {
+      "type": "object",
+      "description": "媒体内容项",
+      "properties": {
+        "content": {
+          "type": "string",
+          "description": "媒体文件内容及文件名；超长或含非 UTF-8 字节时由框架落盘，JSON 字段改名为 file_path 返回本地文件路径（内容不长时直接返回字符串）"
+        },
+        "file_name": {
+          "type": "string",
+          "description": "媒体文件名（含扩展名）"
+        },
+        "file_path": {
+          "type": "string",
+          "description": "媒体文件内容及文件名；超长或含非 UTF-8 字节时由框架落盘，JSON 字段改名为 file_path 返回本地文件路径（CLI 落盘后为文件路径字符串）",
+          "x-wecom-file-save": {
+            "fileName": "msg_media",
+            "contentEncoding": "base64"
+          }
+        },
+        "media_id": {
+          "type": "string",
+          "description": "消息媒体 ID，与请求入参一致"
+        },
+        "media_type": {
+          "type": "string",
+          "description": "媒体类型：image（图片）、file（文件）、voice（语音）、video（视频）",
+          "enum": [
+            "image",
+            "file",
+            "voice",
+            "video"
+          ]
+        }
+      }
+    },
+    "GetMsgMediaReq": {
+      "type": "object",
+      "properties": {
+        "media_id": {
+          "type": "string",
+          "description": "消息媒体 ID，取自 get_messages 返回的 image/file/voice/video.media_id",
+          "minLength": 1,
+          "maxLength": 256
+        }
+      },
+      "required": [
+        "media_id"
+      ]
+    },
+    "GetMsgMediaRsp": {
+      "type": "object",
+      "properties": {
+        "media_item": {
+          "type": "object",
+          "$ref": "MsgMediaItem",
+          "description": "媒体内容"
+        }
+      }
+    }
+  }
+}

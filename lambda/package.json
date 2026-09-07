@@ -1,0 +1,12 @@
+{
+  "name": "wecom-mcp-lambda",
+  "version": "0.1.0",
+  "private": true,
+  "description": "OAuth 授权服务器 + MCP 数据面中间层",
+  "comment:deps": "只列 Lambda 运行时**没有**的包。运行时内置 AWS SDK v3，所以 @aws-sdk/client-ssm 与 @aws-sdk/client-dynamodb 不需要打包；但实测运行时只暴露 @aws-sdk/client-*，@smithy/* 与 @aws-crypto/* 无法直接 require（会报 Runtime.ImportModuleError），必须自带。带上整个 SDK 会让 asset 到 22MB，而每改一行代码就要重传整个 asset，跨境链路上 30 分钟都传不完。",
+  "dependencies": {
+    "@aws-crypto/sha256-js": "^5.2.0",
+    "@smithy/protocol-http": "^5.0.0",
+    "@smithy/signature-v4": "^5.0.0"
+  }
+}

@@ -1,0 +1,223 @@
+{
+  "method": "chat.messages.list",
+  "description": "按时间范围分页拉取指定会话的消息列表",
+  "request": {
+    "$ref": "GetMessagesReq"
+  },
+  "response": {
+    "$ref": "GetMessagesRsp"
+  },
+  "schemas": {
+    "ImageContent": {
+      "type": "object",
+      "description": "图片消息内容",
+      "properties": {
+        "media_id": {
+          "type": "string",
+          "description": "图片的消息媒体 ID，用于调用 get_msg_media 拉取图片内容"
+        }
+      }
+    },
+    "MixedContent": {
+      "type": "object",
+      "description": "图文混排内容",
+      "properties": {
+        "items": {
+          "type": "array",
+          "description": "图文混排内容项列表，按原消息顺序排列",
+          "items": {
+            "type": "object",
+            "$ref": "MixedContentItem"
+          }
+        }
+      }
+    },
+    "VoiceContent": {
+      "type": "object",
+      "description": "语音消息内容",
+      "properties": {
+        "media_id": {
+          "type": "string",
+          "description": "语音的消息媒体 ID，用于调用 get_msg_media 拉取语音内容"
+        }
+      }
+    },
+    "MixedContentItem": {
+      "type": "object",
+      "description": "图文混排内容项",
+      "properties": {
+        "image": {
+          "type": "object",
+          "$ref": "ImageContent",
+          "description": "图片内容，msg_type=image 时返回"
+        },
+        "msg_type": {
+          "type": "string",
+          "description": "内容项类型：text（文本）、image（图片）",
+          "enum": [
+            "text",
+            "image"
+          ]
+        },
+        "text": {
+          "type": "object",
+          "$ref": "TextContent",
+          "description": "文本内容，msg_type=text 时返回"
+        }
+      }
+    },
+    "GetMessagesReq": {
+      "type": "object",
+      "properties": {
+        "begin_time": {
+          "type": "string",
+          "description": "拉取开始时间，格式 YYYY-MM-DD HH:MM:SS，仅支持拉取最近 7 天的消息",
+          "maxLength": 32
+        },
+        "chat_id": {
+          "type": "string",
+          "description": "会话 ID：单聊传对方成员的 userid，群聊传群会话 ID，由框架解密为 {id, type}"
+        },
+        "cursor": {
+          "type": "string",
+          "description": "翻页游标，传上一次返回的 next_cursor；不传则从最新一页开始拉取",
+          "maxLength": 256
+        },
+        "end_time": {
+          "type": "string",
+          "description": "拉取结束时间，格式 YYYY-MM-DD HH:MM:SS，需晚于 begin_time",
+          "maxLength": 32
+        }
+      },
+      "required": [
+        "chat_id",
+        "begin_time",
+        "end_time"
+      ]
+    },
+    "GetMessagesRsp": {
+      "type": "object",
+      "properties": {
+        "has_more": {
+          "type": "boolean",
+          "description": "是否还有更多数据"
+        },
+        "messages": {
+          "type": "array",
+          "description": "消息列表，按消息时间正序排列",
+          "items": {
+            "type": "object",
+            "$ref": "ChatMessage"
+          }
+        },
+        "messages_count": {
+          "type": "integer",
+          "description": "消息列表，按消息时间正序排列 数组元素数量（框架自动生成）"
+        },
+        "next_cursor": {
+          "type": "string",
+          "description": "下一页游标，为空表示已无更多数据"
+        }
+      }
+    },
+    "VideoContent": {
+      "type": "object",
+      "description": "视频消息内容",
+      "properties": {
+        "media_id": {
+          "type": "string",
+          "description": "视频的消息媒体 ID，用于调用 get_msg_media 拉取视频内容"
+        }
+      }
+    },
+    "FileContent": {
+      "type": "object",
+      "description": "文件消息内容",
+      "properties": {
+        "file_name": {
+          "type": "string",
+          "description": "文件名（含扩展名），下游未提供时为空"
+        },
+        "media_id": {
+          "type": "string",
+          "description": "文件的消息媒体 ID，用于调用 get_msg_media 拉取文件内容"
+        }
+      }
+    },
+    "TextContent": {
+      "type": "object",
+      "description": "文本消息内容",
+      "properties": {
+        "content": {
+          "type": "string",
+          "description": "文本内容，最长 2048 字符",
+          "maxLength": 2048
+        }
+      },
+      "required": [
+        "content"
+      ]
+    },
+    "ChatMessage": {
+      "type": "object",
+      "description": "会话消息",
+      "properties": {
+        "file": {
+          "type": "object",
+          "$ref": "FileContent",
+          "description": "文件消息内容，msg_type=file 时返回"
+        },
+        "image": {
+          "type": "object",
+          "$ref": "ImageContent",
+          "description": "图片消息内容，msg_type=image 时返回"
+        },
+        "mixed": {
+          "type": "object",
+          "$ref": "MixedContent",
+          "description": "图文混排消息内容，msg_type=mixed 时返回"
+        },
+        "msg_type": {
+          "type": "string",
+          "description": "消息类型：text（文本）、image（图片）、file（文件）、voice（语音）、video（视频）、mixed（图文混排）",
+          "enum": [
+            "text",
+            "image",
+            "file",
+            "voice",
+            "video",
+            "mixed"
+          ]
+        },
+        "send_time": {
+          "type": "string",
+          "description": "消息发送时间，格式 YYYY-MM-DD HH:MM:SS",
+          "maxLength": 32
+        },
+        "text": {
+          "type": "object",
+          "$ref": "TextContent",
+          "description": "文本消息内容，msg_type=text 时返回"
+        },
+        "user_name": {
+          "type": "string",
+          "description": "消息发送者 userid（框架自动加密输出，并附带发送者名称 user_name 字段）对应成员的名称"
+        },
+        "userid": {
+          "type": "string",
+          "description": "消息发送者 userid（框架自动加密输出，并附带发送者名称 user_name 字段）"
+        },
+        "video": {
+          "type": "object",
+          "$ref": "VideoContent",
+          "description": "视频消息内容，msg_type=video 时返回"
+        },
+        "voice": {
+          "type": "object",
+          "$ref": "VoiceContent",
+          "description": "语音消息内容，msg_type=voice 时返回"
+        }
+      }
+    }
+  }
+}

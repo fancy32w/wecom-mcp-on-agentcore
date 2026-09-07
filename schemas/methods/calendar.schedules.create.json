@@ -1,0 +1,131 @@
+{
+  "method": "calendar.schedules.create",
+  "description": "创建日程，支持设置标题、时间、地点、备注、参与人、提醒时间、时区、是否全天等信息",
+  "request": {
+    "$ref": "SchedulesCreateReq"
+  },
+  "response": {
+    "$ref": "SchedulesCreateTypedRsp"
+  },
+  "schemas": {
+    "SchedulesCreateTypedRsp": {
+      "type": "object",
+      "properties": {
+        "schedule_id": {
+          "type": "string",
+          "description": "创建成功的日程 ID"
+        }
+      }
+    },
+    "ScheduleRemindersReq": {
+      "type": "object",
+      "properties": {
+        "is_remind": {
+          "type": "boolean",
+          "description": "是否开启提醒"
+        },
+        "reminder_time": {
+          "type": "array",
+          "description": "提醒时间与事件开始时间的差值（秒），负数为提前提醒",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+    },
+    "SchedulesCreateReq": {
+      "type": "object",
+      "description": "SchedulesCreate（创建日程）",
+      "properties": {
+        "allow_self_join": {
+          "type": "boolean",
+          "description": "是否允许主动加入（默认 true）"
+        },
+        "attendees": {
+          "type": "array",
+          "description": "参与人列表",
+          "items": {
+            "type": "object",
+            "$ref": "ScheduleAttendee"
+          }
+        },
+        "begin_time": {
+          "type": "string",
+          "description": "开始时间（必填）"
+        },
+        "description": {
+          "type": "string",
+          "description": "备注"
+        },
+        "end_time": {
+          "type": "string",
+          "description": "结束时间（必填）"
+        },
+        "is_all_day": {
+          "type": "boolean",
+          "description": "是否全天（默认 false）"
+        },
+        "location": {
+          "type": "string",
+          "description": "地点"
+        },
+        "mark_optional_attendees": {
+          "type": "array",
+          "description": "标记可选参与人",
+          "items": {
+            "type": "string"
+          }
+        },
+        "meeting_room_id": {
+          "type": "string",
+          "description": "会议室 ID 传入会预定会议室"
+        },
+        "reminders": {
+          "type": "object",
+          "$ref": "ScheduleRemindersReq",
+          "description": "提醒时间差值（秒），默认 [-900]"
+        },
+        "subject": {
+          "type": "string",
+          "description": "日程标题（必填）"
+        },
+        "timezone": {
+          "type": "object",
+          "$ref": "ScheduleTimezone",
+          "description": "时区信息"
+        }
+      },
+      "required": [
+        "subject",
+        "begin_time",
+        "end_time"
+      ]
+    },
+    "ScheduleTimezone": {
+      "type": "object",
+      "description": "时区信息",
+      "properties": {
+        "timezone_id": {
+          "type": "string",
+          "description": "IANA 时区标识（如 Asia/Shanghai），优先使用"
+        },
+        "timezone_offset": {
+          "type": "integer",
+          "description": "UTC 偏移量（秒），当 timezone_id 为空时使用",
+          "format": "int32"
+        }
+      }
+    },
+    "ScheduleAttendee": {
+      "type": "object",
+      "description": "参与人",
+      "properties": {
+        "userid": {
+          "type": "string",
+          "description": "参与人 vid（对外输出为 \"userid\"）"
+        }
+      }
+    }
+  }
+}

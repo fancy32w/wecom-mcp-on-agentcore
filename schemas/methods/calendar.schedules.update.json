@@ -1,0 +1,392 @@
+{
+  "method": "calendar.schedules.update",
+  "description": "更新日程信息（Patch 语义），支持修改标题、时间、地点、备注、新增/移除参与人，周期日程需指定编辑规则",
+  "request": {
+    "$ref": "SchedulesEditReq"
+  },
+  "response": {
+    "$ref": "SchedulesEditTypedRsp"
+  },
+  "schemas": {
+    "ScheduleAttendee": {
+      "type": "object",
+      "description": "参与人",
+      "properties": {
+        "userid": {
+          "type": "string",
+          "description": "参与人 vid（对外输出为 \"userid\"）"
+        }
+      }
+    },
+    "ScheduleMeetingRoom": {
+      "type": "object",
+      "description": "会议室",
+      "properties": {
+        "meeting_room_id": {
+          "type": "string",
+          "description": "会议室 ID"
+        },
+        "meeting_room_name": {
+          "type": "string",
+          "description": "会议室名称"
+        }
+      }
+    },
+    "ScheduleInfo": {
+      "type": "object",
+      "description": "日程完整信息",
+      "properties": {
+        "allow_self_join": {
+          "type": "boolean",
+          "description": "是否允许非参与人主动加入日程"
+        },
+        "attendees": {
+          "type": "array",
+          "description": "参与人列表",
+          "items": {
+            "type": "object",
+            "$ref": "ScheduleAttendeeWithDisplayName"
+          }
+        },
+        "begin_time": {
+          "type": "string",
+          "description": "开始时间"
+        },
+        "cal_id": {
+          "type": "string",
+          "description": "所属日历本 ID"
+        },
+        "calendar_name": {
+          "type": "string",
+          "description": "日历本名称"
+        },
+        "creator_name": {
+          "type": "string",
+          "description": "创建者姓名"
+        },
+        "description": {
+          "type": "string",
+          "description": "日程备注/描述"
+        },
+        "end_time": {
+          "type": "string",
+          "description": "结束时间"
+        },
+        "is_all_day": {
+          "type": "boolean",
+          "description": "是否全天事件"
+        },
+        "is_share_cal": {
+          "type": "boolean",
+          "description": "所属日历是否共享日历（日历创建者非当前用户）"
+        },
+        "location": {
+          "type": "string",
+          "description": "日程地点"
+        },
+        "meeting": {
+          "type": "object",
+          "$ref": "ScheduleMeeting",
+          "description": "关联的腾讯会议信息"
+        },
+        "meeting_room": {
+          "type": "object",
+          "$ref": "ScheduleMeetingRoom",
+          "description": "会议室信息"
+        },
+        "reminders": {
+          "type": "object",
+          "$ref": "ScheduleReminders",
+          "description": "提醒规则"
+        },
+        "repeat_rule": {
+          "type": "object",
+          "$ref": "ScheduleRecurrence",
+          "description": "周期规则"
+        },
+        "schedule_id": {
+          "type": "string",
+          "description": "日程唯一标识"
+        },
+        "subject": {
+          "type": "string",
+          "description": "日程标题"
+        },
+        "timezone": {
+          "type": "object",
+          "$ref": "ScheduleTimezone",
+          "description": "时区信息"
+        }
+      }
+    },
+    "ScheduleMeeting": {
+      "type": "object",
+      "description": "关联的腾讯会议信息",
+      "properties": {
+        "meeting_code": {
+          "type": "string",
+          "description": "会议号"
+        },
+        "meeting_id": {
+          "type": "string",
+          "description": "腾讯会议 ID"
+        },
+        "meeting_link": {
+          "type": "string",
+          "description": "会议入会链接"
+        }
+      }
+    },
+    "ScheduleReminders": {
+      "type": "object",
+      "properties": {
+        "is_remind": {
+          "type": "boolean",
+          "description": "是否开启提醒"
+        },
+        "reminder_time": {
+          "type": "array",
+          "description": "提醒时间与事件开始时间的差值（秒），负数为提前提醒",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+    },
+    "SchedulesEditTypedRsp": {
+      "type": "object",
+      "properties": {
+        "detail": {
+          "type": "object",
+          "$ref": "ScheduleInfo",
+          "description": "更新后的日程详情"
+        }
+      }
+    },
+    "ScheduleException": {
+      "type": "object",
+      "description": "周期日程例外场次",
+      "properties": {
+        "begin_time": {
+          "type": "string",
+          "description": "例外事件原开始时间"
+        },
+        "end_time": {
+          "type": "string",
+          "description": "例外事件结束时间（预留）"
+        },
+        "except_schedule_id": {
+          "type": "string",
+          "description": "例外场次产生的新日程 ID"
+        },
+        "flag": {
+          "type": "integer",
+          "description": "例外标志位",
+          "format": "uint64"
+        }
+      }
+    },
+    "ScheduleTimezone": {
+      "type": "object",
+      "description": "时区信息",
+      "properties": {
+        "timezone_id": {
+          "type": "string",
+          "description": "IANA 时区标识（如 Asia/Shanghai），优先使用"
+        },
+        "timezone_offset": {
+          "type": "integer",
+          "description": "UTC 偏移量（秒），当 timezone_id 为空时使用",
+          "format": "int32"
+        }
+      }
+    },
+    "ScheduleAttendeeWithDisplayName": {
+      "type": "object",
+      "description": "参与人",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "参与人 vid（对外输出为 \"userid\"）对应成员的名称"
+        },
+        "userid": {
+          "type": "string",
+          "description": "参与人 vid（对外输出为 \"userid\"）"
+        }
+      }
+    },
+    "SchedulesEditReq": {
+      "type": "object",
+      "description": "SchedulesEdit（更新日程，Patch 语义）",
+      "properties": {
+        "add_attendees": {
+          "type": "array",
+          "description": "新增的参与人列表",
+          "items": {
+            "type": "object",
+            "$ref": "ScheduleAttendee"
+          }
+        },
+        "allow_self_join": {
+          "type": "boolean",
+          "description": "是否允许主动加入"
+        },
+        "begin_time": {
+          "type": "string",
+          "description": "新的开始时间"
+        },
+        "description": {
+          "type": "string",
+          "description": "新的备注（传空字符串表示清空）"
+        },
+        "end_time": {
+          "type": "string",
+          "description": "新的结束时间"
+        },
+        "is_all_day": {
+          "type": "boolean",
+          "description": "是否全天"
+        },
+        "location": {
+          "type": "string",
+          "description": "新的地点（传空字符串表示清空）"
+        },
+        "meeting_room_id": {
+          "type": "string",
+          "description": "会议室 ID 传入会预定会议室"
+        },
+        "remove_attendees": {
+          "type": "array",
+          "description": "移除的参与人列表",
+          "items": {
+            "type": "object",
+            "$ref": "ScheduleAttendee"
+          }
+        },
+        "schedule_id": {
+          "type": "string",
+          "description": "日程 ID（必填）",
+          "minLength": 1
+        },
+        "subject": {
+          "type": "string",
+          "description": "新的标题"
+        }
+      },
+      "required": [
+        "schedule_id"
+      ]
+    },
+    "ScheduleRecurrence": {
+      "type": "object",
+      "description": "周期规则",
+      "properties": {
+        "exception": {
+          "type": "array",
+          "description": "周期日程中的例外场次列表",
+          "items": {
+            "type": "object",
+            "$ref": "ScheduleException"
+          }
+        },
+        "is_custom": {
+          "type": "boolean",
+          "description": "是否自定义重复周期"
+        },
+        "is_repeat": {
+          "type": "boolean",
+          "description": "是否为周期日程"
+        },
+        "repeat_day_of_month": {
+          "type": "array",
+          "description": "每月哪几天重复，取值范围：1~31。仅当自定义重复且repeat_type为monthly或yearly时有效",
+          "items": {
+            "type": "integer",
+            "format": "uint32"
+          },
+          "minimum": 1,
+          "maximum": 31
+        },
+        "repeat_day_of_week": {
+          "type": "array",
+          "description": "每周周几重复，取值范围：MO,TU,WE...，分别表示周一至周日。仅当自定义重复且repeat_type为weekly时有效",
+          "items": {
+            "type": "string",
+            "enum": [
+              "MO",
+              "TU",
+              "WE",
+              "TH",
+              "FR",
+              "SA",
+              "SU"
+            ]
+          }
+        },
+        "repeat_flag": {
+          "type": "array",
+          "description": "重复标志位：leap_month=闰月，never_ends=永不结束",
+          "items": {
+            "type": "string",
+            "enum": [
+              "leap_month",
+              "never_ends"
+            ]
+          }
+        },
+        "repeat_interval": {
+          "type": "integer",
+          "description": "重复间隔",
+          "format": "uint32"
+        },
+        "repeat_month_of_year": {
+          "type": "array",
+          "description": "每年哪几个月重复，取值范围：1~12。仅当自定义重复且repeat_type为yearly时有",
+          "items": {
+            "type": "integer",
+            "format": "uint32"
+          },
+          "minimum": 1,
+          "maximum": 12
+        },
+        "repeat_time": {
+          "type": "integer",
+          "description": "重复次数（0 表示不限次数）",
+          "format": "uint32"
+        },
+        "repeat_type": {
+          "type": "string",
+          "description": "重复类型：每天：daily/每周：weekly/每月：monthly/每月第 N 天：monthly_on_the_nth_day/每年：yearly/每年第 N 天：yearly_on_the_nth_day/工作日：work_day",
+          "enum": [
+            "daily",
+            "weekly",
+            "monthly",
+            "monthly_on_the_nth_day",
+            "yearly",
+            "yearly_on_the_nth_day",
+            "work_day"
+          ]
+        },
+        "repeat_until": {
+          "type": "string",
+          "description": "重复结束时刻（0 表示永不结束）"
+        },
+        "repeat_week_of_month": {
+          "type": "array",
+          "description": "每月的第几周重复，第一周：first, 第二周：second, 第三周：third, 第四周：fourth, 每月最后一周：last",
+          "items": {
+            "type": "string",
+            "enum": [
+              "first",
+              "second",
+              "third",
+              "fourth",
+              "last"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

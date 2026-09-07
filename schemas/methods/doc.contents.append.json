@@ -1,0 +1,46 @@
+{
+  "method": "doc.contents.append",
+  "description": "在 Word 文档末尾追加文本内容",
+  "request": {
+    "$ref": "OaWordAppendContentReq"
+  },
+  "response": {
+    "$ref": "OaWordAppendContentTypedRsp"
+  },
+  "schemas": {
+    "OaWordAppendContentReq": {
+      "type": "object",
+      "description": "OaWordAppendContent (追加 Word 内容)",
+      "properties": {
+        "content": {
+          "type": "string",
+          "description": "要追加的文档内容，支持格式：text",
+          "minLength": 0,
+          "maxLength": 10000
+        },
+        "docid": {
+          "type": "string",
+          "description": "支持文档的 docid 和 url",
+          "minLength": 5
+        }
+      },
+      "required": [
+        "docid"
+      ]
+    },
+    "OaWordAppendContentTypedRsp": {
+      "type": "object",
+      "properties": {
+        "errcode": {
+          "type": "integer",
+          "description": "错误码",
+          "format": "int32"
+        },
+        "errmsg": {
+          "type": "string",
+          "description": "错误信息"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "method": "meeting.original.get",
+  "description": "拉取会议转写原文。",
+  "request": {
+    "$ref": "WeAgentGetMeetingMediaOriDataReq"
+  },
+  "response": {
+    "$ref": "WeAgentGetMeetingMediaOriDataRsp"
+  },
+  "schemas": {
+    "WeAgentGetMeetingMediaOriDataReq": {
+      "type": "object",
+      "description": "查询会议转写原文\nmeeting_id 与 url 至少存在一项，cpp 层做语义校验",
+      "properties": {
+        "bot_source": {
+          "type": "integer",
+          "description": "@MeetingBotSource",
+          "format": "uint32"
+        },
+        "cursor": {
+          "type": "string",
+          "description": "分页游标"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "每页数量，默认100，上限500",
+          "format": "uint32",
+          "maximum": 500
+        },
+        "media_index": {
+          "type": "integer",
+          "description": "媒体索引,指定拉取某一段转写的原文，默认为0，即第一段",
+          "format": "uint32"
+        },
+        "meeting_id": {
+          "type": "string",
+          "description": "会议ID，个人大圆必传meeting_id，团队大圆必传meeting_id或url",
+          "minimum": 1
+        },
+        "sub_meeting_id": {
+          "type": "string",
+          "description": "子会议ID",
+          "minimum": 1
+        },
+        "url": {
+          "type": "string",
+          "description": "不传则使用meeting_id"
+        }
+      }
+    },
+    "WeAgentGetMeetingMediaOriDataRsp": {
+      "type": "object",
+      "properties": {
+        "has_more": {
+          "type": "boolean",
+          "description": "是否还有更多数据"
+        },
+        "media_index": {
+          "type": "integer",
+          "description": "媒体索引,这是第media_index段转写的原文",
+          "format": "uint32"
+        },
+        "next_cursor": {
+          "type": "string",
+          "description": "分页游标@MeetingMediaOriDataCursor 序列化后base64编码"
+        },
+        "original_data": {
+          "type": "string",
+          "description": "原文"
+        }
+      }
+    }
+  }
+}

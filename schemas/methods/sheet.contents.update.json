@@ -1,0 +1,438 @@
+{
+  "method": "sheet.contents.update",
+  "description": "更新表格指定范围的单元格数据",
+  "request": {
+    "$ref": "OaSheetUpdateRangeDataReq"
+  },
+  "response": {
+    "$ref": "OaSheetUpdateRangeDataTypedRsp"
+  },
+  "schemas": {
+    "OaSheetLocation": {
+      "type": "object",
+      "description": "地理位置（对齐下游 sheetapi.SheetLocation，命名加 Sheet 前缀避免与 Word OaLocation 冲突）",
+      "properties": {
+        "latitude": {
+          "type": "string",
+          "description": "纬度"
+        },
+        "longitude": {
+          "type": "string",
+          "description": "经度"
+        },
+        "name": {
+          "type": "string",
+          "description": "位置名称"
+        },
+        "source": {
+          "type": "string",
+          "description": "地图供应商名称"
+        },
+        "uid": {
+          "type": "string",
+          "description": "地图软件中用来定位具体位置的标识（非用户 ID）"
+        }
+      }
+    },
+    "OaTime": {
+      "type": "object",
+      "description": "时间日期（对齐下游 sheetapi.Time）",
+      "properties": {
+        "day": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "hour": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "minute": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "month": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "second": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "year": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "OaCellBorders": {
+      "type": "object",
+      "description": "边框设置",
+      "properties": {
+        "bottom": {
+          "type": "object",
+          "$ref": "OaCellBorder",
+          "description": "下边框"
+        },
+        "left": {
+          "type": "object",
+          "$ref": "OaCellBorder",
+          "description": "左边框"
+        },
+        "right": {
+          "type": "object",
+          "$ref": "OaCellBorder",
+          "description": "右边框"
+        },
+        "top": {
+          "type": "object",
+          "$ref": "OaCellBorder",
+          "description": "上边框"
+        }
+      }
+    },
+    "OaLink": {
+      "type": "object",
+      "description": "超链接（对齐下游 sheetapi.Link）",
+      "properties": {
+        "overwrite": {
+          "type": "boolean",
+          "description": "是否覆盖原有链接"
+        },
+        "text": {
+          "type": "string",
+          "description": "链接文本"
+        },
+        "url": {
+          "type": "string",
+          "description": "链接 URL"
+        }
+      }
+    },
+    "OaGridData": {
+      "type": "object",
+      "description": "表格具体数据内容",
+      "properties": {
+        "rows": {
+          "type": "array",
+          "description": "各行的数据",
+          "items": {
+            "type": "object",
+            "$ref": "OaRowData"
+          }
+        },
+        "start_column": {
+          "type": "integer",
+          "description": "起始列编号（从 0 开始计算）",
+          "format": "uint32"
+        },
+        "start_row": {
+          "type": "integer",
+          "description": "起始行编号（从 0 开始计算）",
+          "format": "uint32"
+        }
+      }
+    },
+    "OaCellFormat": {
+      "type": "object",
+      "description": "单元格格式",
+      "properties": {
+        "borders": {
+          "type": "object",
+          "$ref": "OaCellBorders",
+          "description": "边框设置"
+        },
+        "horizontal_alignment": {
+          "type": "string",
+          "description": "水平对齐方式，可选值参见 sheetapi.HorizontalAlignment 枚举名：\n \"HORIZONTAL_ALIGNMENT_UNSPECIFIED\"（默认左对齐）、\"LEFT\"（左对齐）、\n \"HORIZONTAL_CENTER\"（居中对齐）、\"RIGHT\"（右对齐）\n @enum HorizontalAlignment"
+        },
+        "padding": {
+          "type": "object",
+          "$ref": "OaCellPadding",
+          "description": "内边距"
+        },
+        "text_format": {
+          "type": "object",
+          "$ref": "OaCellTextFormat",
+          "description": "文本格式"
+        },
+        "vertical_alignment": {
+          "type": "string",
+          "description": "垂直对齐方式，可选值参见 sheetapi.VerticalAlignment 枚举名：\n \"VERTICAL_ALIGNMENT_UNSPECIFIED\"（默认居中对齐）、\"TOP\"（上对齐）、\n \"VERTICAL_CENTER\"（居中对齐）、\"BOTTOM\"（下对齐）\n @enum VerticalAlignment"
+        }
+      }
+    },
+    "OaSelect": {
+      "type": "object",
+      "description": "单选/多选值（对齐下游 sheetapi.Select）",
+      "properties": {
+        "multiple": {
+          "type": "boolean",
+          "description": "是否为多选"
+        },
+        "options": {
+          "type": "array",
+          "description": "全部选项",
+          "items": {
+            "type": "object",
+            "$ref": "OaSheetOption"
+          }
+        },
+        "value": {
+          "type": "array",
+          "description": "选中项 ID 列表",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "OaSheetOption": {
+      "type": "object",
+      "description": "单/多选选项（对齐下游 sheetapi.SheetOption）",
+      "properties": {
+        "color": {
+          "type": "object",
+          "$ref": "OaCellColor",
+          "description": "选项颜色"
+        },
+        "id": {
+          "type": "string",
+          "description": "选项 ID"
+        },
+        "text": {
+          "type": "string",
+          "description": "选项文本"
+        }
+      }
+    },
+    "OaCellBorder": {
+      "type": "object",
+      "description": "单个边框",
+      "properties": {
+        "color": {
+          "type": "object",
+          "$ref": "OaCellColor",
+          "description": "边框颜色"
+        },
+        "style": {
+          "type": "string",
+          "description": "边框样式，可选值参见 sheetapi.BorderStyle 枚举名：\n \"BORDER_STYLE_UNSPECIFIED\"（默认无边线）、\"NONE\"（无边线）、\"DOTTED\"（点划线）、\n \"DASHED\"（虚线）、\"SOLID\"（实线）\n @enum BorderStyle"
+        },
+        "width": {
+          "type": "integer",
+          "description": "边框宽度（像素）",
+          "format": "int32",
+          "minimum": 0,
+          "maximum": 100
+        }
+      }
+    },
+    "OaCellValue": {
+      "type": "object",
+      "description": "单元格值\n字段编号严格对齐下游 docx.backend.common.proto.oapi.sheetapi.CellValue 的 oneof 候选。\n注意：下游 sheetapi.CellValue 是 oneof 互斥结构，但本仓库 protoc 工具链不支持 oneof 语法，\n故此处展开为并列 optional 字段；业务侧调用时必须根据 OaCellData.data_type 只填写\n对应的那一个字段，多填会被下游覆盖为最后赋值的那个（与下游 oneof 行为一致）。",
+      "properties": {
+        "formula": {
+          "type": "string",
+          "description": "公式"
+        },
+        "link": {
+          "type": "object",
+          "$ref": "OaLink",
+          "description": "超链接（对应 data_type=LINK）"
+        },
+        "location": {
+          "type": "object",
+          "$ref": "OaSheetLocation",
+          "description": "地理位置（对应 data_type=LOCATION）"
+        },
+        "number": {
+          "type": "number",
+          "description": "数字值（对应 data_type=NUMBER）",
+          "format": "double"
+        },
+        "select": {
+          "type": "object",
+          "$ref": "OaSelect",
+          "description": "单选/多选（对应 data_type=SELECT/CHECKBOX）"
+        },
+        "text": {
+          "type": "string",
+          "description": "文本值（对应 data_type=TEXT）"
+        },
+        "time": {
+          "type": "object",
+          "$ref": "OaTime",
+          "description": "时间日期（对应 data_type=TIME）"
+        }
+      }
+    },
+    "OaSheetUpdateRangeDataTypedRsp": {
+      "type": "object",
+      "properties": {
+        "errcode": {
+          "type": "integer",
+          "description": "错误码",
+          "format": "int32"
+        },
+        "errmsg": {
+          "type": "string",
+          "description": "错误信息"
+        },
+        "grid_data": {
+          "type": "object",
+          "$ref": "OaGridData",
+          "description": "写入的数据"
+        }
+      }
+    },
+    "OaCellPadding": {
+      "type": "object",
+      "description": "单元格内边距",
+      "properties": {
+        "bottom": {
+          "type": "integer",
+          "description": "下内边距",
+          "format": "int32"
+        },
+        "left": {
+          "type": "integer",
+          "description": "左内边距",
+          "format": "int32"
+        },
+        "right": {
+          "type": "integer",
+          "description": "右内边距",
+          "format": "int32"
+        },
+        "top": {
+          "type": "integer",
+          "description": "上内边距",
+          "format": "int32"
+        }
+      }
+    },
+    "OaSheetUpdateRangeDataReq": {
+      "type": "object",
+      "description": "OaSheetUpdateRangeData (更新指定范围数据)",
+      "properties": {
+        "docid": {
+          "type": "string",
+          "description": "支持文档的 docid 和 url",
+          "minLength": 5
+        },
+        "grid_data": {
+          "type": "object",
+          "$ref": "OaGridData",
+          "description": "写入指定区域的数据"
+        },
+        "sheet_id": {
+          "type": "string",
+          "description": "工作表唯一标识",
+          "minLength": 1,
+          "maxLength": 200
+        }
+      },
+      "required": [
+        "docid",
+        "sheet_id",
+        "grid_data"
+      ]
+    },
+    "OaCellColor": {
+      "type": "object",
+      "description": "单元格颜色",
+      "properties": {
+        "alpha": {
+          "type": "integer",
+          "description": "透明度分量 0-255",
+          "format": "int32"
+        },
+        "blue": {
+          "type": "integer",
+          "description": "蓝色分量 0-255",
+          "format": "int32"
+        },
+        "green": {
+          "type": "integer",
+          "description": "绿色分量 0-255",
+          "format": "int32"
+        },
+        "red": {
+          "type": "integer",
+          "description": "红色分量 0-255",
+          "format": "int32"
+        }
+      }
+    },
+    "OaRowData": {
+      "type": "object",
+      "description": "行数据",
+      "properties": {
+        "values": {
+          "type": "array",
+          "description": "单元格数据列表",
+          "items": {
+            "type": "object",
+            "$ref": "OaCellData"
+          }
+        }
+      }
+    },
+    "OaCellData": {
+      "type": "object",
+      "description": "单元格数据",
+      "properties": {
+        "cell_format": {
+          "type": "object",
+          "$ref": "OaCellFormat",
+          "description": "单元格格式"
+        },
+        "cell_value": {
+          "type": "object",
+          "$ref": "OaCellValue",
+          "description": "单元格值"
+        },
+        "data_type": {
+          "type": "string",
+          "description": "数据类型，可选值参见 sheetapi.DataType 枚举名：\n \"DATA_TYPE_UNSPECIFIED\"（无意义）、\"SELECT\"（单选）、\"CHECKBOX\"（多选）、\"EMAIL\"（邮箱）、\n \"PHONE\"（电话）、\"TIME\"（时间）、\"IMAGE\"（图片）、\"TEXT\"（文本）、\"NUMBER\"（数字）、\n \"LINK\"（超链接）、\"LOCATION\"（地理位置）、\"STAR\"（评星）、\"ATTACHMENT_VIDEO\"（附件视频）、\n \"FORMULA\"（公式）\n @enum DataType"
+        }
+      }
+    },
+    "OaCellTextFormat": {
+      "type": "object",
+      "description": "文本格式",
+      "properties": {
+        "bold": {
+          "type": "boolean",
+          "description": "加粗"
+        },
+        "color": {
+          "type": "object",
+          "$ref": "OaCellColor",
+          "description": "文本颜色"
+        },
+        "font": {
+          "type": "string",
+          "description": "字体"
+        },
+        "font_size": {
+          "type": "integer",
+          "description": "字号",
+          "format": "int32"
+        },
+        "italic": {
+          "type": "boolean",
+          "description": "斜体"
+        },
+        "strikethrough": {
+          "type": "boolean",
+          "description": "删除线"
+        },
+        "underline": {
+          "type": "boolean",
+          "description": "下划线"
+        }
+      }
+    }
+  }
+}

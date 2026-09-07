@@ -1,0 +1,57 @@
+{
+  "method": "media.upload",
+  "description": "上传媒体文件，返回 media_id",
+  "request": {
+    "$ref": "UploadFileReq"
+  },
+  "response": {
+    "$ref": "UploadFileRsp"
+  },
+  "schemas": {
+    "UploadFileReq": {
+      "type": "object",
+      "description": "表单字段 type/md5 由框架自动从 form-data 表单字段中填充",
+      "properties": {
+        "file_path": {
+          "type": "string",
+          "description": "上传文件的二进制数据，框架自动从 form-data 中提取",
+          "x-wecom-octet-stream": true
+        },
+        "type": {
+          "type": "string",
+          "description": "媒体类型（image/voice/video/file），从 form-data 表单字段获取",
+          "enum": [
+            "image",
+            "voice",
+            "file",
+            "video"
+          ]
+        }
+      }
+    },
+    "UploadFileRsp": {
+      "type": "object",
+      "description": "上传响应（CLI-Wrap 模式下框架自动序列化到 OpenClawHttpCallRsp.result）",
+      "properties": {
+        "created_at": {
+          "type": "string",
+          "description": "创建时间，格式 YYYY-MM-DD HH:MM:SS"
+        },
+        "media_id": {
+          "type": "string",
+          "description": "上传后的 media_id"
+        },
+        "type": {
+          "type": "string",
+          "description": "媒体类型（image/voice/video/file）",
+          "enum": [
+            "image",
+            "voice",
+            "file",
+            "video"
+          ]
+        }
+      }
+    }
+  }
+}

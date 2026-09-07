@@ -1,0 +1,241 @@
+{
+  "method": "disk.files.search",
+  "description": "根据关键词搜索微盘中的文件或文件夹；支持按文件类型、创建者、知识空间过滤，支持排序和分页",
+  "request": {
+    "$ref": "DiskFileSearchReq"
+  },
+  "response": {
+    "$ref": "DiskFileSearchRsp"
+  },
+  "schemas": {
+    "DiskFileSearchRsp": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "object",
+          "$ref": "ClawToolError"
+        },
+        "files": {
+          "type": "array",
+          "description": "搜索结果文件列表",
+          "items": {
+            "type": "object",
+            "$ref": "SearchDiskItemInfo"
+          }
+        },
+        "files_count": {
+          "type": "integer",
+          "description": "搜索结果文件列表 数组元素数量（框架自动生成）"
+        },
+        "has_more": {
+          "type": "boolean",
+          "description": "是否还有更多数据"
+        },
+        "next_cursor": {
+          "type": "string",
+          "description": "下一页的游标"
+        }
+      }
+    },
+    "SearchDiskItemInfo": {
+      "type": "object",
+      "description": "微盘搜索结果条目，相比 DiskItemInfo 额外带正文高亮片段",
+      "properties": {
+        "create_time": {
+          "type": "string",
+          "description": "创建时间，格式 YYYY-MM-DD HH:mm:ss"
+        },
+        "creator_userid": {
+          "type": "string",
+          "description": "创建者 id，可能是成员、外部联系人、机器人或应用"
+        },
+        "doc_url": {
+          "type": "string",
+          "description": "文档打开链接，仅在线文档类型时填充"
+        },
+        "docid": {
+          "type": "string",
+          "description": "文档id，仅 type=smartsheet / smartpage / sheet / word / ppt / collect / journal 时有意义"
+        },
+        "file_name": {
+          "type": "string",
+          "description": "名称（文件名 / 文件夹名 / 空间名）"
+        },
+        "file_size": {
+          "type": "integer",
+          "description": "文件大小，单位字节；仅 type=file 时有意义",
+          "format": "uint64"
+        },
+        "folder_id": {
+          "type": "string",
+          "description": "所在文件夹 ID，可能为文件夹 file_id 或空间 space_id"
+        },
+        "folder_name": {
+          "type": "string",
+          "description": "所在父文件夹名；对父文件夹有权限时才返回，与 folder_id 同时出现"
+        },
+        "id": {
+          "type": "string",
+          "description": "微盘文件 ID / 文件夹 ID / 空间 ID"
+        },
+        "path": {
+          "type": "string",
+          "description": "所在 path"
+        },
+        "space_id": {
+          "type": "string",
+          "description": "所在空间 ID"
+        },
+        "space_name": {
+          "type": "string",
+          "description": "所在空间名；对空间有权限时才返回，与 space_id 同时出现"
+        },
+        "text_highlight": {
+          "type": "array",
+          "description": "正文命中关键词的高亮摘要片段",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 0,
+          "maxItems": 100
+        },
+        "type": {
+          "type": "string",
+          "description": "类型",
+          "enum": [
+            "file",
+            "folder",
+            "space",
+            "smartsheet",
+            "smartpage",
+            "sheet",
+            "word",
+            "ppt",
+            "flow",
+            "mind",
+            "journal",
+            "collect"
+          ]
+        },
+        "update_time": {
+          "type": "string",
+          "description": "最近更新时间，格式 YYYY-MM-DD HH:mm:ss"
+        }
+      }
+    },
+    "DiskFileSearchReq": {
+      "type": "object",
+      "properties": {
+        "creator_userids": {
+          "type": "array",
+          "description": "限定创建者 userid，不传则不过滤",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 0,
+          "maxItems": 50
+        },
+        "cursor": {
+          "type": "string",
+          "description": "分批拉取增量 key，上一次请求返回的 next_cursor，不传则从头开始"
+        },
+        "file_types": {
+          "type": "array",
+          "description": "限定文件类型，对齐 doc 侧枚举；在线保持原名，离线以 offline_ 前缀区分",
+          "items": {
+            "type": "string",
+            "enum": [
+              "doc",
+              "sheet",
+              "ppt",
+              "collect",
+              "mind",
+              "flow",
+              "smartsheet",
+              "smartpage",
+              "journal",
+              "pdf",
+              "offline_word",
+              "offline_excel",
+              "offline_ppt",
+              "offline_pdf",
+              "image",
+              "videoaudio",
+              "design"
+            ]
+          },
+          "minItems": 0,
+          "maxItems": 10
+        },
+        "keywords": {
+          "type": "array",
+          "description": "字面关键词数组，or关系，满足其中1个为命中，与其他过滤参数至少传一个",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 0,
+          "maxItems": 20
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回最大条数，不传则默认为 10，最大 100",
+          "format": "uint32",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "search_type": {
+          "type": "string",
+          "description": "查询范围类型，不传则默认为 all",
+          "enum": [
+            "all",
+            "file",
+            "folder",
+            "space"
+          ]
+        },
+        "sort_by": {
+          "type": "string",
+          "description": "排序方式，不传则默认为 best_match",
+          "enum": [
+            "best_match",
+            "modify_time",
+            "file_size"
+          ]
+        },
+        "sort_order": {
+          "type": "string",
+          "description": "排序方向，不传则默认为 desc",
+          "enum": [
+            "asc",
+            "desc"
+          ]
+        },
+        "space_keywords": {
+          "type": "array",
+          "description": "限定所在空间的名称关键词，or 关系；命中的 space 会被作为搜索范围；不传则不限空间",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 0,
+          "maxItems": 10
+        }
+      }
+    },
+    "ClawToolError": {
+      "type": "object",
+      "description": "业务 payload 内层错误（外层框架错误见 OpenClawHttpCallRsp.Error）。",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "data": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

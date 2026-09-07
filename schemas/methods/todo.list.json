@@ -1,0 +1,238 @@
+{
+  "method": "todo.list",
+  "description": "读取机器人为创建人、对话人为参与人选的待办列表（按 update_time 降序），返回标题/描述/人名",
+  "request": {
+    "$ref": "BotTodoGetListReq"
+  },
+  "response": {
+    "$ref": "BotTodoGetListRsp"
+  },
+  "schemas": {
+    "UserInfoRsp": {
+      "type": "object",
+      "description": "用户信息",
+      "properties": {
+        "user_name": {
+          "type": "string",
+          "description": "用户 userid对应成员的名称"
+        },
+        "userid": {
+          "type": "string",
+          "description": "用户 userid"
+        }
+      }
+    },
+    "Deadline": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "截止时间类型：date=日期，datetime=具体时刻",
+          "enum": [
+            "date",
+            "datetime"
+          ]
+        },
+        "value": {
+          "type": "string",
+          "description": "截止时间字符串：date=YYYY-MM-DD，datetime=YYYY-MM-DD HH:mm:ss",
+          "minLength": 1,
+          "maxLength": 32
+        }
+      }
+    },
+    "TodoFollowerRsp": {
+      "type": "object",
+      "description": "参与人信息",
+      "properties": {
+        "update_time": {
+          "type": "string",
+          "description": "更新时间，格式：YYYY-MM-DD HH:mm:ss, todo create 不返回"
+        },
+        "user_name": {
+          "type": "string",
+          "description": "参与人 userid对应成员的名称"
+        },
+        "user_status": {
+          "type": "string",
+          "description": "参与人状态, todo create 不返回",
+          "enum": [
+            "reject",
+            "accept",
+            "finished",
+            "removed",
+            "notshow"
+          ]
+        },
+        "userid": {
+          "type": "string",
+          "description": "参与人 userid"
+        }
+      }
+    },
+    "BotTodoGetListReq": {
+      "type": "object",
+      "description": "机器人视角待办列表：按参与人筛选、按 update_time 降序",
+      "properties": {
+        "create_begin_time": {
+          "type": "string",
+          "description": "创建开始时间，格式：YYYY-MM-DD HH:mm:ss"
+        },
+        "create_end_time": {
+          "type": "string",
+          "description": "创建结束时间，格式：YYYY-MM-DD HH:mm:ss"
+        },
+        "cursor": {
+          "type": "string",
+          "description": "游标，用于分页",
+          "maxLength": 256
+        },
+        "deadline_begin_time": {
+          "type": "string",
+          "description": "截止开始时间，格式：YYYY-MM-DD HH:mm:ss"
+        },
+        "deadline_end_time": {
+          "type": "string",
+          "description": "截止结束时间，格式：YYYY-MM-DD HH:mm:ss"
+        },
+        "keywords": {
+          "type": "array",
+          "description": "关键词过滤：单元素内空格 AND，多元素之间 OR",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "maxItems": 100
+        },
+        "limit": {
+          "type": "integer",
+          "description": "最大返回数量，默认10，最大20",
+          "format": "uint32",
+          "minimum": 1,
+          "maximum": 20
+        },
+        "status_filter": {
+          "type": "array",
+          "description": "状态过滤，为空时默认返回 proceed",
+          "items": {
+            "type": "string",
+            "enum": [
+              "finished",
+              "proceed"
+            ]
+          },
+          "maxItems": 2
+        }
+      }
+    },
+    "BotTodoGetListRsp": {
+      "type": "object",
+      "properties": {
+        "has_more": {
+          "type": "boolean",
+          "description": "是否还有更多"
+        },
+        "items": {
+          "type": "array",
+          "description": "待办列表",
+          "items": {
+            "type": "object",
+            "$ref": "TodoListItem"
+          }
+        },
+        "items_count": {
+          "type": "integer",
+          "description": "待办列表 数组元素数量（框架自动生成）"
+        },
+        "next_cursor": {
+          "type": "string",
+          "description": "下一页游标"
+        }
+      }
+    },
+    "TodoListItem": {
+      "type": "object",
+      "properties": {
+        "create_time": {
+          "type": "string",
+          "description": "创建时间，格式：YYYY-MM-DD HH:mm:ss"
+        },
+        "creator": {
+          "type": "object",
+          "$ref": "UserInfoRsp",
+          "description": "创建人信息对象"
+        },
+        "deadline": {
+          "type": "object",
+          "$ref": "Deadline",
+          "description": "截止时间"
+        },
+        "description": {
+          "type": "string",
+          "description": "待办描述"
+        },
+        "extra_info": {
+          "type": "string",
+          "description": "补充信息，例如：将会在 YYYY-MM-DD HH:mm:ss 时间提醒"
+        },
+        "followers": {
+          "type": "array",
+          "description": "参与人列表",
+          "items": {
+            "type": "object",
+            "$ref": "TodoFollowerRsp"
+          }
+        },
+        "source": {
+          "type": "string",
+          "description": "待办来源",
+          "enum": [
+            "single_chat",
+            "group_chat",
+            "doc",
+            "ai_summary",
+            "meeting_summary",
+            "face_chat",
+            "fused_doc",
+            "smart_sheet",
+            "smart_doc",
+            "JSAPI"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "description": "待办状态",
+          "enum": [
+            "finished",
+            "proceed",
+            "deleted"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "description": "待办标题"
+        },
+        "todo_id": {
+          "type": "string",
+          "description": "待办 id"
+        },
+        "update_time": {
+          "type": "string",
+          "description": "更新时间，格式：YYYY-MM-DD HH:mm:ss"
+        },
+        "user_status": {
+          "type": "string",
+          "description": "用户状态",
+          "enum": [
+            "reject",
+            "accept",
+            "finished",
+            "removed",
+            "notshow"
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "method": "todo.delete",
+  "description": "机器人视角批量删除待办",
+  "request": {
+    "$ref": "TodoDeleteReq"
+  },
+  "response": {
+    "$ref": "TodoDeleteRsp"
+  },
+  "schemas": {
+    "TodoDeleteResultItem": {
+      "type": "object",
+      "description": "单条 delete 结果子消息",
+      "properties": {
+        "errmsg": {
+          "type": "string",
+          "description": "错误信息（success=false 时有值）"
+        },
+        "success": {
+          "type": "boolean",
+          "description": "是否成功"
+        },
+        "title": {
+          "type": "string",
+          "description": "待办标题"
+        },
+        "todo_id": {
+          "type": "string",
+          "description": "待办 id"
+        }
+      }
+    },
+    "TodoDeleteRsp": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "description": "批量删除结果列表",
+          "items": {
+            "type": "object",
+            "$ref": "TodoDeleteResultItem"
+          }
+        },
+        "items_count": {
+          "type": "integer",
+          "description": "批量删除结果列表 数组元素数量（框架自动生成）"
+        }
+      }
+    },
+    "TodoDeleteReq": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "description": "批量删除待办列表，最多20条",
+          "items": {
+            "type": "object",
+            "$ref": "TodoDeleteItem"
+          },
+          "minItems": 1,
+          "maxItems": 20
+        }
+      }
+    },
+    "TodoDeleteItem": {
+      "type": "object",
+      "description": "单条 delete 入参子消息",
+      "properties": {
+        "todo_id": {
+          "type": "string",
+          "description": "待办 id"
+        }
+      },
+      "required": [
+        "todo_id"
+      ]
+    }
+  }
+}

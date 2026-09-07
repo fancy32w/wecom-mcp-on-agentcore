@@ -1,0 +1,148 @@
+{
+  "method": "message.aibot.send",
+  "description": "以智能机器人身份向指定单聊/群聊会话发送消息，支持 markdown/图片/文件/语音/视频",
+  "request": {
+    "$ref": "SendAibotMessageReq"
+  },
+  "response": {
+    "$ref": "SendAibotMessageRsp"
+  },
+  "schemas": {
+    "AibotFileContent": {
+      "type": "object",
+      "description": "机器人文件消息内容",
+      "properties": {
+        "media_id": {
+          "type": "string",
+          "description": "文件 media_id，由 file_upload 接口以 type=file 上传获得；文件名取上传时的原始文件名"
+        }
+      },
+      "required": [
+        "media_id"
+      ]
+    },
+    "AibotVoiceContent": {
+      "type": "object",
+      "description": "机器人语音消息内容",
+      "properties": {
+        "media_id": {
+          "type": "string",
+          "description": "语音 media_id，由 file_upload 接口以 type=voice 上传获得，仅支持 AMR 格式"
+        }
+      },
+      "required": [
+        "media_id"
+      ]
+    },
+    "AibotVideoContent": {
+      "type": "object",
+      "description": "机器人视频消息内容",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "视频描述；不传则不展示描述",
+          "maxLength": 512
+        },
+        "media_id": {
+          "type": "string",
+          "description": "视频 media_id，由 file_upload 接口以 type=video 上传获得"
+        },
+        "title": {
+          "type": "string",
+          "description": "视频标题；不传则使用上传时的原始文件名",
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "media_id"
+      ]
+    },
+    "SendAibotMessageReq": {
+      "type": "object",
+      "properties": {
+        "chat_id": {
+          "type": "string",
+          "description": "会话 ID：单聊传接收成员的 userid，群聊传群会话 ID，由框架解密为 {id, type}"
+        },
+        "file": {
+          "type": "object",
+          "$ref": "AibotFileContent",
+          "description": "文件消息内容，msg_type=file 时必填；不传则请求失败"
+        },
+        "image": {
+          "type": "object",
+          "$ref": "AibotImageContent",
+          "description": "图片消息内容，msg_type=image 时必填；不传则请求失败"
+        },
+        "markdown": {
+          "type": "object",
+          "$ref": "AibotMarkdownContent",
+          "description": "markdown 消息内容，msg_type=markdown 时必填；不传则请求失败"
+        },
+        "msg_type": {
+          "type": "string",
+          "description": "消息类型：markdown（markdown 文本）、image（图片）、file（文件）、voice（语音）、video（视频）",
+          "enum": [
+            "markdown",
+            "image",
+            "file",
+            "voice",
+            "video"
+          ]
+        },
+        "video": {
+          "type": "object",
+          "$ref": "AibotVideoContent",
+          "description": "视频消息内容，msg_type=video 时必填；不传则请求失败"
+        },
+        "voice": {
+          "type": "object",
+          "$ref": "AibotVoiceContent",
+          "description": "语音消息内容，msg_type=voice 时必填；不传则请求失败"
+        }
+      },
+      "required": [
+        "chat_id",
+        "msg_type"
+      ]
+    },
+    "SendAibotMessageRsp": {
+      "type": "object",
+      "description": "发送结果由框架外壳的 errcode / errmsg 表达，但需要额外返回一个结果",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "description": "是否成功"
+        }
+      }
+    },
+    "AibotImageContent": {
+      "type": "object",
+      "description": "机器人图片消息内容",
+      "properties": {
+        "media_id": {
+          "type": "string",
+          "description": "图片 media_id，由 file_upload 接口以 type=image 上传获得"
+        }
+      },
+      "required": [
+        "media_id"
+      ]
+    },
+    "AibotMarkdownContent": {
+      "type": "object",
+      "description": "机器人 markdown 消息内容",
+      "properties": {
+        "content": {
+          "type": "string",
+          "description": "markdown 正文，最长 20480 字节",
+          "minLength": 1,
+          "maxLength": 20480
+        }
+      },
+      "required": [
+        "content"
+      ]
+    }
+  }
+}

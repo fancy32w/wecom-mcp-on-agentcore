@@ -1,0 +1,249 @@
+{
+  "method": "mail.get",
+  "description": "支持通过encode_mail_id获取邮件信息的接口",
+  "request": {
+    "$ref": "AgentReadMailReq"
+  },
+  "response": {
+    "$ref": "AgentReadMailRsp"
+  },
+  "schemas": {
+    "MailCalendarInfo": {
+      "type": "object",
+      "properties": {
+        "attendee_list": {
+          "type": "array",
+          "description": "参与者列表",
+          "items": {
+            "type": "string"
+          }
+        },
+        "dtend": {
+          "type": "string",
+          "description": "结束时间，格式 YYYY-MM-DD HH:MM:SS"
+        },
+        "dtstart": {
+          "type": "string",
+          "description": "开始时间，格式 YYYY-MM-DD HH:MM:SS"
+        },
+        "location": {
+          "type": "string",
+          "description": "地点"
+        },
+        "mail_type": {
+          "type": "integer",
+          "description": "邮件类型 0-日程邮件 1-会议邮件",
+          "format": "uint32"
+        },
+        "organizer_list": {
+          "type": "array",
+          "description": "组织者列表",
+          "items": {
+            "type": "string"
+          }
+        },
+        "summary": {
+          "type": "string",
+          "description": "日程/会议主题"
+        }
+      }
+    },
+    "InlineImageInfo": {
+      "type": "object",
+      "properties": {
+        "content_id": {
+          "type": "string",
+          "description": "邮件 html 中对应的内嵌图片的 content_id"
+        },
+        "image_name": {
+          "type": "string",
+          "description": "图片name"
+        },
+        "image_url": {
+          "type": "string",
+          "description": "图片 url(防泄露图片，这种情况下，cosid 为空)"
+        },
+        "media_id": {
+          "type": "string",
+          "description": "返回的内嵌图片的cosid"
+        }
+      }
+    },
+    "AddrData": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "description": "邮件地址"
+        },
+        "name": {
+          "type": "string",
+          "description": "邮件地址名称"
+        }
+      }
+    },
+    "ReadMailItem": {
+      "type": "object",
+      "properties": {
+        "attachments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "AttachInfo"
+          }
+        },
+        "bcc": {
+          "type": "array",
+          "description": "密送人信息，最多返回30个",
+          "items": {
+            "type": "object",
+            "$ref": "AddrData"
+          }
+        },
+        "bcc_count": {
+          "type": "integer",
+          "description": "密送真实总数",
+          "format": "uint32"
+        },
+        "calendar_info": {
+          "type": "array",
+          "description": "日程/会议信息",
+          "items": {
+            "type": "object",
+            "$ref": "MailCalendarInfo"
+          }
+        },
+        "cc": {
+          "type": "array",
+          "description": "抄送人信息，最多返回30个",
+          "items": {
+            "type": "object",
+            "$ref": "AddrData"
+          }
+        },
+        "cc_count": {
+          "type": "integer",
+          "description": "抄送真实总数",
+          "format": "uint32"
+        },
+        "content": {
+          "type": "string",
+          "description": "邮件正文（内容不长时直接返回原文）"
+        },
+        "errcode": {
+          "type": "integer",
+          "description": "邮件id非法时，返回非0错误码",
+          "format": "int32"
+        },
+        "errmsg": {
+          "type": "string",
+          "description": "errcode不为0时，错误原因",
+          "format": "byte"
+        },
+        "file_path": {
+          "type": "string",
+          "description": "邮件正文（内容超长时框架自动落盘为文件，值为文件路径）",
+          "x-wecom-file-save": {
+            "fileName": "mail_content"
+          }
+        },
+        "inline_images": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "InlineImageInfo"
+          }
+        },
+        "instruction": {
+          "type": "string",
+          "description": "解决指引文案,errcode非0时返回",
+          "format": "byte"
+        },
+        "ori_mail_id": {
+          "type": "string",
+          "description": "原始邮件id",
+          "format": "byte"
+        },
+        "sender": {
+          "type": "object",
+          "$ref": "AddrData",
+          "description": "发信人信息"
+        },
+        "subject": {
+          "type": "string",
+          "description": "邮件主题",
+          "format": "byte"
+        },
+        "to": {
+          "type": "array",
+          "description": "收信人信息，最多返回30个",
+          "items": {
+            "type": "object",
+            "$ref": "AddrData"
+          }
+        },
+        "to_count": {
+          "type": "integer",
+          "description": "收件人真实总数",
+          "format": "uint32"
+        }
+      }
+    },
+    "AgentReadMailRsp": {
+      "type": "object",
+      "properties": {
+        "mail_list": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "ReadMailItem"
+          }
+        },
+        "mail_list_count": {
+          "type": "integer",
+          "description": "mail_list 数组元素数量"
+        }
+      }
+    },
+    "AttachInfo": {
+      "type": "object",
+      "properties": {
+        "attach_url": {
+          "type": "string",
+          "description": "附件的访问 URL，与 media_id 互斥（二者只会返回其一）：当附件无法上传到 COS 时返回本字段，如微盘附件、以及企业开启防泄漏（DLP）策略时返回的 work.weixin.qq.com/filepreview/security/ 加密链接。本字段是可直接展示给用户点击的链接，但 Agent 无法下载或解析其内容（media download 只接受 media_id，传 URL 会报错），需要查看内容时应引导用户点击链接在企业微信客户端内打开"
+        },
+        "media_id": {
+          "type": "string",
+          "description": "附件的 media_id（COS 素材 ID），与 attach_url 互斥；可通过 media download 基于该 ID 下载附件到本地后读取内容。该 ID 属内部标识，禁止展示给用户"
+        },
+        "name": {
+          "type": "string",
+          "description": "附件名称"
+        },
+        "size": {
+          "type": "integer",
+          "description": "附件大小，单位b",
+          "format": "uint64"
+        }
+      }
+    },
+    "AgentReadMailReq": {
+      "type": "object",
+      "properties": {
+        "mail_ids": {
+          "type": "array",
+          "description": "encode后的邮件id",
+          "items": {
+            "type": "string",
+            "format": "byte",
+            "maxLength": 256
+          },
+          "maxItems": 100
+        }
+      },
+      "required": [
+        "mail_ids"
+      ]
+    }
+  }
+}

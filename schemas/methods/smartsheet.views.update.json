@@ -1,0 +1,471 @@
+{
+  "method": "smartsheet.views.update",
+  "description": "修改智能表格视图，支持更新视图配置",
+  "request": {
+    "$ref": "OaSmartSheetModifyViewReq"
+  },
+  "response": {
+    "$ref": "OaSmartSheetModifyViewTypedRsp"
+  },
+  "schemas": {
+    "OaViewParam": {
+      "type": "object",
+      "description": "视图操作参数（统一结构，根据 type 不同使用不同字段组合）",
+      "properties": {
+        "col_infos": {
+          "type": "array",
+          "description": "新增",
+          "items": {
+            "type": "object",
+            "$ref": "OAViewColInfos"
+          }
+        },
+        "property": {
+          "type": "object",
+          "$ref": "OaViewProperty",
+          "description": "视图属性（update 时可选）"
+        },
+        "property_calendar": {
+          "type": "object",
+          "$ref": "OaCalendarViewProperty",
+          "description": "日历视图属性（add 日历视图时必填）"
+        },
+        "property_gantt": {
+          "type": "object",
+          "$ref": "OaGanttViewProperty",
+          "description": "甘特视图属性（add 甘特视图时必填）"
+        },
+        "view_id": {
+          "type": "string",
+          "description": "视图 ID（update、delete 时必传）"
+        },
+        "view_title": {
+          "type": "string",
+          "description": "视图标题（add 时必传，update 时可选）"
+        },
+        "view_type": {
+          "type": "string",
+          "description": "视图类型（add 时必传）"
+        }
+      }
+    },
+    "OaFilterSpec": {
+      "type": "object",
+      "properties": {
+        "conditions": {
+          "type": "array",
+          "description": "判断条件",
+          "items": {
+            "type": "object",
+            "$ref": "OaCondition"
+          }
+        },
+        "conjunction": {
+          "type": "string",
+          "description": "组合方式"
+        }
+      }
+    },
+    "OaViewColorConfig": {
+      "type": "object",
+      "properties": {
+        "conditions": {
+          "type": "array",
+          "description": "填色条件列表",
+          "items": {
+            "type": "object",
+            "$ref": "OaViewColorCondition"
+          }
+        }
+      }
+    },
+    "OaSortSpec": {
+      "type": "object",
+      "properties": {
+        "sort_infos": {
+          "type": "array",
+          "description": "排序字段列表",
+          "items": {
+            "type": "object",
+            "$ref": "OaSortInfo"
+          }
+        }
+      }
+    },
+    "OaViewProperty": {
+      "type": "object",
+      "properties": {
+        "auto_sort": {
+          "type": "boolean",
+          "description": "记录变更后自动重新排序"
+        },
+        "color_config": {
+          "type": "object",
+          "$ref": "OaViewColorConfig",
+          "description": "填色设置"
+        },
+        "field_visibility": {
+          "type": "object",
+          "description": "字段可见性，map key 支持 field_id / field_title 双形态",
+          "additionalProperties": {
+            "type": "boolean"
+          }
+        },
+        "filter_spec": {
+          "type": "object",
+          "$ref": "OaFilterSpec",
+          "description": "过滤设置"
+        },
+        "frozen_field_count": {
+          "type": "integer",
+          "description": "冻结列数量",
+          "format": "int32"
+        },
+        "group_spec": {
+          "type": "object",
+          "$ref": "OaGroupSpec",
+          "description": "分组设置"
+        },
+        "is_field_stat_enabled": {
+          "type": "boolean",
+          "description": "是否使用数据统计"
+        },
+        "sort_spec": {
+          "type": "object",
+          "$ref": "OaSortSpec",
+          "description": "排序设置"
+        }
+      }
+    },
+    "OaSmartSheetModifyViewReq": {
+      "type": "object",
+      "description": "OaSmartSheetModifyView (修改智能表格视图，add/update/delete 复用)",
+      "properties": {
+        "docid": {
+          "type": "string",
+          "description": "支持文档的 docid 和 url",
+          "minLength": 5
+        },
+        "sheet_id": {
+          "type": "string",
+          "description": "工作表唯一标识",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "sheet_title": {
+          "type": "string",
+          "description": "工作表名称"
+        },
+        "type": {
+          "type": "string",
+          "description": "操作类型",
+          "enum": [
+            "add",
+            "update",
+            "delete"
+          ]
+        },
+        "views": {
+          "type": "array",
+          "description": "视图属性，每次 1~20 个",
+          "items": {
+            "type": "object",
+            "$ref": "OaViewParam"
+          },
+          "minItems": 1,
+          "maxItems": 20
+        }
+      },
+      "required": [
+        "docid",
+        "views"
+      ]
+    },
+    "OaNumberValue": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "number",
+          "description": "数字值",
+          "format": "double"
+        }
+      }
+    },
+    "OaSortInfo": {
+      "type": "object",
+      "properties": {
+        "desc": {
+          "type": "boolean",
+          "description": "是否降序"
+        },
+        "field_id": {
+          "type": "string",
+          "description": "字段 ID"
+        },
+        "field_title": {
+          "type": "string",
+          "description": "字段标题"
+        }
+      }
+    },
+    "OaGroupInfo": {
+      "type": "object",
+      "properties": {
+        "desc": {
+          "type": "boolean",
+          "description": "是否降序"
+        },
+        "field_id": {
+          "type": "string",
+          "description": "字段 ID"
+        },
+        "field_title": {
+          "type": "string",
+          "description": "字段标题"
+        }
+      }
+    },
+    "OaFilterDateTimeValue": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "日期类型"
+        },
+        "value": {
+          "type": "array",
+          "description": "日期值",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "OaCalendarViewProperty": {
+      "type": "object",
+      "properties": {
+        "end_date_field_id": {
+          "type": "string",
+          "description": "时间条终点字段 ID"
+        },
+        "end_date_field_title": {
+          "type": "string",
+          "description": "时间条终点字段标题"
+        },
+        "start_date_field_id": {
+          "type": "string",
+          "description": "时间条起点字段 ID"
+        },
+        "start_date_field_title": {
+          "type": "string",
+          "description": "时间条起点字段标题"
+        }
+      }
+    },
+    "OaGanttViewProperty": {
+      "type": "object",
+      "properties": {
+        "end_date_field_id": {
+          "type": "string",
+          "description": "时间条终点字段 ID"
+        },
+        "end_date_field_title": {
+          "type": "string",
+          "description": "时间条终点字段标题"
+        },
+        "start_date_field_id": {
+          "type": "string",
+          "description": "时间条起点字段 ID"
+        },
+        "start_date_field_title": {
+          "type": "string",
+          "description": "时间条起点字段标题"
+        }
+      }
+    },
+    "OaStringValue": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "array",
+          "description": "字符串值列表",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "OaUserValue": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "array",
+          "description": "成员 ID 列表",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "OaCondition": {
+      "type": "object",
+      "properties": {
+        "bool_value": {
+          "type": "object",
+          "$ref": "OaBoolValue",
+          "description": "布尔值"
+        },
+        "date_time_value": {
+          "type": "object",
+          "$ref": "OaFilterDateTimeValue",
+          "description": "日期值"
+        },
+        "field_id": {
+          "type": "string",
+          "description": "字段 ID"
+        },
+        "field_title": {
+          "type": "string",
+          "description": "字段标题"
+        },
+        "field_type": {
+          "type": "string",
+          "description": "字段类型"
+        },
+        "number_value": {
+          "type": "object",
+          "$ref": "OaNumberValue",
+          "description": "数字值"
+        },
+        "operator": {
+          "type": "string",
+          "description": "判断类型"
+        },
+        "string_value": {
+          "type": "object",
+          "$ref": "OaStringValue",
+          "description": "文本值"
+        },
+        "user_value": {
+          "type": "object",
+          "$ref": "OaUserValue",
+          "description": "成员值"
+        }
+      }
+    },
+    "OaView": {
+      "type": "object",
+      "description": "视图信息（只读返回，SmartSheetGetData Response 中 type=views 时返回）",
+      "properties": {
+        "property": {
+          "type": "object",
+          "$ref": "OaViewProperty",
+          "description": "视图属性"
+        },
+        "view_id": {
+          "type": "string",
+          "description": "视图 ID"
+        },
+        "view_title": {
+          "type": "string",
+          "description": "视图标题"
+        },
+        "view_type": {
+          "type": "string",
+          "description": "视图类型"
+        }
+      }
+    },
+    "OaBoolValue": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "boolean",
+          "description": "布尔值"
+        }
+      }
+    },
+    "OAViewColInfos": {
+      "type": "object",
+      "properties": {
+        "field_id": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 1000000
+        },
+        "field_title": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 1000000
+        },
+        "width": {
+          "type": "integer",
+          "format": "int32",
+          "minimum": 1,
+          "maximum": 1000
+        }
+      }
+    },
+    "OaViewColorCondition": {
+      "type": "object",
+      "properties": {
+        "color": {
+          "type": "string",
+          "description": "颜色"
+        },
+        "condition": {
+          "type": "object",
+          "$ref": "OaCondition",
+          "description": "判断条件"
+        },
+        "id": {
+          "type": "string",
+          "description": "填色 ID"
+        },
+        "type": {
+          "type": "string",
+          "description": "填色类型"
+        }
+      }
+    },
+    "OaSmartSheetModifyViewTypedRsp": {
+      "type": "object",
+      "properties": {
+        "errcode": {
+          "type": "integer",
+          "description": "错误码",
+          "format": "int32"
+        },
+        "errmsg": {
+          "type": "string",
+          "description": "错误信息"
+        },
+        "views": {
+          "type": "array",
+          "description": "视图信息",
+          "items": {
+            "type": "object",
+            "$ref": "OaView"
+          }
+        },
+        "views_count": {
+          "type": "integer",
+          "description": "视图信息 数组元素数量（框架自动生成）"
+        }
+      }
+    },
+    "OaGroupSpec": {
+      "type": "object",
+      "properties": {
+        "groups": {
+          "type": "array",
+          "description": "分组字段列表",
+          "items": {
+            "type": "object",
+            "$ref": "OaGroupInfo"
+          }
+        }
+      }
+    }
+  }
+}

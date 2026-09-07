@@ -1,0 +1,29 @@
+{
+  "method": "meeting.cancel",
+  "description": "取消预定会议：周期会议取消单次需指定子会议 ID",
+  "request": {
+    "$ref": "CancelMeetingReq"
+  },
+  "response": {
+    "$ref": "CancelMeetingRsp"
+  },
+  "schemas": {
+    "CancelMeetingReq": {
+      "type": "object",
+      "description": "取消会议请求",
+      "properties": {
+        "meeting_id": {
+          "type": "string",
+          "description": "会议ID，标识要取消的会议",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "meeting_id"
+      ]
+    },
+    "CancelMeetingRsp": {
+      "type": "object"
+    }
+  }
+}

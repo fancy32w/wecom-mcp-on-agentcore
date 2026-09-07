@@ -1,0 +1,67 @@
+{
+  "method": "doc.contents.overwrite",
+  "description": "用新内容全量覆盖 Word 文档的全部内容，原内容将被替换",
+  "request": {
+    "$ref": "OaWordOverwriteContentReq"
+  },
+  "response": {
+    "$ref": "OaWordOverwriteContentTypedRsp"
+  },
+  "schemas": {
+    "OaWordOverwriteContentReq": {
+      "type": "object",
+      "description": "OaWordOverwriteContent (全量覆盖 Word 内容)",
+      "properties": {
+        "content": {
+          "type": "string",
+          "description": "文档内容",
+          "minLength": 0,
+          "maxLength": 1000000
+        },
+        "content_path": {
+          "type": "string",
+          "description": "同 file_path，兼容模型传 content_path 字段名",
+          "x-wecom-file-upload": {},
+          "hidden": true
+        },
+        "content_type": {
+          "type": "string",
+          "description": "内容格式",
+          "enum": [
+            "text",
+            "markdown"
+          ]
+        },
+        "docid": {
+          "type": "string",
+          "description": "支持文档的 docid 和 url",
+          "minLength": 5
+        },
+        "file_path": {
+          "type": "string",
+          "description": "文档内容地址，content 二选一",
+          "x-wecom-file-upload": {},
+          "minLength": 0,
+          "maxLength": 1000000
+        }
+      },
+      "required": [
+        "docid"
+      ]
+    },
+    "OaWordOverwriteContentTypedRsp": {
+      "type": "object",
+      "properties": {
+        "errcode": {
+          "type": "integer",
+          "description": "错误码",
+          "format": "int32"
+        },
+        "errmsg": {
+          "type": "string",
+          "description": "错误信息"
+        }
+      }
+    }
+  }
+}

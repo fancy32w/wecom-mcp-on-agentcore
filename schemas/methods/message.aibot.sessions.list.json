@@ -1,0 +1,59 @@
+{
+  "method": "message.aibot.sessions.list",
+  "description": "获取智能机器人最近的会话列表，按最后一条消息时间倒序返回最多 20 个会话",
+  "request": {
+    "$ref": "ListAibotSessionsReq"
+  },
+  "response": {
+    "$ref": "ListAibotSessionsRsp"
+  },
+  "schemas": {
+    "ListAibotSessionsRsp": {
+      "type": "object",
+      "properties": {
+        "sessions": {
+          "type": "array",
+          "description": "会话列表，按最后一条消息时间从新到旧排序，最多 20 个",
+          "items": {
+            "type": "object",
+            "$ref": "AibotSessionItem"
+          }
+        },
+        "sessions_count": {
+          "type": "integer",
+          "description": "会话列表，按最后一条消息时间从新到旧排序，最多 20 个 数组元素数量（框架自动生成）"
+        }
+      }
+    },
+    "AibotSessionItem": {
+      "type": "object",
+      "description": "机器人会话项",
+      "properties": {
+        "chat_id": {
+          "type": "string",
+          "description": "会话 ID（框架自动加密输出），可直接作为 message aibot send 的 chat_id 使用"
+        },
+        "chat_name": {
+          "type": "string",
+          "description": "会话名称：群聊为群名，单聊为\"中文名(英文名)\""
+        },
+        "chat_type": {
+          "type": "string",
+          "description": "会话类型：\"single\"=单聊，\"group\"=群聊",
+          "enum": [
+            "single",
+            "group"
+          ]
+        },
+        "last_msg_time": {
+          "type": "string",
+          "description": "该会话最后一条消息的时间，格式 YYYY-MM-DD HH:MM:SS"
+        }
+      }
+    },
+    "ListAibotSessionsReq": {
+      "type": "object",
+      "description": "无入参：固定返回最近的最多 20 个会话，不支持分页与过滤\n群聊会话会先做有效性校验：群已解散 / 已封禁 / 全员群已关闭 / 机器人已被移出群聊的会话不返回"
+    }
+  }
+}

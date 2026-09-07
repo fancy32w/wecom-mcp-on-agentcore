@@ -1,0 +1,140 @@
+{
+  "method": "todo.update",
+  "description": "机器人视角批量更新待办（标题/描述/参与人/截止时间等）",
+  "request": {
+    "$ref": "TodoUpdateReq"
+  },
+  "response": {
+    "$ref": "TodoUpdateRsp"
+  },
+  "schemas": {
+    "TodoUpdateResultItem": {
+      "type": "object",
+      "properties": {
+        "errmsg": {
+          "type": "string",
+          "description": "错误信息（success=false 时有值）"
+        },
+        "extra_info": {
+          "type": "string",
+          "description": "补充信息，例如：将会在 YYYY-MM-DD HH:mm:ss 时间提醒"
+        },
+        "success": {
+          "type": "boolean",
+          "description": "是否成功"
+        },
+        "title": {
+          "type": "string",
+          "description": "更新后的短标题"
+        },
+        "todo_id": {
+          "type": "string",
+          "description": "待办 id"
+        }
+      }
+    },
+    "TodoFollowerReq": {
+      "type": "object",
+      "description": "参与人",
+      "properties": {
+        "userid": {
+          "type": "string",
+          "description": "参与人 userid"
+        }
+      }
+    },
+    "TodoUpdateRsp": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "description": "批量更新结果列表",
+          "items": {
+            "type": "object",
+            "$ref": "TodoUpdateResultItem"
+          }
+        },
+        "items_count": {
+          "type": "integer",
+          "description": "批量更新结果列表 数组元素数量（框架自动生成）"
+        }
+      }
+    },
+    "TodoUpdateItem": {
+      "type": "object",
+      "description": "单条 update 入参子消息",
+      "properties": {
+        "deadline": {
+          "type": "object",
+          "$ref": "Deadline",
+          "description": "待办截止时间"
+        },
+        "description": {
+          "type": "string",
+          "description": "待办描述",
+          "maxLength": 4000
+        },
+        "followers": {
+          "type": "array",
+          "description": "全量更新的参与人列表。**注意**：已有的参与人会被全部替换，已有参与人如果无需移除应重新传入",
+          "items": {
+            "type": "object",
+            "$ref": "TodoFollowerReq"
+          },
+          "maxItems": 50
+        },
+        "remind_at_deadline": {
+          "type": "boolean",
+          "description": "是否在截止时间点提醒；true 时提醒时间对齐 deadline（仅 datetime 类型有效，date 类型会忽略该参数）；false 或未传，按 deadline.type 走默认"
+        },
+        "title": {
+          "type": "string",
+          "description": "待办标题",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "todo_id": {
+          "type": "string",
+          "description": "待办 id"
+        }
+      },
+      "required": [
+        "todo_id"
+      ]
+    },
+    "TodoUpdateReq": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "description": "批量更新待办列表，最多20条",
+          "items": {
+            "type": "object",
+            "$ref": "TodoUpdateItem"
+          },
+          "minItems": 1,
+          "maxItems": 20
+        }
+      }
+    },
+    "Deadline": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "截止时间类型：date=日期，datetime=具体时刻",
+          "enum": [
+            "date",
+            "datetime"
+          ]
+        },
+        "value": {
+          "type": "string",
+          "description": "截止时间字符串：date=YYYY-MM-DD，datetime=YYYY-MM-DD HH:mm:ss",
+          "minLength": 1,
+          "maxLength": 32
+        }
+      }
+    }
+  }
+}

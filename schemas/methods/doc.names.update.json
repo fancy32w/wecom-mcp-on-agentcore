@@ -1,0 +1,36 @@
+{
+  "method": "doc.names.update",
+  "description": "重命名指定文档的标题",
+  "request": {
+    "$ref": "OaDocRenameReq"
+  },
+  "response": {
+    "$ref": "OaDocRenameTypedRsp"
+  },
+  "schemas": {
+    "OaDocRenameReq": {
+      "type": "object",
+      "description": "OaDocRename (重命名文档)",
+      "properties": {
+        "docid": {
+          "type": "string",
+          "description": "支持文档的 docid 和 url",
+          "minLength": 5
+        },
+        "new_name": {
+          "type": "string",
+          "description": "新文件名",
+          "minLength": 1,
+          "maxLength": 255
+        }
+      },
+      "required": [
+        "docid",
+        "new_name"
+      ]
+    },
+    "OaDocRenameTypedRsp": {
+      "type": "object"
+    }
+  }
+}

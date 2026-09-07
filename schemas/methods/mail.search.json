@@ -1,0 +1,196 @@
+{
+  "method": "mail.search",
+  "description": "支持搜索邮件和拉取邮件列表",
+  "request": {
+    "$ref": "AgentSearchMailReq"
+  },
+  "response": {
+    "$ref": "AgentSearchMailRsp"
+  },
+  "schemas": {
+    "AddrData": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "description": "邮件地址"
+        },
+        "name": {
+          "type": "string",
+          "description": "邮件地址名称"
+        }
+      }
+    },
+    "AgentSearchMailRsp": {
+      "type": "object",
+      "properties": {
+        "cumulative_count": {
+          "type": "integer",
+          "description": "累计返回的邮件数量",
+          "format": "uint32"
+        },
+        "has_more": {
+          "type": "boolean",
+          "description": "是否还有更多数据 true-还有更多 false-没有更多"
+        },
+        "mails": {
+          "type": "array",
+          "description": "邮件列表，返回所有字段",
+          "items": {
+            "type": "object",
+            "$ref": "MailMsg"
+          }
+        },
+        "mails_count": {
+          "type": "integer",
+          "format": "uint32"
+        },
+        "next_cursor": {
+          "type": "string",
+          "description": "下一次分页请求的游标，用于获取下一页数据",
+          "format": "byte"
+        },
+        "notice": {
+          "type": "string",
+          "description": "仅搜索场景时返回的文案",
+          "format": "byte"
+        },
+        "total_count": {
+          "type": "integer",
+          "description": "搜索结果的总数",
+          "format": "uint32"
+        }
+      }
+    },
+    "AgentSearchMailReq": {
+      "type": "object",
+      "properties": {
+        "begin_time": {
+          "type": "string",
+          "description": "查询起始时间 \"YYYY-MM-DD HH:mm:ss\""
+        },
+        "cursor": {
+          "type": "string",
+          "description": "分页游标，首次请求不填或传空，后续传上一次返回的next_cursor",
+          "format": "byte",
+          "maxLength": 256
+        },
+        "end_time": {
+          "type": "string",
+          "description": "查询结束时间 \"YYYY-MM-DD HH:mm:ss\""
+        },
+        "folder_names": {
+          "type": "array",
+          "description": "指定搜索文件夹名称；folder 之间是或的关系；最多支持 10 个",
+          "items": {
+            "type": "string",
+            "format": "byte"
+          },
+          "minItems": 0,
+          "maxItems": 10
+        },
+        "has_attachments": {
+          "type": "boolean",
+          "description": "仅显示含附件的邮件,true-仅附件 false-都返回"
+        },
+        "has_star": {
+          "type": "boolean",
+          "description": "仅显示星标邮件,true-仅星标 false-都返回"
+        },
+        "keywords": {
+          "type": "array",
+          "description": "搜索的关键字列表",
+          "items": {
+            "type": "string",
+            "format": "byte"
+          },
+          "minItems": 0,
+          "maxItems": 10
+        },
+        "limit": {
+          "type": "integer",
+          "description": "每次请求返回的最大邮件数量",
+          "format": "uint32",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "only_reminder": {
+          "type": "boolean",
+          "description": "仅显示非免提醒的邮件,true-仅非免提醒 false-都返回"
+        },
+        "only_subject": {
+          "type": "boolean",
+          "description": "仅搜索邮件标题,true-仅标题搜索 false-正文和标题都进行搜索"
+        },
+        "only_unread": {
+          "type": "boolean",
+          "description": "搜索未读邮件,true-仅未读 false-都返回"
+        },
+        "receiver": {
+          "type": "string",
+          "description": "搜索收件人",
+          "format": "byte",
+          "maxLength": 256
+        },
+        "sender": {
+          "type": "string",
+          "description": "搜索发件人",
+          "format": "byte",
+          "maxLength": 256
+        },
+        "tag_names": {
+          "type": "array",
+          "description": "指定搜索标签名称；tag 之间是或的关系；最多支持 10 个",
+          "items": {
+            "type": "string",
+            "format": "byte"
+          },
+          "minItems": 0,
+          "maxItems": 10
+        }
+      }
+    },
+    "MailMsg": {
+      "type": "object",
+      "properties": {
+        "folder_name": {
+          "type": "string",
+          "description": "邮件所在文件夹名称"
+        },
+        "is_not_reminder": {
+          "type": "boolean",
+          "description": "是否免提醒"
+        },
+        "is_read": {
+          "type": "boolean",
+          "description": "是否已读"
+        },
+        "mail_id": {
+          "type": "string",
+          "description": "encode后的邮件id"
+        },
+        "receivers": {
+          "type": "array",
+          "description": "收件人+抄送",
+          "items": {
+            "type": "object",
+            "$ref": "AddrData"
+          }
+        },
+        "send_time": {
+          "type": "string",
+          "description": "发送时间 \"YYYY-MM-DD HH:mm:ss\""
+        },
+        "sender": {
+          "type": "object",
+          "$ref": "AddrData",
+          "description": "发件人"
+        },
+        "subject": {
+          "type": "string",
+          "description": "标题"
+        }
+      }
+    }
+  }
+}

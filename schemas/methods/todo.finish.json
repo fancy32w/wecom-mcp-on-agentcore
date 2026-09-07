@@ -1,0 +1,87 @@
+{
+  "method": "todo.finish",
+  "description": "机器人视角批量完成待办",
+  "request": {
+    "$ref": "BotTodoChangeUserStatusReq"
+  },
+  "response": {
+    "$ref": "BotTodoChangeUserStatusRsp"
+  },
+  "schemas": {
+    "BotTodoChangeUserStatusRsp": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "description": "批量完成结果列表",
+          "items": {
+            "type": "object",
+            "$ref": "BotTodoFinishResultItem"
+          }
+        },
+        "items_count": {
+          "type": "integer",
+          "description": "批量完成结果列表 数组元素数量（框架自动生成）"
+        }
+      }
+    },
+    "BotTodoFinishResultItem": {
+      "type": "object",
+      "description": "单条 finish 结果子消息",
+      "properties": {
+        "ask_finish_all": {
+          "type": "string",
+          "description": "当没有带 finished_all 时，询问是否要完成整个待办"
+        },
+        "errmsg": {
+          "type": "string",
+          "description": "错误信息（success=false 时有值）"
+        },
+        "success": {
+          "type": "boolean",
+          "description": "是否成功"
+        },
+        "title": {
+          "type": "string",
+          "description": "待办标题"
+        },
+        "todo_id": {
+          "type": "string",
+          "description": "待办 id"
+        }
+      }
+    },
+    "BotTodoFinishItem": {
+      "type": "object",
+      "description": "单条 finish 入参子消息",
+      "properties": {
+        "finished_all": {
+          "type": "boolean",
+          "description": "是否完成所有参与人的份：true=以创建人（机器人）身份整体完成该待办；false 或不传（默认 false）=只完成调用方用户自己那一份。"
+        },
+        "todo_id": {
+          "type": "string",
+          "description": "待办 id"
+        }
+      },
+      "required": [
+        "todo_id"
+      ]
+    },
+    "BotTodoChangeUserStatusReq": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "description": "批量完成待办列表，最多20条",
+          "items": {
+            "type": "object",
+            "$ref": "BotTodoFinishItem"
+          },
+          "minItems": 1,
+          "maxItems": 20
+        }
+      }
+    }
+  }
+}

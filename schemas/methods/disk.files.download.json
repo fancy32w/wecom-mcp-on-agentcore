@@ -1,0 +1,75 @@
+{
+  "method": "disk.files.download",
+  "description": "异步根据微盘文件 ID 或 URL 下载文件，轮询完成后返回本地文件路径",
+  "request": {
+    "$ref": "DiskFileDownloadReq"
+  },
+  "response": {
+    "$ref": "DiskFileDownloadRsp"
+  },
+  "schemas": {
+    "DiskFileDownloadRsp": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "object",
+          "$ref": "ClawToolError"
+        },
+        "file_content": {
+          "type": "string",
+          "description": "文件内容及动态文件名，长任务完成后框架保存为本地文件并以 file_path 返回给调用方（内容不长时直接返回字符串）"
+        },
+        "file_path": {
+          "type": "string",
+          "description": "文件内容及动态文件名，长任务完成后框架保存为本地文件并以 file_path 返回给调用方（CLI 落盘后为文件路径字符串）",
+          "x-wecom-file-save": {
+            "fileName": "wedrive_file",
+            "contentEncoding": "base64"
+          }
+        },
+        "size": {
+          "type": "integer",
+          "description": "文件大小，单位字节",
+          "format": "uint64"
+        },
+        "taskid": {
+          "type": "string",
+          "description": "异步下载任务 ID，调用方通过 ww_PollClawLongTask 轮询最终结果"
+        }
+      }
+    },
+    "DiskFileDownloadReq": {
+      "type": "object",
+      "properties": {
+        "file_id": {
+          "type": "string",
+          "description": "要下载的文件 ID，与 url 二选一；不传则必须传 url",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "url": {
+          "type": "string",
+          "description": "文件 URL，与 file_id 二选一；不传则必须传 file_id",
+          "minLength": 1,
+          "maxLength": 500
+        }
+      }
+    },
+    "ClawToolError": {
+      "type": "object",
+      "description": "业务 payload 内层错误（外层框架错误见 OpenClawHttpCallRsp.Error）。",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "data": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

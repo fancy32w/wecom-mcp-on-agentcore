@@ -1,0 +1,225 @@
+{
+  "method": "doc.search",
+  "description": "按关键词搜索文档，支持按文档类型、创建者、浏览者、时间范围等多维度过滤，支持排序和分页",
+  "request": {
+    "$ref": "OaDocSearchReq"
+  },
+  "response": {
+    "$ref": "OaDocSearchTypedRsp"
+  },
+  "schemas": {
+    "OaDocSearchDocInfo": {
+      "type": "object",
+      "properties": {
+        "ai_notice": {
+          "type": "string",
+          "description": "AI 相关提示语，非空时前端可展示。当前仅在文档来源为智能助理生成时下发固定文案",
+          "minLength": 0,
+          "maxLength": 200
+        },
+        "create_time": {
+          "type": "string",
+          "description": "创建时间, YYYY-MM-DD HH:mm:ss 格式"
+        },
+        "creator_name": {
+          "type": "string",
+          "description": "创建人显示名称（由 OaJsonConverter::InjectDisplayNameForFieldsInList 在 cpp 层注入）"
+        },
+        "creator_userid": {
+          "type": "string",
+          "description": "创建人 userid（由 OaJsonConverter 在 cpp 层 encode 为 OpenID）"
+        },
+        "doc_name": {
+          "type": "string",
+          "description": "文档标题"
+        },
+        "doc_type": {
+          "type": "string",
+          "description": "文档类型(doc/sheet/smartsheet/smartpage)"
+        },
+        "docid": {
+          "type": "string",
+          "description": "文档 ID"
+        },
+        "modify_time": {
+          "type": "string",
+          "description": "最近修改时间, YYYY-MM-DD HH:mm:ss 格式"
+        },
+        "open_time": {
+          "type": "string",
+          "description": "最近查看时间, YYYY-MM-DD HH:mm:ss 格式"
+        },
+        "sub_title_highlight": {
+          "type": "array",
+          "description": "子标题高亮摘要",
+          "items": {
+            "type": "string"
+          }
+        },
+        "text_highlight": {
+          "type": "array",
+          "description": "正文高亮摘要",
+          "items": {
+            "type": "string"
+          }
+        },
+        "title_highlight": {
+          "type": "array",
+          "description": "标题高亮摘要",
+          "items": {
+            "type": "string"
+          }
+        },
+        "url": {
+          "type": "string",
+          "description": "文档 URL"
+        }
+      }
+    },
+    "OaDocSearchReq": {
+      "type": "object",
+      "description": "OaDocSearch (按关键词/多维度过滤搜索文档)",
+      "properties": {
+        "created_after": {
+          "type": "string",
+          "description": "限定文档创建时间下限，YYYY-MM-DD HH:mm:ss 格式（如 \"2024-01-15 08:00:00\"），仅返回在此时间之后创建的文档，不传则不过滤"
+        },
+        "created_before": {
+          "type": "string",
+          "description": "限定文档创建时间上限，YYYY-MM-DD HH:mm:ss 格式（如 \"2024-06-30 08:00:00\"），仅返回在此时间之前创建的文档，不传则不过滤"
+        },
+        "creator_userids": {
+          "type": "array",
+          "description": "限定创建者范围，不传则不过滤",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 0,
+          "maxItems": 50
+        },
+        "cursor": {
+          "type": "string",
+          "description": "分批拉取增量 key，上一次请求返回的 next_cursor，不传则从头开始"
+        },
+        "doc_types": {
+          "type": "array",
+          "description": "限定文档类型，不传则不过滤",
+          "items": {
+            "type": "string",
+            "enum": [
+              "doc",
+              "sheet",
+              "collect",
+              "ppt",
+              "mind",
+              "flow",
+              "smartsheet",
+              "journal",
+              "pdf",
+              "smartpage"
+            ]
+          },
+          "minItems": 0,
+          "maxItems": 10
+        },
+        "hl_fragment_len": {
+          "type": "integer",
+          "description": "摘要长度，不传则默认为 100，最大 512",
+          "format": "uint32",
+          "minimum": 0,
+          "maximum": 512
+        },
+        "keywords": {
+          "type": "array",
+          "description": "字面关键词数组，必填",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 0,
+          "maxItems": 20
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回最大文档数，不传则默认为 10，最大 100",
+          "format": "uint32",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "number_of_fragments": {
+          "type": "integer",
+          "description": "摘要数量，不传则默认为 1，最大 10",
+          "format": "uint32",
+          "minimum": 0,
+          "maximum": 10
+        },
+        "opened_after": {
+          "type": "string",
+          "description": "限定文档最近打开时间下限，YYYY-MM-DD HH:mm:ss 格式（如 \"2024-01-15 08:00:00\"），仅返回在此时间之后打开过的文档，不传则不过滤"
+        },
+        "opened_before": {
+          "type": "string",
+          "description": "限定文档最近打开时间上限，YYYY-MM-DD HH:mm:ss 格式（如 \"2024-06-30 08:00:00\"），仅返回在此时间之前打开过的文档，不传则不过滤"
+        },
+        "search_scope": {
+          "type": "string",
+          "description": "搜索范围（title=仅搜索标题, title_content=标题+正文, content=仅搜索正文），不传则默认为 title_content",
+          "enum": [
+            "title",
+            "title_content",
+            "content"
+          ]
+        },
+        "sort_by": {
+          "type": "string",
+          "description": "排序规则，不传则默认为 best_match（best_match=最佳匹配, create_time=创建时间, modify_time=修改时间）",
+          "enum": [
+            "best_match",
+            "create_time",
+            "modify_time"
+          ]
+        },
+        "sort_script": {
+          "type": "string",
+          "description": "定制排序算法，不传则不使用定制排序"
+        },
+        "visitor_userids": {
+          "type": "array",
+          "description": "限定浏览者范围，不传则不过滤",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 0,
+          "maxItems": 50
+        }
+      },
+      "required": [
+        "keywords"
+      ]
+    },
+    "OaDocSearchTypedRsp": {
+      "type": "object",
+      "properties": {
+        "docs": {
+          "type": "array",
+          "description": "搜索结果文档列表",
+          "items": {
+            "type": "object",
+            "$ref": "OaDocSearchDocInfo"
+          }
+        },
+        "docs_count": {
+          "type": "integer",
+          "description": "搜索结果文档列表 数组元素数量（框架自动生成）"
+        },
+        "has_more": {
+          "type": "boolean",
+          "description": "是否还有更多数据"
+        },
+        "next_cursor": {
+          "type": "string",
+          "description": "下一页游标"
+        }
+      }
+    }
+  }
+}

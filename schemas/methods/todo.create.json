@@ -1,0 +1,163 @@
+{
+  "method": "todo.create",
+  "description": "机器人视角批量创建待办",
+  "request": {
+    "$ref": "TodoCreateReq"
+  },
+  "response": {
+    "$ref": "TodoCreateRsp"
+  },
+  "schemas": {
+    "TodoCreateResultItem": {
+      "type": "object",
+      "description": "单条 create 结果子消息",
+      "properties": {
+        "errmsg": {
+          "type": "string",
+          "description": "错误信息（success=false 时有值）"
+        },
+        "extra_info": {
+          "type": "string",
+          "description": "补充信息，例如：将会在 YYYY-MM-DD HH:mm:ss 时间提醒"
+        },
+        "followers": {
+          "type": "array",
+          "description": "参与人列表（含人名）",
+          "items": {
+            "type": "object",
+            "$ref": "TodoFollowerRsp"
+          }
+        },
+        "success": {
+          "type": "boolean",
+          "description": "是否成功"
+        },
+        "title": {
+          "type": "string",
+          "description": "待办内容"
+        },
+        "todo_id": {
+          "type": "string",
+          "description": "新建的待办 id"
+        }
+      }
+    },
+    "TodoCreateRsp": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "description": "批量创建结果列表",
+          "items": {
+            "type": "object",
+            "$ref": "TodoCreateResultItem"
+          }
+        },
+        "items_count": {
+          "type": "integer",
+          "description": "批量创建结果列表 数组元素数量（框架自动生成）"
+        }
+      }
+    },
+    "TodoFollowerRsp": {
+      "type": "object",
+      "description": "参与人信息",
+      "properties": {
+        "update_time": {
+          "type": "string",
+          "description": "更新时间，格式：YYYY-MM-DD HH:mm:ss, todo create 不返回"
+        },
+        "user_name": {
+          "type": "string",
+          "description": "参与人 userid对应成员的名称"
+        },
+        "user_status": {
+          "type": "string",
+          "description": "参与人状态, todo create 不返回",
+          "enum": [
+            "reject",
+            "accept",
+            "finished",
+            "removed",
+            "notshow"
+          ]
+        },
+        "userid": {
+          "type": "string",
+          "description": "参与人 userid"
+        }
+      }
+    },
+    "TodoCreateItem": {
+      "type": "object",
+      "description": "单条 create 入参子消息",
+      "properties": {
+        "deadline": {
+          "type": "object",
+          "$ref": "Deadline",
+          "description": "待办截止时间"
+        },
+        "description": {
+          "type": "string",
+          "description": "待办描述",
+          "maxLength": 4000
+        },
+        "follower_ids": {
+          "type": "array",
+          "description": "参与人 userid 列表",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 50
+        },
+        "remind_at_deadline": {
+          "type": "boolean",
+          "description": "是否在截止时间点提醒；true 时提醒时间对齐 deadline（仅 datetime 类型有效，date 类型会忽略该参数）；false 或未传，按 deadline.type 走默认（date→18:00，datetime→提前 15 分钟）"
+        },
+        "title": {
+          "type": "string",
+          "description": "待办标题",
+          "minLength": 1,
+          "maxLength": 4000
+        }
+      },
+      "required": [
+        "title"
+      ]
+    },
+    "Deadline": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "截止时间类型：date=日期，datetime=具体时刻",
+          "enum": [
+            "date",
+            "datetime"
+          ]
+        },
+        "value": {
+          "type": "string",
+          "description": "截止时间字符串：date=YYYY-MM-DD，datetime=YYYY-MM-DD HH:mm:ss",
+          "minLength": 1,
+          "maxLength": 32
+        }
+      }
+    },
+    "TodoCreateReq": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "description": "批量创建待办列表，最多20条",
+          "items": {
+            "type": "object",
+            "$ref": "TodoCreateItem"
+          },
+          "minItems": 1,
+          "maxItems": 20
+        }
+      }
+    }
+  }
+}

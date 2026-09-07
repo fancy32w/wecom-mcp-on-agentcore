@@ -1,0 +1,133 @@
+{
+  "method": "meeting.create",
+  "description": "创建会议",
+  "request": {
+    "$ref": "WeAgentCreateMeetingReq"
+  },
+  "response": {
+    "$ref": "WeAgentCreateMeetingRsp"
+  },
+  "schemas": {
+    "WeAgentCreateMeetingRsp": {
+      "type": "object",
+      "description": "对齐 wwopenmeetinglogic::CreateMeetingRsp",
+      "properties": {
+        "meeting_code": {
+          "type": "string",
+          "description": "会议号",
+          "format": "byte"
+        },
+        "meeting_id": {
+          "type": "string",
+          "description": "会议ID"
+        },
+        "meeting_link": {
+          "type": "string",
+          "description": "入会链接",
+          "format": "byte"
+        }
+      }
+    },
+    "TimeZone": {
+      "type": "object",
+      "description": "如果有timezone信息，那在timestamp转换时，会根据时间zone信息进行转换，如果没有timezone信息默认就是东八区",
+      "properties": {
+        "timezone_id": {
+          "type": "string",
+          "description": "IANA 时区标识（如 Asia/Shanghai），优先使用"
+        },
+        "timezone_offset": {
+          "type": "integer",
+          "description": "UTC 偏移量（秒），当 timezone_id 为空时使用",
+          "format": "int32"
+        }
+      }
+    },
+    "WeAgentCreateMeetingReq": {
+      "type": "object",
+      "description": "对齐 wwopenmeetinglogic::CreateMeetingReq",
+      "properties": {
+        "attendees": {
+          "type": "array",
+          "description": "参与人列表，每项包含 userid 字段",
+          "items": {
+            "type": "object",
+            "$ref": "AttendUserId"
+          },
+          "minItems": 0,
+          "maxItems": 300
+        },
+        "begin_time": {
+          "type": "string",
+          "description": "会议开始时间，格式为YYYY-MM-DD HH:MM:SS，比如2026-03-25 16:03:13",
+          "minimum": 1
+        },
+        "cal_id": {
+          "type": "string",
+          "description": "所属日历本 ID",
+          "minimum": 0
+        },
+        "description": {
+          "type": "string",
+          "description": "备注，最长500字",
+          "format": "byte",
+          "minLength": 0,
+          "maxLength": 500
+        },
+        "end_time": {
+          "type": "string",
+          "description": "会议结束时间，格式为YYYY-MM-DD HH:MM:SS，比如2026-03-25 16:03:13",
+          "minimum": 1
+        },
+        "location": {
+          "type": "string",
+          "description": "地点，最长128字节",
+          "format": "byte",
+          "minLength": 0,
+          "maxLength": 128
+        },
+        "mark_optional_attendees": {
+          "type": "array",
+          "description": "标记可选参与人",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 0,
+          "maxItems": 300
+        },
+        "meeting_room_id": {
+          "type": "string",
+          "description": "会议室 ID 传入会预定会议室"
+        },
+        "subject": {
+          "type": "string",
+          "description": "会议标题，1~255字节",
+          "format": "byte",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "timezone": {
+          "type": "object",
+          "$ref": "TimeZone",
+          "description": "时区信息"
+        }
+      },
+      "required": [
+        "subject",
+        "begin_time",
+        "end_time"
+      ]
+    },
+    "AttendUserId": {
+      "type": "object",
+      "description": "会议更新接口",
+      "properties": {
+        "userid": {
+          "type": "string",
+          "description": "会议参会人userid，唯一标识会议的参会人,不区分",
+          "minimum": 1
+        }
+      }
+    }
+  }
+}

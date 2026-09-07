@@ -1,0 +1,29 @@
+{
+  "method": "calendar.schedules.cancel",
+  "description": "取消（删除）日程，周期日程需指定编辑规则（仅本次、本次及以后、全部）",
+  "request": {
+    "$ref": "SchedulesCancelReq"
+  },
+  "response": {
+    "$ref": "SchedulesCancelTypedRsp"
+  },
+  "schemas": {
+    "SchedulesCancelReq": {
+      "type": "object",
+      "description": "SchedulesCancel（删除日程）",
+      "properties": {
+        "schedule_id": {
+          "type": "string",
+          "description": "日程 ID（必填）",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "schedule_id"
+      ]
+    },
+    "SchedulesCancelTypedRsp": {
+      "type": "object"
+    }
+  }
+}

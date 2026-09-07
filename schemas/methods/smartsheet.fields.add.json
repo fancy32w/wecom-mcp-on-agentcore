@@ -1,0 +1,949 @@
+{
+  "method": "smartsheet.fields.add",
+  "description": "智能表格新增字段",
+  "request": {
+    "$ref": "OaSmartSheetBatchUpdateSchemaReq"
+  },
+  "response": {
+    "$ref": "OaSmartSheetBatchUpdateSchemaTypedRsp"
+  },
+  "schemas": {
+    "OaBarcodeFieldProperty": {
+      "type": "object",
+      "properties": {
+        "mobile_scan_only": {
+          "type": "boolean",
+          "description": "仅限手机扫描录入"
+        }
+      }
+    },
+    "OaFormatter": {
+      "type": "object",
+      "description": "公式字段展示格式（Formatter，与 OaField 的属性字段一一对应）",
+      "properties": {
+        "field_type": {
+          "type": "string",
+          "description": "字段类型，可选值同 OaField.field_type\n @enum FieldType"
+        },
+        "property_attachment": {
+          "type": "object",
+          "$ref": "OaAttachmentFieldProperty"
+        },
+        "property_auto_number": {
+          "type": "object",
+          "$ref": "OaAutoNumberFieldProperty"
+        },
+        "property_barcode": {
+          "type": "object",
+          "$ref": "OaBarcodeFieldProperty"
+        },
+        "property_checkbox": {
+          "type": "object",
+          "$ref": "OaCheckboxFieldProperty"
+        },
+        "property_created_time": {
+          "type": "object",
+          "$ref": "OaCreatedTimeFieldProperty"
+        },
+        "property_currency": {
+          "type": "object",
+          "$ref": "OaCurrencyFieldProperty"
+        },
+        "property_date_time": {
+          "type": "object",
+          "$ref": "OaDateTimeFieldProperty"
+        },
+        "property_formula": {
+          "type": "object",
+          "$ref": "OaFormulaFieldProperty"
+        },
+        "property_location": {
+          "type": "object",
+          "$ref": "OaLocationFieldProperty"
+        },
+        "property_lookup": {
+          "type": "object",
+          "$ref": "OaLookupFieldProperty"
+        },
+        "property_modified_time": {
+          "type": "object",
+          "$ref": "OaModifiedTimeFieldProperty"
+        },
+        "property_number": {
+          "type": "object",
+          "$ref": "OaNumberFieldProperty"
+        },
+        "property_percentage": {
+          "type": "object",
+          "$ref": "OaPercentageFieldProperty"
+        },
+        "property_progress": {
+          "type": "object",
+          "$ref": "OaProgressFieldProperty"
+        },
+        "property_reference": {
+          "type": "object",
+          "$ref": "OaReferenceFieldProperty"
+        },
+        "property_select": {
+          "type": "object",
+          "$ref": "OaSelectFieldProperty"
+        },
+        "property_single_select": {
+          "type": "object",
+          "$ref": "OaSingleSelectFieldProperty"
+        },
+        "property_two_way_link_records": {
+          "type": "object",
+          "$ref": "OaTwoWayLinkRecordsFieldProperty"
+        },
+        "property_url": {
+          "type": "object",
+          "$ref": "OaUrlFieldProperty"
+        },
+        "property_user": {
+          "type": "object",
+          "$ref": "OaUserFieldProperty"
+        },
+        "property_ww_group": {
+          "type": "object",
+          "$ref": "OaWwGroupFieldProperty"
+        }
+      }
+    },
+    "OaSingleSelectFieldProperty": {
+      "type": "object",
+      "properties": {
+        "is_quick_add": {
+          "type": "boolean",
+          "description": "是否允许填写时新增选项"
+        },
+        "options": {
+          "type": "array",
+          "description": "选项列表",
+          "items": {
+            "type": "object",
+            "$ref": "OaOption"
+          }
+        }
+      }
+    },
+    "OaAutoNumberFieldProperty": {
+      "type": "object",
+      "properties": {
+        "reformat_existing_record": {
+          "type": "boolean",
+          "description": "是否应用于已有编号"
+        },
+        "rules": {
+          "type": "array",
+          "description": "自定义规则",
+          "items": {
+            "type": "object",
+            "$ref": "OaNumberRule"
+          }
+        },
+        "type": {
+          "type": "string",
+          "description": "编号类型"
+        }
+      }
+    },
+    "OaUrlFieldProperty": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "超链接展示样式"
+        }
+      }
+    },
+    "OaFormulaItem": {
+      "type": "object",
+      "description": "公式项（对齐下游 sheetapi.FormulaItem）",
+      "properties": {
+        "attribute": {
+          "type": "integer",
+          "description": "属性",
+          "format": "uint32"
+        },
+        "fieldId": {
+          "type": "string",
+          "description": "字段 ID 或标题"
+        },
+        "field_title": {
+          "type": "string",
+          "description": "字段标题（由 fieldId 映射）"
+        },
+        "field_type": {
+          "type": "string",
+          "description": "字段类型"
+        },
+        "tableId": {
+          "type": "string",
+          "description": "子表 ID 或标题"
+        },
+        "table_title": {
+          "type": "string",
+          "description": "子表标题（由 tableId 映射）"
+        },
+        "text": {
+          "type": "string",
+          "description": "文本内容"
+        },
+        "type": {
+          "type": "string",
+          "description": "公式项类型，可选值参见下游 FormulaType 枚举名：\n \"FORMULA_TYPE_TEXT\"、\"FORMULA_TYPE_FIELD\"、\"FORMULA_TYPE_ATTRIBUTES\"、\n \"FORMULA_TYPE_TABLE_REF\"、\"FORMULA_TYPE_FIELD_REF\"、\"FORMULA_TYPE_TABLE_FIELD_REF\"、\n \"FORMULA_TYPE_CURRENT_VALUE\"、\"FORMULA_TYPE_VIEW_REF\"、\"FORMULA_TYPE_LINK_FIELD_REF\"、\n \"FORMULA_TYPE_PAGE_REF\"、\"FORMULA_TYPE_BLOCK_REF\"\n @enum FormulaType"
+        }
+      }
+    },
+    "OaCheckboxFieldProperty": {
+      "type": "object",
+      "properties": {
+        "checked": {
+          "type": "boolean",
+          "description": "新增时是否默认勾选"
+        }
+      }
+    },
+    "OaBoolValue": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "boolean",
+          "description": "布尔值"
+        }
+      }
+    },
+    "OaDateTimeFieldProperty": {
+      "type": "object",
+      "properties": {
+        "auto_fill": {
+          "type": "boolean",
+          "description": "新建记录时是否自动填充时间"
+        },
+        "format": {
+          "type": "string",
+          "description": "日期格式"
+        }
+      }
+    },
+    "OaOption": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "选项 ID"
+        },
+        "style": {
+          "type": "integer",
+          "description": "选项颜色",
+          "format": "int32"
+        },
+        "text": {
+          "type": "string",
+          "description": "选项内容"
+        }
+      }
+    },
+    "OaCurrencyFieldProperty": {
+      "type": "object",
+      "properties": {
+        "currency_type": {
+          "type": "string",
+          "description": "货币类型"
+        },
+        "decimal_places": {
+          "type": "integer",
+          "description": "小数点位数",
+          "format": "int32"
+        },
+        "use_separate": {
+          "type": "boolean",
+          "description": "是否使用千位符"
+        }
+      }
+    },
+    "OaReferenceFieldProperty": {
+      "type": "object",
+      "properties": {
+        "field_title": {
+          "type": "string",
+          "description": "字段标题"
+        },
+        "filed_id": {
+          "type": "string",
+          "description": "关联的字段 ID"
+        },
+        "is_multiple": {
+          "type": "boolean",
+          "description": "是否允许多选"
+        },
+        "sub_id": {
+          "type": "string",
+          "description": "关联的子表 ID"
+        },
+        "sub_title": {
+          "type": "string",
+          "description": "子表标题"
+        },
+        "view_id": {
+          "type": "string",
+          "description": "视图 ID"
+        }
+      }
+    },
+    "OaLookupFilter": {
+      "type": "object",
+      "description": "查找引用字段过滤器（对齐下游 LookupFilter）",
+      "properties": {
+        "conditions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "OaLookupCondition"
+          }
+        },
+        "conjunction": {
+          "type": "string",
+          "description": "组合方式，改成 string 兼容"
+        }
+      }
+    },
+    "OaLookupConditionMatchValue": {
+      "type": "object",
+      "description": "查找引用匹配值（对齐下游 LookupConditionMatchValue）",
+      "properties": {
+        "FieldTitle": {
+          "type": "string",
+          "description": "@fieldId 映射"
+        },
+        "computedKeyType": {
+          "type": "string",
+          "description": "计算 key 的类型"
+        },
+        "fieldId": {
+          "type": "string",
+          "description": "和对应列比较时生效"
+        },
+        "value": {
+          "type": "object",
+          "$ref": "OaConditionValue",
+          "description": "和具体值比较时生效"
+        },
+        "valueType": {
+          "type": "string",
+          "description": "值类型"
+        }
+      }
+    },
+    "OaProgressFieldProperty": {
+      "type": "object",
+      "properties": {
+        "decimal_places": {
+          "type": "integer",
+          "description": "小数位数",
+          "format": "int32"
+        }
+      }
+    },
+    "OaUserFieldProperty": {
+      "type": "object",
+      "properties": {
+        "is_multiple": {
+          "type": "boolean",
+          "description": "允许添加多个人员"
+        },
+        "is_notified": {
+          "type": "boolean",
+          "description": "添加人员时通知用户"
+        }
+      }
+    },
+    "OaNumberRule": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "规则类型"
+        },
+        "value": {
+          "type": "string",
+          "description": "规则值"
+        }
+      }
+    },
+    "OaLocationFieldProperty": {
+      "type": "object",
+      "properties": {
+        "input_type": {
+          "type": "string",
+          "description": "输入类型"
+        }
+      }
+    },
+    "OaLookupFieldProperty": {
+      "type": "object",
+      "description": "查找引用字段属性，field_type=lookup 时有效（对齐下游 LookupFieldProperty）",
+      "properties": {
+        "filter": {
+          "type": "object",
+          "$ref": "OaLookupFilter",
+          "description": "过滤器"
+        },
+        "link_records_field_id": {
+          "type": "string",
+          "description": "关联列字段 ID"
+        },
+        "link_records_field_title": {
+          "type": "string",
+          "description": "关联列字段标题"
+        },
+        "lookup_field_id": {
+          "type": "string",
+          "description": "引用列查找的字段 ID"
+        },
+        "lookup_field_title": {
+          "type": "string",
+          "description": "引用列查找的字段标题"
+        },
+        "lookup_sub_id": {
+          "type": "string",
+          "description": "引用的子表 ID"
+        },
+        "lookup_sub_title": {
+          "type": "string",
+          "description": "引用的子表标题"
+        },
+        "rollup_type": {
+          "type": "string",
+          "description": "统计类型，可选值参见下游 RollupType 枚举名：\n \"original\"、\"unique\"、\"sum\"、\"count\"、\"count_unique\"、\"average\"、\"max\"、\"min\"\n 或大写形式：\"ROLLUP_TYPE_ORIGINAL\" 等\n @enum RollupType"
+        }
+      }
+    },
+    "OaNumberValue": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "number",
+          "description": "数字值",
+          "format": "double"
+        }
+      }
+    },
+    "OaFormulaFieldProperty": {
+      "type": "object",
+      "description": "公式字段属性，field_type=formula 时有效（对齐下游 FormulaFieldProperty）",
+      "properties": {
+        "formatter": {
+          "type": "object",
+          "$ref": "OaFormatter",
+          "description": "展示格式（不一定与计算结果类型一致）"
+        },
+        "formulaModel": {
+          "type": "array",
+          "description": "公式项列表",
+          "items": {
+            "type": "object",
+            "$ref": "OaFormulaItem"
+          }
+        }
+      }
+    },
+    "OaSmartSheetBatchUpdateSchemaReq": {
+      "type": "object",
+      "description": "OaSmartSheetBatchUpdateSchema (修改智能表格结构)",
+      "properties": {
+        "docid": {
+          "type": "string",
+          "description": "支持文档的 docid 和 url",
+          "minLength": 5
+        },
+        "fields": {
+          "type": "array",
+          "description": "列信息，不传则不修改列",
+          "items": {
+            "type": "object",
+            "$ref": "OaField"
+          },
+          "minItems": 0,
+          "maxItems": 150
+        },
+        "new_sheet_title": {
+          "type": "string",
+          "description": "新子表名称"
+        },
+        "sheet_id": {
+          "type": "string",
+          "description": "子表 ID，type=update/delete 时必传，type=add 时不传",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "sheet_title": {
+          "type": "string",
+          "description": "子表名称，type=add 时必传，不传则不设置",
+          "maxLength": 255
+        },
+        "sheet_type": {
+          "type": "string",
+          "description": "子表类型，不传则默认为 smartsheet",
+          "enum": [
+            "smartsheet",
+            "dashboard"
+          ]
+        },
+        "type": {
+          "type": "string",
+          "description": "操作类型，可由 url 推断或 payload 显式传入",
+          "enum": [
+            "add",
+            "update",
+            "delete"
+          ]
+        }
+      },
+      "required": [
+        "docid"
+      ]
+    },
+    "OaAttachmentFieldProperty": {
+      "type": "object",
+      "properties": {
+        "display_mode": {
+          "type": "string",
+          "description": "展示样式"
+        }
+      }
+    },
+    "OaTwoWayLinkRecordsFieldProperty": {
+      "type": "object",
+      "description": "双向关联字段属性，field_type=twowaylinkrecords 时有效（对齐下游 TwoWayLinkRecordsFieldProperty）",
+      "properties": {
+        "back_field_id": {
+          "type": "string",
+          "description": "双向关联的对应列 ID"
+        },
+        "back_field_title": {
+          "type": "string",
+          "description": "双向关联的对应列标题"
+        },
+        "field_id": {
+          "type": "string",
+          "description": "关联的字段 ID"
+        },
+        "field_title": {
+          "type": "string",
+          "description": "关联的字段标题"
+        },
+        "is_multiple": {
+          "type": "boolean",
+          "description": "是否允许多选"
+        },
+        "pad_id": {
+          "type": "string",
+          "description": "关联的文档 ID，为空时表示关联当前文档"
+        },
+        "sub_id": {
+          "type": "string",
+          "description": "关联的子表 ID，为空时表示关联本子表"
+        },
+        "sub_title": {
+          "type": "string",
+          "description": "关联的子表标题"
+        },
+        "view_id": {
+          "type": "string",
+          "description": "视图 ID"
+        }
+      }
+    },
+    "OaField": {
+      "type": "object",
+      "description": "列（字段）属性信息",
+      "properties": {
+        "field_id": {
+          "type": "string",
+          "description": "字段 ID"
+        },
+        "field_title": {
+          "type": "string",
+          "description": "字段标题"
+        },
+        "field_type": {
+          "type": "string",
+          "description": "字段类型, 不要校验了，要不很容易和下游对不齐。"
+        },
+        "new_field_title": {
+          "type": "string",
+          "description": "新字段名称"
+        },
+        "property_attachment": {
+          "type": "object",
+          "$ref": "OaAttachmentFieldProperty"
+        },
+        "property_auto_number": {
+          "type": "object",
+          "$ref": "OaAutoNumberFieldProperty"
+        },
+        "property_barcode": {
+          "type": "object",
+          "$ref": "OaBarcodeFieldProperty"
+        },
+        "property_checkbox": {
+          "type": "object",
+          "$ref": "OaCheckboxFieldProperty"
+        },
+        "property_created_time": {
+          "type": "object",
+          "$ref": "OaCreatedTimeFieldProperty"
+        },
+        "property_currency": {
+          "type": "object",
+          "$ref": "OaCurrencyFieldProperty"
+        },
+        "property_date_time": {
+          "type": "object",
+          "$ref": "OaDateTimeFieldProperty"
+        },
+        "property_formula": {
+          "type": "object",
+          "$ref": "OaFormulaFieldProperty",
+          "description": "公式字段属性，field_type=formula 时有效"
+        },
+        "property_location": {
+          "type": "object",
+          "$ref": "OaLocationFieldProperty"
+        },
+        "property_lookup": {
+          "type": "object",
+          "$ref": "OaLookupFieldProperty",
+          "description": "查找引用字段属性，field_type=lookup 时有效"
+        },
+        "property_modified_time": {
+          "type": "object",
+          "$ref": "OaModifiedTimeFieldProperty"
+        },
+        "property_number": {
+          "type": "object",
+          "$ref": "OaNumberFieldProperty"
+        },
+        "property_percentage": {
+          "type": "object",
+          "$ref": "OaPercentageFieldProperty"
+        },
+        "property_progress": {
+          "type": "object",
+          "$ref": "OaProgressFieldProperty"
+        },
+        "property_reference": {
+          "type": "object",
+          "$ref": "OaReferenceFieldProperty"
+        },
+        "property_select": {
+          "type": "object",
+          "$ref": "OaSelectFieldProperty"
+        },
+        "property_single_select": {
+          "type": "object",
+          "$ref": "OaSingleSelectFieldProperty"
+        },
+        "property_two_way_link_records": {
+          "type": "object",
+          "$ref": "OaTwoWayLinkRecordsFieldProperty",
+          "description": "双向关联字段属性，field_type=twowaylinkrecords 时有效"
+        },
+        "property_url": {
+          "type": "object",
+          "$ref": "OaUrlFieldProperty"
+        },
+        "property_user": {
+          "type": "object",
+          "$ref": "OaUserFieldProperty"
+        },
+        "property_ww_group": {
+          "type": "object",
+          "$ref": "OaWwGroupFieldProperty"
+        }
+      }
+    },
+    "OaModifiedTimeFieldProperty": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "type": "string",
+          "description": "日期格式"
+        }
+      }
+    },
+    "OaPercentageFieldProperty": {
+      "type": "object",
+      "properties": {
+        "decimal_places": {
+          "type": "integer",
+          "description": "小数点位数",
+          "format": "int32"
+        },
+        "use_separate": {
+          "type": "boolean",
+          "description": "是否使用千位符"
+        }
+      }
+    },
+    "OaSelectFieldProperty": {
+      "type": "object",
+      "properties": {
+        "is_quick_add": {
+          "type": "boolean",
+          "description": "是否允许填写时新增选项"
+        },
+        "options": {
+          "type": "array",
+          "description": "选项列表",
+          "items": {
+            "type": "object",
+            "$ref": "OaOption"
+          }
+        }
+      }
+    },
+    "OaStringValue": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "array",
+          "description": "字符串值列表",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "OaLookupCondition": {
+      "type": "object",
+      "description": "查找引用过滤条件（对齐下游 LookupCondition，字段名 lower camelCase 与下游一致）",
+      "properties": {
+        "conditionId": {
+          "type": "string",
+          "description": "条件 ID"
+        },
+        "fieldId": {
+          "type": "string",
+          "description": "列 ID"
+        },
+        "fieldTitle": {
+          "type": "string",
+          "description": "列标题（与 fieldId 二选一，优先使用 fieldId）"
+        },
+        "fieldType": {
+          "type": "string",
+          "description": "列类型（可能用于列类型变化时判断）"
+        },
+        "matchValue": {
+          "type": "object",
+          "$ref": "OaLookupConditionMatchValue",
+          "description": "用于匹配的值"
+        },
+        "operator": {
+          "type": "string",
+          "description": "操作符和筛选复用，转为公式时需要注意类型差别"
+        }
+      }
+    },
+    "OaNumberFieldProperty": {
+      "type": "object",
+      "description": "FieldProperty 相关",
+      "properties": {
+        "decimal_places": {
+          "type": "integer",
+          "description": "小数点位数",
+          "format": "int32"
+        },
+        "use_separate": {
+          "type": "boolean",
+          "description": "是否使用千位符"
+        }
+      }
+    },
+    "OaSmartSheetBatchUpdateSchemaTypedRsp": {
+      "type": "object",
+      "properties": {
+        "errcode": {
+          "type": "integer",
+          "description": "错误码",
+          "format": "int32"
+        },
+        "errmsg": {
+          "type": "string",
+          "description": "错误信息"
+        },
+        "fields": {
+          "type": "array",
+          "description": "变更的列数据",
+          "items": {
+            "type": "object",
+            "$ref": "OaField"
+          }
+        },
+        "fields_count": {
+          "type": "integer",
+          "description": "变更的列数据 数组元素数量（框架自动生成）"
+        }
+      }
+    },
+    "OaWwGroupFieldProperty": {
+      "type": "object",
+      "properties": {
+        "allow_multiple": {
+          "type": "boolean",
+          "description": "是否允许多个群聊"
+        }
+      }
+    },
+    "OaFilterDateTimeValue": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "日期类型"
+        },
+        "value": {
+          "type": "array",
+          "description": "日期值",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "OaConditionValue": {
+      "type": "object",
+      "description": "查找引用过滤条件值（对齐下游 ConditionValue）\n说明：下游中 valueImages / valueAttachment / valueUsers 等使用 google.protobuf.Value/ListValue，\n为避免上游引入 protobuf well-known types 与裸结构对不齐，统一以 JSON 字符串表达，\n由调用方自行 JSON 序列化（与 OaRecordValue.value 一致策略）。\n字段编号严格对齐下游 ConditionValue（25/26 在下游 reserved，此处也保留）。",
+      "properties": {
+        "valueAttachment": {
+          "type": "string",
+          "description": "附件，JSON 序列化字符串"
+        },
+        "valueBarcode": {
+          "type": "object",
+          "$ref": "OaStringValue",
+          "description": "条码"
+        },
+        "valueCheckbox": {
+          "type": "object",
+          "$ref": "OaBoolValue",
+          "description": "复选框值"
+        },
+        "valueCreatedTime": {
+          "type": "string",
+          "description": "创建时间，JSON 序列化字符串"
+        },
+        "valueCreatedUser": {
+          "type": "string",
+          "description": "创建者，JSON 序列化字符串"
+        },
+        "valueDateTime": {
+          "type": "object",
+          "$ref": "OaFilterDateTimeValue",
+          "description": "日期值"
+        },
+        "valueEmail": {
+          "type": "object",
+          "$ref": "OaStringValue",
+          "description": "邮箱"
+        },
+        "valueFormula": {
+          "type": "string",
+          "description": "公式，JSON 序列化字符串"
+        },
+        "valueImages": {
+          "type": "string",
+          "description": "图片，JSON 序列化字符串"
+        },
+        "valueLocation": {
+          "type": "string",
+          "description": "地理位置，JSON 序列化字符串"
+        },
+        "valueLookup": {
+          "type": "string",
+          "description": "查找引用，JSON 序列化字符串"
+        },
+        "valueModifiedTime": {
+          "type": "string",
+          "description": "修改时间，JSON 序列化字符串"
+        },
+        "valueModifiedUser": {
+          "type": "string",
+          "description": "修改者，JSON 序列化字符串"
+        },
+        "valueNumber": {
+          "type": "object",
+          "$ref": "OaNumberValue",
+          "description": "数字值"
+        },
+        "valuePercentage": {
+          "type": "object",
+          "$ref": "OaNumberValue",
+          "description": "百分数"
+        },
+        "valuePhoneNumber": {
+          "type": "object",
+          "$ref": "OaStringValue",
+          "description": "电话"
+        },
+        "valueProgress": {
+          "type": "string",
+          "description": "进度，JSON 序列化字符串"
+        },
+        "valueReference": {
+          "type": "object",
+          "$ref": "OaStringValue",
+          "description": "关联"
+        },
+        "valueSelects": {
+          "type": "string",
+          "description": "多选，JSON 序列化字符串"
+        },
+        "valueSingleSelect": {
+          "type": "string",
+          "description": "单选，JSON 序列化字符串"
+        },
+        "valueText": {
+          "type": "object",
+          "$ref": "OaStringValue",
+          "description": "文本值"
+        },
+        "valueTitle": {
+          "type": "object",
+          "$ref": "OaStringValue",
+          "description": "标题"
+        },
+        "valueTwoWayLinkRecords": {
+          "type": "object",
+          "$ref": "OaStringValue",
+          "description": "双向关联"
+        },
+        "valueUrl": {
+          "type": "string",
+          "description": "超链接，JSON 序列化字符串"
+        },
+        "valueUsers": {
+          "type": "string",
+          "description": "成员列表，JSON 序列化字符串"
+        },
+        "valueUsersC": {
+          "type": "string",
+          "description": "成员（兼容字段），JSON 序列化字符串"
+        }
+      }
+    },
+    "OaCreatedTimeFieldProperty": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "type": "string",
+          "description": "日期格式"
+        }
+      }
+    }
+  }
+}

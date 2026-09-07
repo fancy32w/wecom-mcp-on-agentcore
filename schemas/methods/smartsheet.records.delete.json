@@ -1,0 +1,114 @@
+{
+  "method": "smartsheet.records.delete",
+  "description": "批量删除智能表格行记录",
+  "request": {
+    "$ref": "OaSmartSheetBatchUpdateRecordsReq"
+  },
+  "response": {
+    "$ref": "OaSmartSheetBatchUpdateRecordsTypedRsp"
+  },
+  "schemas": {
+    "OaSmartSheetBatchUpdateRecordsReq": {
+      "type": "object",
+      "description": "OaSmartSheetBatchUpdateRecords (批量更新智能表格记录)",
+      "properties": {
+        "docid": {
+          "type": "string",
+          "description": "支持文档的 docid 和 url",
+          "minLength": 5
+        },
+        "key_type": {
+          "type": "string",
+          "description": "key 类型，不传则使用默认 key 类型",
+          "enum": [
+            "field_title",
+            "field_id",
+            "CELL_VALUE_KEY_TYPE_FIELD_TITLE",
+            "CELL_VALUE_KEY_TYPE_FIELD_ID"
+          ],
+          "maxLength": 64
+        },
+        "records": {
+          "type": "array",
+          "description": "操作的行信息",
+          "items": {
+            "type": "object",
+            "$ref": "OaRecordParam"
+          },
+          "minItems": 1,
+          "maxItems": 2000
+        },
+        "sheet_id": {
+          "type": "string",
+          "description": "工作表唯一标识",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "sheet_title": {
+          "type": "string",
+          "description": "工作表名称"
+        },
+        "type": {
+          "type": "string",
+          "description": "操作类型",
+          "enum": [
+            "add",
+            "update",
+            "delete"
+          ]
+        }
+      },
+      "required": [
+        "docid",
+        "records"
+      ]
+    },
+    "OaRecordParam": {
+      "type": "object",
+      "description": "行操作参数（统一结构，输入输出均使用此结构）\n原始 proto3 类型: map<string, google.protobuf.Value>",
+      "properties": {
+        "record_id": {
+          "type": "string",
+          "description": "记录 ID"
+        },
+        "values": {
+          "type": "object",
+          "description": "记录内容（key: 字段标题/ID, value: JSON 序列化的值）",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "OaSmartSheetBatchUpdateRecordsTypedRsp": {
+      "type": "object",
+      "properties": {
+        "errcode": {
+          "type": "integer",
+          "description": "错误码",
+          "format": "int32"
+        },
+        "errmsg": {
+          "type": "string",
+          "description": "错误信息"
+        },
+        "helper_msg": {
+          "type": "string",
+          "description": "提示信息"
+        },
+        "records": {
+          "type": "array",
+          "description": "行信息",
+          "items": {
+            "type": "object",
+            "$ref": "OaRecordParam"
+          }
+        },
+        "records_count": {
+          "type": "integer",
+          "description": "行信息 数组元素数量（框架自动生成）"
+        }
+      }
+    }
+  }
+}

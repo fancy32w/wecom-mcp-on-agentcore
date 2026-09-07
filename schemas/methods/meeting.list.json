@@ -1,0 +1,140 @@
+{
+  "method": "meeting.list",
+  "description": "按时间范围拉取开始时间在对应范围内的会议列表：标题、开始时间、结束时间、参会人数量、时区、会议室、地点、是否是周期会议",
+  "request": {
+    "$ref": "WeAgentGetMeetingListReq"
+  },
+  "response": {
+    "$ref": "WeAgentGetMeetingListRsp"
+  },
+  "schemas": {
+    "WeAgentGetMeetingListRsp": {
+      "type": "object",
+      "description": "按时间范围拉取会议列表响应",
+      "properties": {
+        "attended_meetings": {
+          "type": "array",
+          "description": "用户参加的会议列表（非创建者）",
+          "items": {
+            "type": "object",
+            "$ref": "MeetingRecord"
+          }
+        },
+        "attended_meetings_count": {
+          "type": "integer",
+          "description": "用户参加的会议列表（非创建者） 数组元素数量（框架自动生成）"
+        },
+        "created_meetings": {
+          "type": "array",
+          "description": "用户创建的会议列表",
+          "items": {
+            "type": "object",
+            "$ref": "MeetingRecord"
+          }
+        },
+        "created_meetings_count": {
+          "type": "integer",
+          "description": "用户创建的会议列表 数组元素数量（框架自动生成）"
+        },
+        "has_more": {
+          "type": "boolean",
+          "description": "是否还有更多数据"
+        },
+        "next_cursor": {
+          "type": "string",
+          "description": "下一页游标"
+        }
+      }
+    },
+    "WeAgentGetMeetingListReq": {
+      "type": "object",
+      "description": "按时间范围拉取会议列表请求",
+      "properties": {
+        "begin_time": {
+          "type": "string",
+          "description": "过滤范围起始时间（YYYY-MM-DD HH:mm:ss），仅返回会议开始时间 >= 该值的会议，  如果begin_time和end_time都不传则，设置默认值为当前时间到30天后"
+        },
+        "cursor": {
+          "type": "string",
+          "description": "分页游标，cursor不传，则从第0页开始拉取"
+        },
+        "end_time": {
+          "type": "string",
+          "description": "过滤范围截止时间（YYYY-MM-DD HH:mm:ss），仅返回会议开始时间 <= 该值的会议  如果begin_time和end_time都不传则，设置默认值为当前时间到30天后"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "每页数量，默认20，上限100，limit不传，则默认用20",
+          "format": "uint32",
+          "maximum": 100
+        }
+      }
+    },
+    "MeetingRecord": {
+      "type": "object",
+      "description": "搜索结果中的单条会议记录",
+      "properties": {
+        "attendee_count": {
+          "type": "integer",
+          "description": "参会人数量",
+          "format": "uint32"
+        },
+        "begin_time": {
+          "type": "string",
+          "description": "会议开始时间（YYYY-MM-DD HH:MM:SS 格式）"
+        },
+        "creator_name": {
+          "type": "string",
+          "description": "创建人名称"
+        },
+        "end_time": {
+          "type": "string",
+          "description": "会议结束时间（YYYY-MM-DD HH:MM:SS 格式）"
+        },
+        "is_repeat_meeting": {
+          "type": "boolean",
+          "description": "是否为周期性会议"
+        },
+        "location": {
+          "type": "string",
+          "description": "会议地点"
+        },
+        "meeting_id": {
+          "type": "string",
+          "description": "会议ID，唯一标识一场会议"
+        },
+        "meeting_room": {
+          "type": "string",
+          "description": "会议室名称（文本描述）"
+        },
+        "sub_meeting_id": {
+          "type": "string",
+          "description": "子会议ID，用于标识重复会议中的某一次"
+        },
+        "subject": {
+          "type": "string",
+          "description": "会议主题/标题"
+        },
+        "timezone": {
+          "type": "object",
+          "$ref": "ScheduleTimezone",
+          "description": "时区"
+        }
+      }
+    },
+    "ScheduleTimezone": {
+      "type": "object",
+      "properties": {
+        "timezone_id": {
+          "type": "string",
+          "description": "IANA 时区标识（如 Asia/Shanghai），优先使用"
+        },
+        "timezone_offset": {
+          "type": "integer",
+          "description": "UTC 偏移量（秒），当 timezone_id 为空时使用",
+          "format": "int32"
+        }
+      }
+    }
+  }
+}

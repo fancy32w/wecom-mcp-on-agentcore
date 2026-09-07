@@ -1,0 +1,44 @@
+{
+  "method": "smartpage.create",
+  "description": "新建智能页面文档",
+  "request": {
+    "$ref": "SmartPageCreateReq"
+  },
+  "response": {
+    "$ref": "OaDocCreateTypedRsp"
+  },
+  "schemas": {
+    "OaDocCreateTypedRsp": {
+      "type": "object",
+      "properties": {
+        "doc_name": {
+          "type": "string",
+          "description": "文档名"
+        },
+        "docid": {
+          "type": "string",
+          "description": "新建的文档 ID"
+        },
+        "url": {
+          "type": "string",
+          "description": "文档访问链接"
+        }
+      }
+    },
+    "SmartPageCreateReq": {
+      "type": "object",
+      "description": "SmartPageCreate (Create a smart page)",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Smart page title, mapped to doc/create doc_name",
+          "minLength": 1,
+          "maxLength": 255
+        }
+      },
+      "required": [
+        "name"
+      ]
+    }
+  }
+}

@@ -1,0 +1,27 @@
+# 依赖：各自 npm install / pip install，不入库
+node_modules/
+.venv/
+__pycache__/
+*.pyc
+
+# CDK 合成产物 —— **含 AWS 账号 ID、asset 桶名、角色 ARN**，绝不能入库
+infra/cdk.out/
+
+# 部署产生的本地状态
+# 注意：.gitignore 只在**行首**识别 #，行尾注释会被当成模式的一部分导致规则失效。
+# .deploy-outputs.json  CDK 输出快照，含账号 ID 与 CloudFront 域名
+# .last-image           上次构建的镜像 URI，含账号 ID
+.deploy-outputs.json
+.last-image
+
+# 打包产物
+*.zip
+
+# 内部过程记录，不作为交付物公开
+docs/改造评估.md
+
+# 编辑器 / 系统
+.DS_Store
+.idea/
+.vscode/
+*.swp

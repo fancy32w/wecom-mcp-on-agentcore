@@ -1,0 +1,94 @@
+{
+  "method": "contact.users.search",
+  "description": "通过 keywords 搜索成员信息（open cli场景）",
+  "request": {
+    "$ref": "QueryUserOpenReq"
+  },
+  "response": {
+    "$ref": "QueryUserOpenRsp"
+  },
+  "schemas": {
+    "QueryUserOpenUserInfo": {
+      "type": "object",
+      "properties": {
+        "alias": {
+          "type": "string",
+          "description": "英文名"
+        },
+        "departments": {
+          "type": "array",
+          "description": "部门信息，主部门靠前",
+          "items": {
+            "type": "string",
+            "format": "byte"
+          }
+        },
+        "email": {
+          "type": "string",
+          "description": "邮箱（OPEN 场景新增返回）"
+        },
+        "matched_keywords": {
+          "type": "array",
+          "description": "匹配的关键词",
+          "items": {
+            "type": "string",
+            "format": "byte"
+          }
+        },
+        "name": {
+          "type": "string",
+          "description": "用户 userid对应成员的名称"
+        },
+        "position": {
+          "type": "string",
+          "description": "职务",
+          "format": "byte"
+        },
+        "userid": {
+          "type": "string",
+          "description": "用户 userid"
+        }
+      }
+    },
+    "QueryUserOpenReq": {
+      "type": "object",
+      "properties": {
+        "keywords": {
+          "type": "array",
+          "description": "[新版本] 搜索关键词列表，支持传多个",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "maxItems": 10
+        },
+        "search_mode": {
+          "type": "string",
+          "description": "查找模式。list：全量列表模式（热度+部门距离排序，数量截断）；不传：默认模式（热度top3截断+数量截断）"
+        }
+      }
+    },
+    "QueryUserOpenRsp": {
+      "type": "object",
+      "properties": {
+        "hint": {
+          "type": "string",
+          "description": "补充说明",
+          "format": "byte"
+        },
+        "users": {
+          "type": "array",
+          "description": "用户信息列表",
+          "items": {
+            "type": "object",
+            "$ref": "QueryUserOpenUserInfo"
+          }
+        },
+        "users_count": {
+          "type": "integer",
+          "description": "用户信息列表 数组元素数量（框架自动生成）"
+        }
+      }
+    }
+  }
+}

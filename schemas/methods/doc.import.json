@@ -1,0 +1,87 @@
+{
+  "method": "doc.import",
+  "description": "创建文档导入任务（将外部文件导入为在线文档），也可通过传入 taskid 查询已有导入任务的状态",
+  "request": {
+    "$ref": "OaDocImportTaskCreateReq"
+  },
+  "response": {
+    "$ref": "OaDocImportTaskCreateTypedRsp"
+  },
+  "schemas": {
+    "OaDocImportTaskCreateReq": {
+      "type": "object",
+      "description": "OaDocImportTaskCreate (导入文档-创建任务 / 查询任务)",
+      "properties": {
+        "append_doc_id": {
+          "type": "string",
+          "description": "支持文档的 docid 和 url  ， 有传则代表导入追加到对应智能表上，跟原有子表名称重复要做重命名；仅 doc_type=sheet/smartsheet 生效，其它类型忽略"
+        },
+        "content_path": {
+          "type": "string",
+          "description": "同 file_path，兼容模型传 content_path 字段名",
+          "x-wecom-file-upload": {},
+          "hidden": true
+        },
+        "doc_type": {
+          "type": "string",
+          "description": "表格类型，不传则默认为 doc",
+          "enum": [
+            "doc",
+            "sheet",
+            "smartsheet"
+          ]
+        },
+        "file_content": {
+          "type": "string",
+          "description": "导入文件的文件内容",
+          "minLength": 0,
+          "maxLength": 1000000
+        },
+        "file_name": {
+          "type": "string",
+          "description": "二进制文件名，含后缀，业务判断类型",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "file_path": {
+          "type": "string",
+          "description": "导入文件的文件内容路径，与file_content二选一",
+          "x-wecom-file-upload": {},
+          "minLength": 0,
+          "maxLength": 1000000
+        },
+        "passwd": {
+          "type": "string",
+          "description": "office 文件密码，不传则不使用密码",
+          "maxLength": 256
+        }
+      }
+    },
+    "OaDocImportTaskCreateTypedRsp": {
+      "type": "object",
+      "properties": {
+        "docid": {
+          "type": "string",
+          "description": "导入成功后的文档 ID"
+        },
+        "task_id": {
+          "type": "string",
+          "description": "导入任务 ID"
+        },
+        "task_status": {
+          "type": "string",
+          "description": "任务结果(succ/fail/processing)，查询任务时返回",
+          "enum": [
+            "succ",
+            "fail",
+            "processing"
+          ]
+        },
+        "url": {
+          "type": "string",
+          "description": "导入成功后的文档 URL"
+        }
+      }
+    }
+  }
+}

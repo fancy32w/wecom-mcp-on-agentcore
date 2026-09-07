@@ -1,0 +1,57 @@
+{
+  "method": "meeting.rooms.buildings.list",
+  "description": "查询企业会议室楼栋信息。",
+  "request": {
+    "$ref": "WeAgentGetCurrentBuildingReq"
+  },
+  "response": {
+    "$ref": "WeAgentGetCurrentBuildingRsp"
+  },
+  "schemas": {
+    "WeAgentGetCurrentBuildingRsp": {
+      "type": "object",
+      "description": "Agent 拉取当前办公大楼响应",
+      "properties": {
+        "buildings": {
+          "type": "array",
+          "description": "大楼列表",
+          "items": {
+            "type": "object",
+            "$ref": "BuildingItem"
+          }
+        },
+        "buildings_count": {
+          "type": "integer",
+          "description": "大楼列表 数组元素数量（框架自动生成）"
+        },
+        "total_count": {
+          "type": "integer",
+          "description": "大楼总数",
+          "format": "uint32"
+        }
+      }
+    },
+    "WeAgentGetCurrentBuildingReq": {
+      "type": "object",
+      "description": "Agent 拉取当前办公大楼业务请求"
+    },
+    "BuildingItem": {
+      "type": "object",
+      "description": "大楼信息条目（用于当前办公大楼接口）",
+      "properties": {
+        "city": {
+          "type": "string",
+          "description": "城市名称"
+        },
+        "is_current": {
+          "type": "boolean",
+          "description": "是否为当前办公大楼"
+        },
+        "name": {
+          "type": "string",
+          "description": "大楼名称"
+        }
+      }
+    }
+  }
+}

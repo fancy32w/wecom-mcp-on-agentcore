@@ -1,0 +1,118 @@
+{
+  "method": "smartpage.pages.get",
+  "description": "读取智能主页内容",
+  "request": {
+    "$ref": "ScPagesReadReq"
+  },
+  "response": {
+    "$ref": "ScPagesReadRsp"
+  },
+  "schemas": {
+    "ScPagesReadReq": {
+      "type": "object",
+      "description": "action: 读取智能主页内容",
+      "properties": {
+        "content_type": {
+          "type": "string",
+          "description": "content类型",
+          "enum": [
+            "text",
+            "markdown",
+            "block"
+          ]
+        },
+        "docid": {
+          "type": "string",
+          "description": "文档的 url，与 docid 二选一，不传则使用 docid",
+          "maxLength": 5000
+        },
+        "page_id": {
+          "type": "string",
+          "description": "页面id",
+          "maxLength": 5000
+        },
+        "url": {
+          "type": "string",
+          "description": "返回的内容格式，不传则使用默认格式",
+          "maxLength": 5000
+        }
+      }
+    },
+    "PageContentItem": {
+      "type": "object",
+      "description": "PageDataType: \"markdown\" | \"block\"\nPageLayoutType: \"default\" | \"full_width\" | \"paper\"\nContentType: \"markdown\" | \"text\" | \"block\"",
+      "properties": {
+        "content": {
+          "type": "object",
+          "$ref": "PageContentItem.PageContent",
+          "description": "内容"
+        },
+        "content_file_inner": {
+          "type": "string",
+          "description": "content转存路径（内容不长时直接返回原文）"
+        },
+        "content_type": {
+          "type": "string",
+          "description": "content类型",
+          "enum": [
+            "text",
+            "markdown",
+            "block"
+          ]
+        },
+        "file_path": {
+          "type": "string",
+          "description": "content转存路径（内容超长时框架自动落盘为文件，值为文件路径）",
+          "x-wecom-file-save": {
+            "fileName": "smartpage_content.json"
+          }
+        },
+        "page_id": {
+          "type": "string",
+          "description": "页面id"
+        },
+        "page_title": {
+          "type": "string",
+          "description": "标题"
+        },
+        "parent_id": {
+          "type": "string"
+        }
+      }
+    },
+    "ScPagesReadRsp": {
+      "type": "object",
+      "properties": {
+        "doc_title": {
+          "type": "string",
+          "description": "文档标题"
+        },
+        "pages": {
+          "type": "array",
+          "description": "page内容",
+          "items": {
+            "type": "object",
+            "$ref": "PageContentItem"
+          }
+        },
+        "pages_count": {
+          "type": "integer",
+          "description": "page内容 数组元素数量（框架自动生成）"
+        }
+      }
+    },
+    "PageContentItem.PageContent": {
+      "type": "object",
+      "properties": {
+        "markdown_content": {
+          "type": "string",
+          "description": "markdown类型内容"
+        },
+        "text": {
+          "type": "string",
+          "description": "文字类型内容"
+        }
+      }
+    }
+  }
+}

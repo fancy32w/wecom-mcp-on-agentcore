@@ -1,0 +1,283 @@
+{
+  "method": "meeting.get",
+  "description": "获取会议详情：标题、开始时间、结束时间、是否全天、时区、会议室、周期规则、参与人列表、会议状态、智能纪要地址、录制文件地址、地点、备注",
+  "request": {
+    "$ref": "WeAgentGetMeetingInfoReq"
+  },
+  "response": {
+    "$ref": "WeAgentGetMeetingInfoRsp"
+  },
+  "schemas": {
+    "ScheduleTimezone": {
+      "type": "object",
+      "properties": {
+        "timezone_id": {
+          "type": "string",
+          "description": "IANA 时区标识（如 Asia/Shanghai），优先使用"
+        },
+        "timezone_offset": {
+          "type": "integer",
+          "description": "UTC 偏移量（秒），当 timezone_id 为空时使用",
+          "format": "int32"
+        }
+      }
+    },
+    "MeetingRepeatRule": {
+      "type": "object",
+      "description": "周期会议规则",
+      "properties": {
+        "first_begin_time": {
+          "type": "string",
+          "description": "第一次开始时间（YYYY-MM-DD HH:mm:ss）"
+        },
+        "first_end_time": {
+          "type": "string",
+          "description": "第一次结束时间（YYYY-MM-DD HH:mm:ss）"
+        },
+        "repeat_days": {
+          "type": "integer",
+          "description": "重复天数",
+          "format": "uint32"
+        },
+        "repeat_step": {
+          "type": "integer",
+          "description": "每[n]（天、周、月）数",
+          "format": "uint32"
+        },
+        "repeat_type": {
+          "type": "string",
+          "description": "周期类型：\"daily\"每天、\"weekday\"每个工作日、\"weekly\"每周、\"biweekly\"每两周、\"monthly\"每月",
+          "enum": [
+            "daily",
+            "weekday",
+            "weekly",
+            "biweekly",
+            "monthly"
+          ]
+        },
+        "until_date": {
+          "type": "string",
+          "description": "结束日期（YYYY-MM-DD HH:mm:ss）"
+        },
+        "until_times": {
+          "type": "integer",
+          "description": "结束次数",
+          "format": "uint32"
+        },
+        "until_type": {
+          "type": "string",
+          "description": "结束类型：\"by_date\"按日期结束、\"by_times\"按次结束",
+          "enum": [
+            "by_date",
+            "by_times"
+          ]
+        },
+        "version": {
+          "type": "integer",
+          "description": "重复规则版本，默认0",
+          "format": "uint32"
+        }
+      }
+    },
+    "WeAgentGetMeetingInfoRsp": {
+      "type": "object",
+      "description": "查询会议详情响应",
+      "properties": {
+        "meetings": {
+          "type": "array",
+          "description": "会议详情列表",
+          "items": {
+            "type": "object",
+            "$ref": "MeetingDetailRecord"
+          }
+        },
+        "meetings_count": {
+          "type": "integer",
+          "description": "会议详情列表 数组元素数量（框架自动生成）"
+        }
+      }
+    },
+    "MeetingIdItem": {
+      "type": "object",
+      "description": "查询会议详情请求中的单个会议ID项",
+      "properties": {
+        "meeting_id": {
+          "type": "string",
+          "description": "会议id，标识要查询的会议，必传字段",
+          "minimum": 1
+        },
+        "sub_meeting_id": {
+          "type": "string",
+          "description": "子会议id，周期会议的场景下标记要查询的某一场子会议，非周期会议时不需要传，周期会议场景下必传，没传的话不会返回子会议的信息",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "meeting_id"
+      ]
+    },
+    "WeAgentGetMeetingInfoReq": {
+      "type": "object",
+      "description": "查询会议详情请求",
+      "properties": {
+        "meeting_ids": {
+          "type": "array",
+          "description": "个人大圆必须传；团队大圆meeting_ids 与 urls 至少存在一项，两者合计上限 10（cpp 层语义校验），不传则使用url去转换meetingid",
+          "items": {
+            "type": "object",
+            "$ref": "MeetingIdItem"
+          },
+          "minItems": 0,
+          "maxItems": 10
+        },
+        "urls": {
+          "type": "array",
+          "description": "团队大圆meeting_ids 与 urls 至少存在一项，两者合计上限 10（cpp 层语义校验），不传则直接使用meeting_ids",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 0,
+          "maxItems": 10
+        }
+      }
+    },
+    "MeetingNoteItem": {
+      "type": "object",
+      "description": "单条智能纪要信息（对应一个媒体房间）",
+      "properties": {
+        "note_content": {
+          "type": "string",
+          "description": "智能纪要内容"
+        },
+        "todo_content": {
+          "type": "string",
+          "description": "待办内容"
+        }
+      }
+    },
+    "MeetingDetailRecord": {
+      "type": "object",
+      "description": "单条会议详情",
+      "properties": {
+        "attendees": {
+          "type": "array",
+          "description": "参会人列表（内外部统一结构，通过 is_external 区分）",
+          "items": {
+            "type": "object",
+            "$ref": "MeetingAttendeeItem"
+          }
+        },
+        "begin_time": {
+          "type": "string",
+          "description": "开始时间（YYYY-MM-DD HH:mm:ss）"
+        },
+        "current_user_enter_time": {
+          "type": "string",
+          "description": "当前调用用户的入会时间（YYYY-MM-DD HH:mm:ss），取最早一次入会时间；仅会议结束后返回，未入会时为空"
+        },
+        "current_user_quit_time": {
+          "type": "string",
+          "description": "当前调用用户的离会时间（YYYY-MM-DD HH:mm:ss），取最晚一次离会时间；仅会议结束后返回，未入会时为空"
+        },
+        "description": {
+          "type": "string",
+          "description": "备注"
+        },
+        "end_time": {
+          "type": "string",
+          "description": "结束时间（YYYY-MM-DD HH:mm:ss）"
+        },
+        "has_note_permission": {
+          "type": "boolean",
+          "description": "是否有该会议纪要的权限"
+        },
+        "is_except_meet": {
+          "type": "boolean",
+          "description": "是否是例外会议，即周期会议下被修改的一场子会议"
+        },
+        "location": {
+          "type": "string",
+          "description": "会议地点"
+        },
+        "meeting_id": {
+          "type": "string",
+          "description": "会议id，唯一标识一场会议"
+        },
+        "meeting_room": {
+          "type": "string",
+          "description": "会议室名称"
+        },
+        "meeting_status": {
+          "type": "string",
+          "description": "会议状态：\"init\"未开始、\"started\"进行中、\"end\"已结束（终止态，不回退）",
+          "enum": [
+            "init",
+            "started",
+            "end"
+          ]
+        },
+        "note_url": {
+          "type": "string",
+          "description": "会议智能纪要url"
+        },
+        "notes": {
+          "type": "array",
+          "description": "智能纪要列表（每个媒体房间一条，最多10条）",
+          "items": {
+            "type": "object",
+            "$ref": "MeetingNoteItem"
+          }
+        },
+        "record_url": {
+          "type": "string",
+          "description": "录制地址"
+        },
+        "repeat_rule": {
+          "type": "object",
+          "$ref": "MeetingRepeatRule",
+          "description": "周期规则（周期会议时返回）"
+        },
+        "sub_meeting_id": {
+          "type": "string",
+          "description": "子会议id，唯一标识一场周期会议下的子会议，周期会议修改的场景返回"
+        },
+        "subject": {
+          "type": "string",
+          "description": "会议标题"
+        },
+        "timezone": {
+          "type": "object",
+          "$ref": "ScheduleTimezone",
+          "description": "时区"
+        }
+      }
+    },
+    "MeetingAttendeeItem": {
+      "type": "object",
+      "description": "参会人信息",
+      "properties": {
+        "duration": {
+          "type": "integer",
+          "description": "参会时长（秒）",
+          "format": "uint32"
+        },
+        "is_attended": {
+          "type": "boolean",
+          "description": "是否入会"
+        },
+        "is_external": {
+          "type": "boolean",
+          "description": "是否为外部联系人（含跨企业成员），true-外部，false-内部"
+        },
+        "name": {
+          "type": "string",
+          "description": "参会人id（内部成员为企业内部成员id，外部联系人为外部联系人id）对应成员的名称"
+        },
+        "userid": {
+          "type": "string",
+          "description": "参会人id（内部成员为企业内部成员id，外部联系人为外部联系人id）"
+        }
+      }
+    }
+  }
+}

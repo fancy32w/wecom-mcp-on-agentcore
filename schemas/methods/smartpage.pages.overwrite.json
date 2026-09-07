@@ -1,0 +1,91 @@
+{
+  "method": "smartpage.pages.overwrite",
+  "description": "覆盖页面内容",
+  "request": {
+    "$ref": "ScPagesOverwriteReq"
+  },
+  "response": {
+    "$ref": "ScPagesOverwriteRsp"
+  },
+  "schemas": {
+    "ScPagesOverwriteRsp": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string"
+        },
+        "errcode": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "errmsg": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        }
+      }
+    },
+    "SourceType": {
+      "type": "string",
+      "description": "文档来源类型：kSourceTypeDefault-默认来源（保留 AI 标识 tag）；kSourceTypeAIChatExport-智能助理对话导出（去除 AI 标识 tag）",
+      "enum": [
+        "kSourceTypeDefault",
+        "kSourceTypeAIChatExport"
+      ]
+    },
+    "ScPagesOverwriteReq": {
+      "type": "object",
+      "description": "action: 覆盖页面内容",
+      "properties": {
+        "content_path": {
+          "type": "string",
+          "description": "同 file_path，兼容模型传 content_path 字段名",
+          "x-wecom-file-upload": {},
+          "hidden": true
+        },
+        "content_type": {
+          "type": "string",
+          "description": "内容格式，不传则使用默认格式markdown",
+          "enum": [
+            "text",
+            "markdown",
+            "block"
+          ]
+        },
+        "docid": {
+          "type": "string",
+          "description": "文档的 docid，与 url 二选一，不传则使用 url"
+        },
+        "file_path": {
+          "type": "string",
+          "description": "path -> cosid",
+          "x-wecom-file-upload": {}
+        },
+        "page_id": {
+          "type": "string",
+          "description": "页面ID\n @gotags: validate:\"ne=\"",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "source_type": {
+          "type": "object",
+          "$ref": "SourceType",
+          "description": "文档来源类型"
+        },
+        "url": {
+          "type": "string",
+          "description": "文档的 url，与 docid 二选一，不传则使用 docid"
+        },
+        "version": {
+          "type": "integer",
+          "description": "文档版本，用于乐观锁，不传则不校验版本",
+          "format": "uint64"
+        }
+      },
+      "required": [
+        "page_id"
+      ]
+    }
+  }
+}

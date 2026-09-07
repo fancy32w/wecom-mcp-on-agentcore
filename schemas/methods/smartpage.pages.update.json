@@ -1,0 +1,145 @@
+{
+  "method": "smartpage.pages.update",
+  "description": "修改页面(创建/删除/重命名/移动/更新布局)",
+  "request": {
+    "$ref": "ScPagesUpdateReq"
+  },
+  "response": {
+    "$ref": "ScPagesUpdateRsp"
+  },
+  "schemas": {
+    "MovePageAction": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "new_parent_page_id": {
+          "type": "string"
+        },
+        "page_id": {
+          "type": "string"
+        }
+      }
+    },
+    "DeletePageAction": {
+      "type": "object",
+      "properties": {
+        "page_id": {
+          "type": "string"
+        }
+      }
+    },
+    "RenamePageAction": {
+      "type": "object",
+      "properties": {
+        "new_name": {
+          "type": "string"
+        },
+        "page_id": {
+          "type": "string"
+        }
+      }
+    },
+    "CreatePageAction": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "page_name": {
+          "type": "string"
+        },
+        "parent_page_id": {
+          "type": "string"
+        }
+      }
+    },
+    "UpdatePageLayoutAction": {
+      "type": "object",
+      "properties": {
+        "layout": {
+          "type": "string",
+          "description": "\"default\" | \"full_width\" | \"paper\""
+        },
+        "page_id": {
+          "type": "string"
+        }
+      }
+    },
+    "ScPagesUpdateReq": {
+      "type": "object",
+      "description": "action: 修改页面(创建/删除/重命名/移动/更新布局)\n注意：以下 action 字段互斥，每次请求只能传其中一个",
+      "properties": {
+        "create_page": {
+          "type": "object",
+          "$ref": "CreatePageAction",
+          "description": "创建页面操作，与其他 action 互斥，不传则不执行"
+        },
+        "delete_page": {
+          "type": "object",
+          "$ref": "DeletePageAction",
+          "description": "删除页面操作，与其他 action 互斥，不传则不执行"
+        },
+        "docid": {
+          "type": "string",
+          "description": "文档的 docid，与 url 二选一，不传则使用 url"
+        },
+        "move_page": {
+          "type": "object",
+          "$ref": "MovePageAction",
+          "description": "移动页面操作，与其他 action 互斥，不传则不执行"
+        },
+        "rename_page": {
+          "type": "object",
+          "$ref": "RenamePageAction",
+          "description": "重命名页面操作，与其他 action 互斥，不传则不执行"
+        },
+        "source_type": {
+          "type": "object",
+          "$ref": "SourceType"
+        },
+        "update_page_layout": {
+          "type": "object",
+          "$ref": "UpdatePageLayoutAction",
+          "description": "更新页面布局操作，与其他 action 互斥，不传则不执行"
+        },
+        "url": {
+          "type": "string",
+          "description": "文档的 url，与 docid 二选一，不传则使用 docid"
+        }
+      }
+    },
+    "ScPagesUpdateRsp": {
+      "type": "object",
+      "properties": {
+        "errcode": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "errmsg": {
+          "type": "string"
+        },
+        "page_id": {
+          "type": "string"
+        },
+        "page_title": {
+          "type": "string"
+        },
+        "page_url": {
+          "type": "string"
+        }
+      }
+    },
+    "SourceType": {
+      "type": "string",
+      "description": "文档来源类型：kSourceTypeDefault-默认来源（保留 AI 标识 tag）；kSourceTypeAIChatExport-智能助理对话导出（去除 AI 标识 tag）",
+      "enum": [
+        "kSourceTypeDefault",
+        "kSourceTypeAIChatExport"
+      ]
+    }
+  }
+}

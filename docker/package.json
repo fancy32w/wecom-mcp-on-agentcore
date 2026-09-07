@@ -1,0 +1,16 @@
+{
+  "name": "wecom-mcp-container",
+  "version": "0.1.0",
+  "private": true,
+  "description": "企业微信托管远程 MCP 服务 —— AgentCore Runtime 容器层",
+  "main": "server.js",
+  "engines": { "node": ">=24" },
+  "scripts": {
+    "start": "node server.js",
+    "check": "node --check server.js && node --check lib/cli.js && node --check lib/credentials.js && node --check lib/auth.js && node --check lib/secrets.js",
+    "test": "node --test test/*.test.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-secrets-manager": "^3.700.0"
+  }
+}

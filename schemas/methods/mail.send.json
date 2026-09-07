@@ -1,0 +1,406 @@
+{
+  "method": "mail.send",
+  "description": "支持发送、回复和转发邮件的接口，其中发信还支持日程邮件和会议邮件",
+  "request": {
+    "$ref": "AgentSendMailReq"
+  },
+  "response": {
+    "$ref": "AgentSendMailRsp"
+  },
+  "schemas": {
+    "TimeZoneInfo": {
+      "type": "object",
+      "properties": {
+        "timezone_id": {
+          "type": "string",
+          "description": "IANA时区标识（如 \"Asia/Shanghai\"），优先使用"
+        },
+        "timezone_offset": {
+          "type": "integer",
+          "description": "UTC 偏移量（秒），当 timezone_id 为空时使用。东区为正，西区为负，如东八区为 28800",
+          "format": "int32",
+          "minimum": -43200,
+          "maximum": 50400
+        }
+      }
+    },
+    "AttachParam": {
+      "type": "object",
+      "properties": {
+        "content_path": {
+          "type": "string",
+          "description": "同 file_path，兼容模型传 content_path 字段名",
+          "x-wecom-file-upload": {},
+          "hidden": true
+        },
+        "file_path": {
+          "type": "string",
+          "description": "附件内容路径，和media_id互斥",
+          "x-wecom-file-upload": {}
+        },
+        "media_id": {
+          "type": "string",
+          "description": "使用 cosid 情况下，只需要填写 cosid，其他字段不用填写；可以获取附件的内容和名称"
+        }
+      }
+    },
+    "ReplyParam": {
+      "type": "object",
+      "properties": {
+        "last_mail_id": {
+          "type": "string",
+          "description": "回复邮件的encode后的邮件id",
+          "maxLength": 256
+        },
+        "reply_all": {
+          "type": "boolean",
+          "description": "回复全部的情况下，设置为 true"
+        }
+      }
+    },
+    "ForwardParam": {
+      "type": "object",
+      "properties": {
+        "last_mail_id": {
+          "type": "string",
+          "description": "转发邮件的encode后的邮件id",
+          "maxLength": 256
+        }
+      }
+    },
+    "ScheduleParam": {
+      "type": "object",
+      "properties": {
+        "begin_time": {
+          "type": "string",
+          "description": "日程开始时间 \"YYYY-MM-DD HH:mm:ss\""
+        },
+        "end_time": {
+          "type": "string",
+          "description": "日程结束时间 \"YYYY-MM-DD HH:mm:ss\""
+        },
+        "location": {
+          "type": "string",
+          "description": "日程地点",
+          "maxLength": 256
+        },
+        "method": {
+          "type": "string",
+          "description": "日程方法，暂只支持request"
+        },
+        "reminders": {
+          "type": "object",
+          "$ref": "ScheduleReminder",
+          "description": "重复和提醒相关字段"
+        },
+        "schedule_admins": {
+          "type": "object",
+          "$ref": "RcptInfo",
+          "description": "管理员列表，上限3个，必须是同企业的用户且在参与人中"
+        }
+      }
+    },
+    "RcptInfo": {
+      "type": "object",
+      "properties": {
+        "emails": {
+          "type": "array",
+          "description": "邮箱地址",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 0,
+          "maxItems": 100
+        },
+        "userids": {
+          "type": "array",
+          "description": "企业内成员的userid",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 0,
+          "maxItems": 100
+        }
+      }
+    },
+    "InlineImageParam": {
+      "type": "object",
+      "properties": {
+        "content_id": {
+          "type": "string",
+          "description": "正文中的占位符完整字符串，必须含首尾 $（如 $img1$），且与正文里 ![]($xxx$) / <img src=\"$xxx$\"> 中的 $xxx$ 完全一致（大小写敏感）；markdown 与 html 正文同此规则，不加 cid: 前缀"
+        },
+        "content_path": {
+          "type": "string",
+          "description": "同 file_path，兼容模型传 content_path 字段名",
+          "x-wecom-file-upload": {},
+          "hidden": true
+        },
+        "file_path": {
+          "type": "string",
+          "description": "和media_id互斥",
+          "x-wecom-file-upload": {}
+        },
+        "media_id": {
+          "type": "string",
+          "description": "图片 cosid，可以获取图片的内容和名称"
+        }
+      }
+    },
+    "ScheduleReminder": {
+      "type": "object",
+      "properties": {
+        "is_custom_repeat": {
+          "type": "boolean",
+          "description": "是否自定义重复，当is_repeat为true时有效。"
+        },
+        "is_remind": {
+          "type": "boolean",
+          "description": "是否有提醒"
+        },
+        "is_repeat": {
+          "type": "boolean",
+          "description": "是否重复"
+        },
+        "remind_before_event_mins": {
+          "type": "integer",
+          "description": "日程开始前多少分钟提醒，当is_remind=1时有效。例如：15表示日程开始前15分钟提醒 -15表示日程开始后15分钟提醒",
+          "format": "int32"
+        },
+        "repeat_day_of_month": {
+          "type": "array",
+          "description": "每月哪几天重复，取值范围：1~31。仅当自定义重复且repeat_type为monthly或yearly时有效",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "minimum": 1,
+          "maximum": 31
+        },
+        "repeat_day_of_week": {
+          "type": "array",
+          "description": "每周周几重复，取值范围：MO,TU,WE...，分别表示周一至周日。仅当自定义重复且repeat_type为weekly时有效",
+          "items": {
+            "type": "string",
+            "enum": [
+              "MO",
+              "TU",
+              "WE",
+              "TH",
+              "FR",
+              "SA",
+              "SU"
+            ]
+          }
+        },
+        "repeat_interval": {
+          "type": "integer",
+          "description": "重复间隔，仅当指定为自定义重复时有效，该字段随repeat_type不同而含义不同",
+          "format": "uint32"
+        },
+        "repeat_month_of_year": {
+          "type": "array",
+          "description": "每年哪几个月重复，取值范围：1~12。仅当自定义重复且repeat_type为yearly时有效",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "minimum": 1,
+          "maximum": 12
+        },
+        "repeat_type": {
+          "type": "string",
+          "description": "重复类型，daily-每日 weekly-每周 monthly-每月 yearly-每年",
+          "maxLength": 256
+        },
+        "repeat_until": {
+          "type": "string",
+          "description": "重复结束时刻，不填表示一直重复 \"YYYY-MM-DD HH:mm:ss\""
+        },
+        "timezone": {
+          "type": "object",
+          "$ref": "TimeZoneInfo",
+          "description": "时区。UTC偏移量表示(即偏离零时区的小时数)，东区为正数，西区为负数。默认为北京时间东八区，取值范围：-12 ~ +12"
+        }
+      }
+    },
+    "AgentSendMailRsp": {
+      "type": "object",
+      "properties": {
+        "mail_id": {
+          "type": "string",
+          "description": "encode后的邮件id"
+        }
+      }
+    },
+    "MeetingParam": {
+      "type": "object",
+      "properties": {
+        "hosts": {
+          "type": "object",
+          "$ref": "RcptInfo",
+          "description": "会议主持人列表，最多10个"
+        },
+        "meeting_admins": {
+          "type": "object",
+          "$ref": "RcptInfo",
+          "description": "// 会议管理员，仅可指定1人，不填默认为发件人。必须是同企业的用户且在参与人中"
+        },
+        "option": {
+          "type": "object",
+          "$ref": "TxHyMeetingSetting",
+          "description": "会议选项配置"
+        }
+      }
+    },
+    "AgentSendMailReq": {
+      "type": "object",
+      "properties": {
+        "attachments": {
+          "type": "array",
+          "description": "附件列表（挂在邮件底部）；每项 media_id 与 file_path 二选一，CLI 调用时本地文件优先走 file_path。schema 中只存在 media_id 时，不应使用 file_path，需要先上传文件获取 media_id。",
+          "items": {
+            "type": "object",
+            "$ref": "AttachParam"
+          }
+        },
+        "bcc": {
+          "type": "object",
+          "$ref": "RcptInfo",
+          "description": "密送人列表，由邮箱地址列表（emails）和成员 userid 列表（userids）两个字段组成，至少填一个，各上限 100"
+        },
+        "cc": {
+          "type": "object",
+          "$ref": "RcptInfo",
+          "description": "抄送人列表，由邮箱地址列表（emails）和成员 userid 列表（userids）两个字段组成，至少填一个，各上限 100；reply_all=true 时由接口自动构造，不要传"
+        },
+        "content": {
+          "type": "string",
+          "description": "邮件正文内容，与 file_path 二选一、不可同时传；格式由 content_type 决定（默认 markdown）。若邮件带内嵌图片，占位符必须写在正文中：markdown 写 ![]($xxx$)（方括号留空、不带 alt 和 title），html 写 <img src=\"$xxx$\">，并与 inline_images[].content_id 完全一致"
+        },
+        "content_path": {
+          "type": "string",
+          "description": "同 file_path，兼容模型传 content_path 字段名",
+          "x-wecom-file-upload": {},
+          "hidden": true
+        },
+        "content_type": {
+          "type": "string",
+          "description": "正文格式：markdown（默认）或 html",
+          "enum": [
+            "markdown",
+            "html"
+          ]
+        },
+        "file_path": {
+          "type": "string",
+          "description": "邮件正文内容的本地文件路径，与 content 二选一、不可同时传；文件内容格式由 content_type 决定（默认 markdown，建议用 .md 文件）。若邮件带内嵌图片，占位符必须写在该文件的正文内容中：markdown 写 ![]($xxx$)（方括号留空、不带 alt 和 title），html 写 <img src=\"$xxx$\">，并与 inline_images[].content_id 完全一致",
+          "x-wecom-file-upload": {}
+        },
+        "forward": {
+          "type": "object",
+          "$ref": "ForwardParam",
+          "description": "【转发邮件】传即为转发；含 last_mail_id（被转发邮件 ID，必填）；与 reply/schedule/meeting 互斥"
+        },
+        "inline_images": {
+          "type": "array",
+          "description": "正文内嵌图片；占位符必须严格写成 ![]($xxx$)（markdown 正文，方括号留空、不带 alt 和 title）或 <img src=\"$xxx$\">（html 正文，不加 cid: 前缀），$xxx$ 含首尾 $ 符号；inline_images[].content_id 必须填正文中出现的完整占位符字符串（含首尾 $，大小写敏感），与正文一字不差，否则接口无法完成替换、收件人看到坏图或原样字符串且接口不报错；每项 media_id 与 file_path 二选一，已有 media_id 时复用，只有本地文件时直接填 file_path，CLI 自动上传。",
+          "items": {
+            "type": "object",
+            "$ref": "InlineImageParam"
+          }
+        },
+        "meeting": {
+          "type": "object",
+          "$ref": "MeetingParam",
+          "description": "【会议邮件】须与 schedule 同时传，单独传无效；空对象表示用默认设置；与 reply/forward 互斥"
+        },
+        "reply": {
+          "type": "object",
+          "$ref": "ReplyParam",
+          "description": "【回复邮件】传即为回复；含 last_mail_id（必填）和 reply_all（true=回复全部，不要传 to/cc；false=仅回复发件人，须自行传 to）；与 forward/schedule/meeting 互斥"
+        },
+        "schedule": {
+          "type": "object",
+          "$ref": "ScheduleParam",
+          "description": "【日程邮件】单传=日程邀约（不创建线上会议），与 meeting 同传=会议邮件；begin_time/end_time 必填且不早于当前时间；与 reply/forward 互斥"
+        },
+        "subject": {
+          "type": "string",
+          "description": "邮件主题；回复/转发类型邮件自行加「回复：」「转发：」前缀"
+        },
+        "to": {
+          "type": "object",
+          "$ref": "RcptInfo",
+          "description": "收件人列表，由邮箱地址列表（emails）和成员 userid 列表（userids）两个字段组成，至少填一个，各上限 100；除 reply_all=true 外必填"
+        }
+      }
+    },
+    "TxHyMeetingSetting": {
+      "type": "object",
+      "properties": {
+        "allow_enter_before_host": {
+          "type": "boolean",
+          "description": "是否允许成员在主持人进会前加入，默认不开启"
+        },
+        "auto_record": {
+          "type": "string",
+          "description": "是否自动录制，off-未开启自动录制，local-开启自动本地录制，cloud-开启自动云录制，默认不开启",
+          "enum": [
+            "off",
+            "local",
+            "cloud"
+          ]
+        },
+        "enable_enter_mute": {
+          "type": "string",
+          "description": "成员入会时是否静音，on-开启，off-关闭，auto_over_6-超过6人后自动开启静音，默认超过6人自动开启静音",
+          "enum": [
+            "on",
+            "off",
+            "auto_over_6"
+          ]
+        },
+        "enable_screen_watermark": {
+          "type": "boolean",
+          "description": "是否开启屏幕水印，默认不开启"
+        },
+        "enable_waiting_room": {
+          "type": "boolean",
+          "description": "是否开启等候室，默认不开启"
+        },
+        "enter_restraint": {
+          "type": "string",
+          "description": "是否限制成员入会，all-所有人可入会，internal_only-仅企业内部用户可入会，默认所有人可入会",
+          "enum": [
+            "all",
+            "internal_only"
+          ]
+        },
+        "password": {
+          "type": "string",
+          "description": "入会密码，仅可输入4-6位纯数字",
+          "minLength": 4,
+          "maxLength": 6
+        },
+        "remind_scope": {
+          "type": "string",
+          "description": "会议开始时是否提醒，none-不提醒，host_only-仅提醒主持人，all-提醒所有成员入会，默认仅提醒主持人",
+          "enum": [
+            "none",
+            "host_only",
+            "all"
+          ]
+        },
+        "water_mark_type": {
+          "type": "string",
+          "description": "水印类型，single-单排水印，multi-多排水印，默认单排水印",
+          "enum": [
+            "single",
+            "multi"
+          ]
+        }
+      }
+    }
+  }
+}

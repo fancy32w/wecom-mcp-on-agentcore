@@ -1,0 +1,56 @@
+{
+  "method": "message.send",
+  "description": "向指定单聊/群聊会话发送文本消息",
+  "request": {
+    "$ref": "SendMessageReq"
+  },
+  "response": {
+    "$ref": "SendMessageRsp"
+  },
+  "schemas": {
+    "SendMessageRsp": {
+      "type": "object",
+      "description": "发送消息返回：成功与否由框架外壳的 errcode / errmsg 表达，无业务字段"
+    },
+    "TextContent": {
+      "type": "object",
+      "description": "文本消息内容",
+      "properties": {
+        "content": {
+          "type": "string",
+          "description": "文本内容，最长 2048 字符",
+          "maxLength": 2048
+        }
+      },
+      "required": [
+        "content"
+      ]
+    },
+    "SendMessageReq": {
+      "type": "object",
+      "description": "发送消息 (send_message)",
+      "properties": {
+        "chat_id": {
+          "type": "string",
+          "description": "会话 ID：单聊传接收成员的 userid，群聊传群会话 ID，由框架解密为 {id, type}"
+        },
+        "msg_type": {
+          "type": "string",
+          "description": "消息类型，目前仅支持 text（文本消息）",
+          "enum": [
+            "text"
+          ]
+        },
+        "text": {
+          "type": "object",
+          "$ref": "TextContent",
+          "description": "文本消息内容，msg_type=text 时必填；不传则请求失败"
+        }
+      },
+      "required": [
+        "chat_id",
+        "msg_type"
+      ]
+    }
+  }
+}

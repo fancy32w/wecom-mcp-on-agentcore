@@ -1,0 +1,74 @@
+{
+  "method": "smartpage.pages.append",
+  "description": "追加内容到页面",
+  "request": {
+    "$ref": "ScPageContentAppendReq"
+  },
+  "response": {
+    "$ref": "ScPageContentAppendRsp"
+  },
+  "schemas": {
+    "ScPageContentAppendReq": {
+      "type": "object",
+      "description": "action: 追加内容到页面",
+      "properties": {
+        "content_path": {
+          "type": "string",
+          "description": "同 file_path，兼容模型传 content_path 字段名",
+          "x-wecom-file-upload": {},
+          "hidden": true
+        },
+        "content_type": {
+          "type": "string",
+          "description": "内容格式，不传则使用默认格式markdown",
+          "enum": [
+            "text",
+            "markdown",
+            "block"
+          ]
+        },
+        "docid": {
+          "type": "string",
+          "description": "文档的 docid，与 url 二选一，不传则使用 url"
+        },
+        "file_path": {
+          "type": "string",
+          "description": "path -> cosid",
+          "x-wecom-file-upload": {}
+        },
+        "page_id": {
+          "type": "string",
+          "description": "页面ID\n @gotags: validate:\"ne=\"",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "url": {
+          "type": "string",
+          "description": "文档的 url，与 docid 二选一，不传则使用 docid"
+        }
+      },
+      "required": [
+        "page_id"
+      ]
+    },
+    "ScPageContentAppendRsp": {
+      "type": "object",
+      "properties": {
+        "errcode": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "errmsg": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "format": "uint64"
+        }
+      }
+    }
+  }
+}

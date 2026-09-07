@@ -1,0 +1,73 @@
+{
+  "method": "smartsheet.import",
+  "description": "导入 xlsx 创建智能表格",
+  "request": {
+    "$ref": "SmartSheetImportReq"
+  },
+  "response": {
+    "$ref": "OaDocImportTaskCreateTypedRsp"
+  },
+  "schemas": {
+    "OaDocImportTaskCreateTypedRsp": {
+      "type": "object",
+      "properties": {
+        "docid": {
+          "type": "string",
+          "description": "导入成功后的文档 ID"
+        },
+        "task_id": {
+          "type": "string",
+          "description": "导入任务 ID"
+        },
+        "task_status": {
+          "type": "string",
+          "description": "任务结果(succ/fail/processing)，查询任务时返回",
+          "enum": [
+            "succ",
+            "fail",
+            "processing"
+          ]
+        },
+        "url": {
+          "type": "string",
+          "description": "导入成功后的文档 URL"
+        }
+      }
+    },
+    "SmartSheetImportReq": {
+      "type": "object",
+      "description": "SmartSheetImport (导入文件为智能表格，broker 层封装为 doc/import + doc_type=smartsheet)",
+      "properties": {
+        "append_doc_id": {
+          "type": "string",
+          "description": "支持文档的 docid 和 url  ， 有传则代表导入追加到对应智能表上，跟原有子表名称重复要做重命名；仅 doc_type=sheet/smartsheet 生效，其它类型忽略"
+        },
+        "content_path": {
+          "type": "string",
+          "description": "同 file_path，兼容模型传 content_path 字段名",
+          "x-wecom-file-upload": {},
+          "hidden": true
+        },
+        "media_id": {
+          "type": "string",
+          "description": "已上传得到的 media_id（OpenMediaId，框架自动解码为 cosid）；与 content_path 二选一",
+          "maxLength": 1024
+        },
+        "name": {
+          "type": "string",
+          "description": "智能表格名称，映射到 doc/import 的 file_name（broker 自动追加 .xlsx 后缀）",
+          "minLength": 1,
+          "maxLength": 251
+        },
+        "passwd": {
+          "type": "string",
+          "description": "文件密码，不传则不使用密码",
+          "maxLength": 256
+        }
+      },
+      "required": [
+        "name"
+      ]
+    }
+  }
+}

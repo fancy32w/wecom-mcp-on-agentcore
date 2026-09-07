@@ -1,0 +1,87 @@
+{
+  "method": "sheet.get",
+  "description": "获取表格文档的基本信息，包含工作表列表（sheet_id、标题、行列数等）",
+  "request": {
+    "$ref": "OaSheetGetInfoReq"
+  },
+  "response": {
+    "$ref": "OaSheetGetInfoTypedRsp"
+  },
+  "schemas": {
+    "OaSheetGetInfoTypedRsp": {
+      "type": "object",
+      "properties": {
+        "errcode": {
+          "type": "integer",
+          "description": "错误码",
+          "format": "int32"
+        },
+        "errmsg": {
+          "type": "string",
+          "description": "错误信息"
+        },
+        "name": {
+          "type": "string",
+          "description": "文档名称"
+        },
+        "sheets": {
+          "type": "array",
+          "description": "工作表列表",
+          "items": {
+            "type": "object",
+            "$ref": "OaSheetInfo"
+          }
+        },
+        "sheets_count": {
+          "type": "integer",
+          "description": "工作表列表 数组元素数量（框架自动生成）"
+        },
+        "url": {
+          "type": "string",
+          "description": "文档 URL"
+        }
+      }
+    },
+    "OaSheetInfo": {
+      "type": "object",
+      "properties": {
+        "column_count": {
+          "type": "integer",
+          "description": "总列数",
+          "format": "uint32"
+        },
+        "data_range": {
+          "type": "string",
+          "description": "存在内容的范围，A1 表示法；无数据时为空字符串"
+        },
+        "row_count": {
+          "type": "integer",
+          "description": "总行数",
+          "format": "uint32"
+        },
+        "sheet_id": {
+          "type": "string",
+          "description": "工作表 ID"
+        },
+        "title": {
+          "type": "string",
+          "description": "工作表名称"
+        }
+      }
+    },
+    "OaSheetGetInfoReq": {
+      "type": "object",
+      "description": "OaSheetGetInfo (读取 Sheet 基本信息)",
+      "properties": {
+        "docid": {
+          "type": "string",
+          "description": "支持文档的 docid 和 url",
+          "minLength": 5
+        }
+      },
+      "required": [
+        "docid"
+      ]
+    }
+  }
+}

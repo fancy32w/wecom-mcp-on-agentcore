@@ -1,0 +1,148 @@
+{
+  "method": "meeting.update",
+  "description": "更新预定会议信息：标题、开始时间、结束时间、参与人、地点、备注",
+  "request": {
+    "$ref": "WeAgentUpdateMeetingInfoReq"
+  },
+  "response": {
+    "$ref": "WeAgentUpdateMeetingInfoRsp"
+  },
+  "schemas": {
+    "AttendUserInfo": {
+      "type": "object",
+      "properties": {
+        "is_external": {
+          "type": "boolean",
+          "description": "改参会人是否是外部会议参会人，true-是，false-否"
+        },
+        "name": {
+          "type": "string",
+          "description": "企微会议参会人userid，唯一标识会议的企业参会人对应成员的名称"
+        },
+        "userid": {
+          "type": "string",
+          "description": "企微会议参会人userid，唯一标识会议的企业参会人"
+        }
+      }
+    },
+    "AttendUserId": {
+      "type": "object",
+      "description": "会议更新接口",
+      "properties": {
+        "userid": {
+          "type": "string",
+          "description": "会议参会人userid，唯一标识会议的参会人,不区分",
+          "minimum": 1
+        }
+      }
+    },
+    "WeAgentUpdateMeetingInfoReq": {
+      "type": "object",
+      "properties": {
+        "add_attendees": {
+          "type": "array",
+          "description": "需要新增的会议参会人，需要修改时才传，修改时必须传参会人的userid，否则不传保持原状，非必传字段",
+          "items": {
+            "type": "object",
+            "$ref": "AttendUserId"
+          },
+          "maxItems": 100
+        },
+        "begin_time": {
+          "type": "string",
+          "description": "修改后新的会议开始时间，格式为YYYY-MM-DD HH:MM:SS，比如2026-03-25 16:03:13，需要修改时才传，否则不传保持原状，非必传字段",
+          "pattern": "^\\\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\\\d|3[01]) ([01]\\\\d|2[0-3]):[0-5]\\\\d:[0-5]\\\\d$"
+        },
+        "description": {
+          "type": "string",
+          "description": "修改后新的会议备注，需要修改时才传，传空表示清空会议备注，否则不传保持原状，非必传字段",
+          "minLength": 0,
+          "maxLength": 5000
+        },
+        "end_time": {
+          "type": "string",
+          "description": "修改后新的会议结束时间，格式为YYYY-MM-DD HH:MM:SS，比如2026-03-25 16:03:13，需要修改时才传，否则不传保持原状，非必传字段",
+          "pattern": "^\\\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\\\d|3[01]) ([01]\\\\d|2[0-3]):[0-5]\\\\d:[0-5]\\\\d$"
+        },
+        "location": {
+          "type": "string",
+          "description": "修改后新的会议地点，需要修改时才传，传空表示清空会议地点，否则不传保持原状，非必传字段",
+          "minLength": 0,
+          "maxLength": 256
+        },
+        "meeting_id": {
+          "type": "string",
+          "description": "meeting_id，标识要修改的会议，必传字段",
+          "minimum": 1
+        },
+        "meeting_room_id": {
+          "type": "string",
+          "description": "会议室 ID 传入会预定会议室"
+        },
+        "remove_attendees": {
+          "type": "array",
+          "description": "需要删除的会议参会人，需要修改时才传，修改时必须传参会人的userid，否则不传保持原状，非必传字段",
+          "items": {
+            "type": "object",
+            "$ref": "AttendUserId"
+          },
+          "maxItems": 100
+        },
+        "subject": {
+          "type": "string",
+          "description": "修改后新的会议标题，需要修改时才传，否则不传保持原状，非必传字段",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "meeting_id"
+      ]
+    },
+    "WeAgentUpdateMeetingInfoRsp": {
+      "type": "object",
+      "properties": {
+        "attendees": {
+          "type": "array",
+          "description": "会议修改后的参会人列表",
+          "items": {
+            "type": "object",
+            "$ref": "AttendUserInfo"
+          }
+        },
+        "attendees_count": {
+          "type": "integer",
+          "description": "会议修改后的参会人列表 数组元素数量（框架自动生成）"
+        },
+        "begin_time": {
+          "type": "string",
+          "description": "会议修改后的开始时间，格式为YYYY-MM-DD HH:MM:SS，比如2026-03-25 16:03:13"
+        },
+        "description": {
+          "type": "string",
+          "description": "会议修改后的备注"
+        },
+        "end_time": {
+          "type": "string",
+          "description": "会议修改后的结束时间，格式为YYYY-MM-DD HH:MM:SS，比如2026-03-25 16:03:13"
+        },
+        "location": {
+          "type": "string",
+          "description": "会议修改后的地点"
+        },
+        "meeting_id": {
+          "type": "string",
+          "description": "meeting_id，唯一标识一场会议"
+        },
+        "sub_meeting_id": {
+          "type": "string",
+          "description": "sub_meeting_id，唯一标识一场周期会议下的子会议，周期会议修改的场景返回  不传则不涉及子会议"
+        },
+        "subject": {
+          "type": "string",
+          "description": "会议修改后的标题"
+        }
+      }
+    }
+  }
+}
