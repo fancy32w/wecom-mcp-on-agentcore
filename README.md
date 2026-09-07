@@ -17,49 +17,6 @@
 
 ---
 
-## 项目由来
-
-**本项目基于 [`aws-samples/sample-lark-mcp-on-agentcore`](https://github.com/aws-samples/sample-lark-mcp-on-agentcore) 改造而来** —— 把那套为**飞书**做的托管远程 MCP 服务换成**企业微信**。同一个问题、同一套解法，换 SaaS。
-
-上游同为 MIT-0、无署名义务；这里写明来源不是为了合规，而是为了让你知道哪些设计是**已经在另一个 SaaS 上验证过的**、哪些是本项目自己加的。
-
-<details>
-<summary>沿用了什么、改了什么</summary>
-
-**整段沿用**（架构与关键取舍来自上游，已验证过一遍）：
-
-- AgentCore Runtime 跑 MCP 容器 + OAuth Lambda 当授权服务器 + 中间层 Lambda 做 SigV4 数据面
-- 每用户凭证存 Secrets Manager，专用 KMS 客户托管密钥
-- 工具二层结构：Tier 1 高频工具直接注册 + meta 工具按需 discover / invoke
-- MCP token 用无状态 HMAC、签名根密钥放 SSM、按用途派生子密钥
-
-**因企业微信与飞书的差异而改**：
-
-| | 上游（飞书） | 本项目（企业微信） |
-|---|---|---|
-| 授权形态 | 302 回调直接带回 `open_id`，发起时就知道你是谁 | **扫码**授权，发起时还不知道你是谁 → `userId` 当场自造 `u_<hex>`，真实身份由凭证携带。因此不需要上游的 OpenIdMap 表，但多一张 AuthFlows 表（TTL 对齐 CLI 的 300s 扫码窗口） |
-| Token 刷新 | EventBridge 每 30 分钟定时刷 | **整个刷新 cron 消失** —— `wecom-cli` 每次调用自己刷、按 mtime 回写凭证 |
-| 中间层权限 | 需要 KMS Decrypt | 不需要 —— 凭证只有容器读，攻击面更小 |
-
-**本项目自己加的**：
-
-| | 说明 |
-|---|---|
-| 不需要 ARM64 机器 | 上游要求在 ARM64 机器上部署。本项目检测不到可用的 ARM64 容器环境时**自动改走 CodeBuild 远程构建**，Windows / Intel Mac / x86 Linux 都能部署 |
-| HTTP API 而非 REST API | API Gateway 的 REST API 会把 `WWW-Authenticate` 改名成 `X-Amzn-Remapped-WWW-Authenticate`，**破坏 RFC 9728 的授权服务器发现**（上游用的是 REST API，同样有这个问题）。本项目换成 HTTP API，401 挑战头原样返回 |
-| 凭证按真实身份去重 | 同一个人重复授权时，先探测旧凭证是否还活着，活着就复用同一槽位，不堆孤儿凭证 |
-
-**上游有而本项目还没有**：
-
-| | 状态 |
-|---|---|
-| Skill 引擎（20+ 业务域的多步编排指引） | **未实现**，代码里是 TODO。当前只有工具，没有编排指引 |
-| 可观测性 | 上游 11 告警 + Dashboard + WAF；本项目 3 告警、无 Dashboard、无 WAF |
-| 工具规模 | 上游 450+ 工具（飞书 2500+ API）；本项目 37 工具（企业微信 94 个方法）—— 这是两个 SaaS 的能力面差异，不是取舍 |
-
-</details>
-
----
 
 ## 为什么需要这一层
 
@@ -357,4 +314,4 @@ cd infra && npx cdk destroy
 
 本项目基于 **MIT No Attribution (MIT-0)** 授权 —— 见 [LICENSE](LICENSE)。
 
-设计与部分代码移植自 [`aws-samples/sample-lark-mcp-on-agentcore`](https://github.com/aws-samples/sample-lark-mcp-on-agentcore)（同为 MIT-0，无署名义务）—— 沿用与改动的清单见上文[项目由来](#项目由来)。衍生部分的著作权仍属其原作者，来源说明见 [NOTICE](NOTICE)。
+设计与部分代码移植自 [`aws-samples/sample-lark-mcp-on-agentcore`](https://github.com/aws-samples/sample-lark-mcp-on-agentcore)。
