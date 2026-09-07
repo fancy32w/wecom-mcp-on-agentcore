@@ -56,7 +56,7 @@ bash scripts/run-deploy.sh --region <你的区域>
 
 第③步**幂等**，失败可直接重跑，已成功的部分不会重做。结束时打印 MCP 端点：`https://xxxxxxxx.cloudfront.net`
 
-> 逐步命令、每步「看到什么算对」、以及失败处置表见 **[docs/deployment_zh.md](docs/deployment_zh.md)**。
+> 逐步命令、每步「看到什么算对」、以及失败处置表见 `docs/deployment_zh.md`。
 
 ---
 
@@ -85,7 +85,7 @@ bash scripts/run-deploy.sh --region <你的区域>
 
 第二行是推荐路径：管理员在 Quick console 建一次 MCP 集成并共享，全员零配置、令牌自动续期。第三行只在管理员没建、或你只想给自己用时才需要。
 
-详见 **[docs/connect-mcp-clients_zh.md](docs/connect-mcp-clients_zh.md)**。
+详见 `docs/connect-mcp-clients_zh.md`。
 
 ---
 
@@ -150,7 +150,7 @@ flowchart LR
 | 凭证加密 | 每用户一条 Secret，专用 KMS 客户托管密钥，仅本服务可解密 |
 | 授权页防钓鱼 | `HttpOnly; Secure; SameSite=Lax` 的流程 cookie 绑定浏览器 + 一次性取过即删 + 300s TTL；页面显式警告只扫自己发起页面上的码 |
 
-详见 **[docs/security_zh.md](docs/security_zh.md)**。
+详见 `docs/security_zh.md`。
 
 > ⚠️ **对外开放前必须加企业 SSO 前置。** 上述 cookie 绑定防不住「攻击者在自己浏览器发起流程、只把二维码图片转发给受害者」这一种。内部使用可接受，公网开放不行。
 
@@ -220,7 +220,7 @@ Tier 1 常驻约 8K tokens。剩下 59 个方法不占固定 context，按需通
 
 - **无 Skill 引擎。** 参考实现把官方 Skill 改写成 MCP 形态按需加载，本项目**尚未实现** —— 当前只有工具，没有多步编排指引。这是已知缺口，不是不做。
 
-完整清单见 **[docs/limitations_zh.md](docs/limitations_zh.md)**。
+完整清单见 `docs/limitations_zh.md`。
 
 ---
 
@@ -291,16 +291,18 @@ cd infra && npx cdk destroy
 | `scripts/` | 部署与运维脚本 |
 | `schemas/` | 构建期由 `wecom-cli --schema` 生成的 94 个方法定义 + Tier 1 名单 |
 | `tools/` | schema 提取与转换（构建期运行） |
-| `docs/` | 部署、接入、限制、安全 |
+| `docs/` | 部署、接入、限制、安全（**不入库**，见下） |
 
 ## 文档
 
-| 主题 | 链接 |
+**`docs/` 不进本仓库**（已在 `.gitignore` 里），只随交付包分发 —— 用 `scripts/package-delivery.sh` 打包时会带上。所以下面这些文件在仓库里看不到，clone 下来也没有：
+
+| 主题 | 文件 |
 |---|---|
-| 部署与日常运维（逐步 + 「看到什么算对」+ 失败处置） | [docs/deployment_zh.md](docs/deployment_zh.md) |
-| 接入 MCP 客户端（Quick / Kiro / Claude Code / Codex） | [docs/connect-mcp-clients_zh.md](docs/connect-mcp-clients_zh.md) |
-| 已知限制与平台行为 | [docs/limitations_zh.md](docs/limitations_zh.md) |
-| 安全与数据流 | [docs/security_zh.md](docs/security_zh.md) |
+| 部署与日常运维（逐步 + 「看到什么算对」+ 失败处置） | `docs/deployment_zh.md` |
+| 接入 MCP 客户端（Quick / Kiro / Claude Code / Codex） | `docs/connect-mcp-clients_zh.md` |
+| 已知限制与平台行为 | `docs/limitations_zh.md` |
+| 安全与数据流 | `docs/security_zh.md` |
 
 ## 风险提示
 

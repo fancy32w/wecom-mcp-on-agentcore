@@ -17,8 +17,11 @@ infra/cdk.out/
 # 打包产物
 *.zip
 
-# 内部过程记录，不作为交付物公开
-docs/改造评估.md
+# 文档不入库 —— 只随交付包分发，不进远端仓库。
+# 注意这条会连带忽略 docs/ 下所有文件，包括 deployment / connect-mcp-clients /
+# limitations / security 四份交付文档与 docs/改造评估.md（内部过程记录）。
+# 加这条之前 docs/ 已被推过，仅忽略不会从历史里移除，见 README 的说明。
+docs/
 
 # 编辑器 / 系统
 .DS_Store

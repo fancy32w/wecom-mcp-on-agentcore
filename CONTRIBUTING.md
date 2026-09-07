@@ -66,8 +66,11 @@ To send us a pull request, please:
 - **No account-specific values.** No AWS account IDs, CloudFront domains, WeCom bot
   IDs or real user identifiers in code, tests, or docs. `scripts/package-delivery.sh`
   scans for these and fails the build if any are found.
-- **Docs stay bilingual-consistent.** Documentation lives in `docs/` as
-  `<topic>_zh.md` / `<topic>_en.md` pairs. If you change one, update the other.
+- **Docs are not in this repository.** `docs/` is gitignored and ships only with the
+  delivery package built by `scripts/package-delivery.sh`. If your change alters
+  deployment steps, client setup, known limitations, or the data flow, update the
+  corresponding `docs/<topic>_zh.md` in your local tree and say so in the PR
+  description — reviewers cannot see it in the diff.
 - **Deployment stays idempotent.** `scripts/deploy.sh` must be safe to re-run after a
   partial failure.
 
